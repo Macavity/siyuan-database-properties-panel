@@ -1,8 +1,8 @@
 {
-  "name": "plugin-sample-vite-svelte",
-  "author": "frostime",
-  "url": "https://github.com/siyuan-note/plugin-sample-vite-svelte",
-  "version": "0.3.5",
+  "name": "siyuan-database-properties-panel",
+  "author": "Macavity",
+  "url": "https://github.com/Macavity/siyuan-database-properties-panel",
+  "version": "0.0.1",
   "minAppVersion": "3.0.12",
   "backends": [
     "windows",
@@ -20,23 +20,23 @@
     "desktop-window"
   ],
   "displayName": {
-    "en_US": "Plugin sample with vite and svelte",
-    "zh_CN": "插件样例 vite + svelte 版"
+    "en_US": "Database Properties Panel",
+    "zh_CN": "数据库属性面板"
   },
   "description": {
-    "en_US": "SiYuan plugin sample with vite and svelte",
-    "zh_CN": "使用 vite 和 svelte 开发的思源插件样例"
+    "en_US": "Provides a panel to view database properties of a page created from a database.",
+    "zh_CN": "提供一个面板，用于查看从数据库创建的页面的数据库属性。"
   },
   "readme": {
     "en_US": "README.md",
     "zh_CN": "README_zh_CN.md"
   },
   "funding": {
-    "custom": [
-      ""
-    ]
+    "openCollective": "",
+    "patreon": "",
+    "github": ""
   },
   "keywords": [
-    "plugin", "sample", "插件样例"
+    "plugin", "database", "properties", "attributes"
   ]
 }
