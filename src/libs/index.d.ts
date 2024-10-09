@@ -11,6 +11,7 @@ type TSettingItemType = "checkbox" | "select" | "textinput" | "textarea" | "numb
 interface ISettingItemCore {
     type: TSettingItemType;
     key: string;
+    // eslint-disable-next-line
     value: any;
     placeholder?: string;
     slider?: {
@@ -37,7 +38,7 @@ interface ISettingUtilsItem extends ISettingItem {
     action?: {
         callback: () => void;
     }
-    createElement?: (currentVal: any) => HTMLElement;
-    getEleVal?: (ele: HTMLElement) => any;
-    setEleVal?: (ele: HTMLElement, val: any) => void;
+    createElement?: (currentVal: unknown) => HTMLElement;
+    getEleVal?: (ele: HTMLElement) => unknown;
+    setEleVal?: (ele: HTMLElement, val: unknown) => void;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /*
  * Copyright (c) 2023 by frostime. All Rights Reserved.
  * @Author       : frostime
@@ -16,7 +17,7 @@ import { Plugin, Setting } from 'siyuan';
  * @returns 
  */
 const createDefaultGetter = (type: TSettingItemType) => {
-    let getter: (ele: HTMLElement) => any;
+    let getter: (ele: HTMLElement) => unknown;
     switch (type) {
         case 'checkbox':
             getter = (ele: HTMLInputElement) => {
@@ -50,10 +51,10 @@ const createDefaultGetter = (type: TSettingItemType) => {
  * @returns 
  */
 const createDefaultSetter = (type: TSettingItemType) => {
-    let setter: (ele: HTMLElement, value: any) => void;
+    let setter: (ele: HTMLElement, value: never) => void;
     switch (type) {
         case 'checkbox':
-            setter = (ele: HTMLInputElement, value: any) => {
+            setter = (ele: HTMLInputElement, value: never) => {
                 ele.checked = value;
             };
             break;
@@ -62,7 +63,7 @@ const createDefaultSetter = (type: TSettingItemType) => {
         case 'textinput':
         case 'textarea':
         case 'number':
-            setter = (ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, value: any) => {
+            setter = (ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, value: string) => {
                 ele.value = value;
             };
             break;
@@ -86,7 +87,7 @@ export class SettingUtils {
     constructor(args: {
         plugin: Plugin,
         name?: string,
-        callback?: (data: any) => void,
+        callback?: (data: unknown) => void,
         width?: string,
         height?: string
     }) {
@@ -97,10 +98,10 @@ export class SettingUtils {
             width: args.width,
             height: args.height,
             confirmCallback: () => {
-                for (let key of this.settings.keys()) {
+                for (const key of this.settings.keys()) {
                     this.updateValueFromElement(key);
                 }
-                let data = this.dump();
+                const data = this.dump();
                 if (args.callback !== undefined) {
                     args.callback(data);
                 }
@@ -109,7 +110,7 @@ export class SettingUtils {
             },
             destroyCallback: () => {
                 //Restore the original value
-                for (let key of this.settings.keys()) {
+                for (const key of this.settings.keys()) {
                     this.updateElementFromValue(key);
                 }
             }
@@ -117,10 +118,10 @@ export class SettingUtils {
     }
 
     async load() {
-        let data = await this.plugin.loadData(this.file);
+        const data = await this.plugin.loadData(this.file);
         console.debug('Load config:', data);
         if (data) {
-            for (let [key, item] of this.settings) {
+            for (const [key, item] of this.settings) {
                 item.value = data?.[key] ?? item.value;
             }
         }
@@ -128,7 +129,7 @@ export class SettingUtils {
         return data;
     }
 
-    async save(data?: any) {
+    async save(data?: unknown) {
         data = data ?? this.dump();
         await this.plugin.saveData(this.file, this.dump());
         console.debug('Save config:', data);
@@ -140,8 +141,8 @@ export class SettingUtils {
      * @param key key name
      * @returns setting item value
      */
-    get(key: string) {
-        return this.settings.get(key)?.value;
+    get<T>(key: string): T {
+        return this.settings.get(key)?.value as T;
     }
 
     /**
@@ -150,8 +151,8 @@ export class SettingUtils {
      * @param key key name
      * @param value value
      */
-    set(key: string, value: any) {
-        let item = this.settings.get(key);
+    set(key: string, value: unknown) {
+        const item = this.settings.get(key);
         if (item) {
             item.value = value;
             this.updateElementFromValue(key);
@@ -164,8 +165,8 @@ export class SettingUtils {
      * @param key key name
      * @param value value
      */
-    async setAndSave(key: string, value: any) {
-        let item = this.settings.get(key);
+    async setAndSave(key: string, value: unknown) {
+        const item = this.settings.get(key);
         if (item) {
             item.value = value;
             this.updateElementFromValue(key);
@@ -181,8 +182,8 @@ export class SettingUtils {
       * @returns value in html
       */
     take(key: string, apply: boolean = false) {
-        let item = this.settings.get(key);
-        let element = this.elements.get(key) as any;
+        const item = this.settings.get(key);
+        const element = this.elements.get(key);
         if (!element) {
             return
         }
@@ -199,7 +200,7 @@ export class SettingUtils {
      * @return value in html
      */
     async takeAndSave(key: string) {
-        let value = this.take(key, true);
+        const value = this.take(key, true);
         await this.save();
         return value;
     }
@@ -209,7 +210,7 @@ export class SettingUtils {
      * @param key key name
      */
     disable(key: string) {
-        let element = this.elements.get(key) as any;
+        const element = this.elements.get(key) as HTMLInputElement;
         if (element) {
             element.disabled = true;
         }
@@ -220,7 +221,7 @@ export class SettingUtils {
      * @param key key name
      */
     enable(key: string) {
-        let element = this.elements.get(key) as any;
+        const element = this.elements.get(key) as HTMLInputElement;
         if (element) {
             element.disabled = false;
         }
@@ -230,9 +231,9 @@ export class SettingUtils {
      * 将设置项目导出为 JSON 对象
      * @returns object
      */
-    dump(): Object {
-        let data: any = {};
-        for (let [key, item] of this.settings) {
+    dump(): object {
+        const data = {};
+        for (const [key, item] of this.settings) {
             if (item.type === 'button') continue;
             data[key] = item.value;
         }
@@ -242,7 +243,7 @@ export class SettingUtils {
     addItem(item: ISettingUtilsItem) {
         this.settings.set(item.key, item);
         const IsCustom = item.type === 'custom';
-        let error = IsCustom && (item.createElement === undefined || item.getEleVal === undefined || item.setEleVal === undefined);
+        const error = IsCustom && (item.createElement === undefined || item.getEleVal === undefined || item.setEleVal === undefined);
         if (error) {
             console.error('The custom setting item must have createElement, getEleVal and setEleVal methods');
             return;
@@ -256,7 +257,7 @@ export class SettingUtils {
         }
 
         if (item.createElement === undefined) {
-            let itemElement = this.createDefaultElement(item);
+            const itemElement = this.createDefaultElement(item);
             this.elements.set(item.key, itemElement);
             this.plugin.setting.addItem({
                 title: item.title,
@@ -264,7 +265,7 @@ export class SettingUtils {
                 direction: item?.direction,
                 createActionElement: () => {
                     this.updateElementFromValue(item.key);
-                    let element = this.getElement(item.key);
+                    const element = this.getElement(item.key);
                     return element;
                 }
             });
@@ -274,8 +275,8 @@ export class SettingUtils {
                 description: item?.description,
                 direction: item?.direction,
                 createActionElement: () => {
-                    let val = this.get(item.key);
-                    let element = item.createElement(val);
+                    const val = this.get(item.key);
+                    const element = item.createElement(val);
                     this.elements.set(item.key, element);
                     return element;
                 }
@@ -294,30 +295,30 @@ export class SettingUtils {
         }
         switch (item.type) {
             case 'checkbox':
-                let element: HTMLInputElement = document.createElement('input');
+                const element: HTMLInputElement = document.createElement('input');
                 element.type = 'checkbox';
-                element.checked = item.value;
+                element.checked = item.value as boolean;
                 element.className = "b3-switch fn__flex-center";
                 itemElement = element;
                 element.onchange = item.action?.callback ?? (() => { });
                 break;
             case 'select':
-                let selectElement: HTMLSelectElement = document.createElement('select');
+                const selectElement: HTMLSelectElement = document.createElement('select');
                 selectElement.className = "b3-select fn__flex-center fn__size200";
-                let options = item?.options ?? {};
-                for (let val in options) {
-                    let optionElement = document.createElement('option');
-                    let text = options[val];
+                const options = item?.options ?? {};
+                for (const val in options) {
+                    const optionElement = document.createElement('option');
+                    const text = options[val];
                     optionElement.value = val;
                     optionElement.text = text;
                     selectElement.appendChild(optionElement);
                 }
-                selectElement.value = item.value;
+                selectElement.value = item.value as string;
                 selectElement.onchange = item.action?.callback ?? (() => { });
                 itemElement = selectElement;
                 break;
             case 'slider':
-                let sliderElement: HTMLInputElement = document.createElement('input');
+                const sliderElement: HTMLInputElement = document.createElement('input');
                 sliderElement.type = 'range';
                 sliderElement.className = 'b3-slider fn__size200 b3-tooltips b3-tooltips__n';
                 sliderElement.ariaLabel = item.value;
@@ -332,7 +333,7 @@ export class SettingUtils {
                 itemElement = sliderElement;
                 break;
             case 'textinput':
-                let textInputElement: HTMLInputElement = document.createElement('input');
+                const textInputElement: HTMLInputElement = document.createElement('input');
                 textInputElement.className = 'b3-text-field fn__flex-center fn__size200';
                 textInputElement.value = item.value;
                 textInputElement.onchange = item.action?.callback ?? (() => { });
@@ -340,14 +341,14 @@ export class SettingUtils {
                 textInputElement.addEventListener('keydown', preventEnterConfirm);
                 break;
             case 'textarea':
-                let textareaElement: HTMLTextAreaElement = document.createElement('textarea');
+                const textareaElement: HTMLTextAreaElement = document.createElement('textarea');
                 textareaElement.className = "b3-text-field fn__block";
                 textareaElement.value = item.value;
                 textareaElement.onchange = item.action?.callback ?? (() => { });
                 itemElement = textareaElement;
                 break;
             case 'number':
-                let numberElement: HTMLInputElement = document.createElement('input');
+                const numberElement: HTMLInputElement = document.createElement('input');
                 numberElement.type = 'number';
                 numberElement.className = 'b3-text-field fn__flex-center fn__size200';
                 numberElement.value = item.value;
@@ -355,14 +356,14 @@ export class SettingUtils {
                 numberElement.addEventListener('keydown', preventEnterConfirm);
                 break;
             case 'button':
-                let buttonElement: HTMLButtonElement = document.createElement('button');
+                const buttonElement: HTMLButtonElement = document.createElement('button');
                 buttonElement.className = "b3-button b3-button--outline fn__flex-center fn__size200";
                 buttonElement.innerText = item.button?.label ?? 'Button';
                 buttonElement.onclick = item.button?.callback ?? (() => { });
                 itemElement = buttonElement;
                 break;
             case 'hint':
-                let hintElement: HTMLElement = document.createElement('div');
+                const hintElement: HTMLElement = document.createElement('div');
                 hintElement.className = 'b3-label fn__flex-center';
                 itemElement = hintElement;
                 break;
@@ -377,21 +378,21 @@ export class SettingUtils {
      */
     getElement(key: string) {
         // let item = this.settings.get(key);
-        let element = this.elements.get(key) as any;
+        const element = this.elements.get(key) ;
         return element;
     }
 
     private updateValueFromElement(key: string) {
-        let item = this.settings.get(key);
+        const item = this.settings.get(key);
         if (item.type === 'button') return;
-        let element = this.elements.get(key) as any;
+        const element = this.elements.get(key);
         item.value = item.getEleVal(element);
     }
 
     private updateElementFromValue(key: string) {
-        let item = this.settings.get(key);
+        const item = this.settings.get(key);
         if (item.type === 'button') return;
-        let element = this.elements.get(key) as any;
+        const element = this.elements.get(key);
         item.setEleVal(element, item.value);
     }
 }

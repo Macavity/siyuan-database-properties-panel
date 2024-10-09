@@ -98,7 +98,7 @@ export default defineConfig({
                                     './README*.md',
                                     './plugin.json'
                                 ]);
-                                for (let file of files) {
+                                for (const file of files) {
                                     this.addWatchFile(file);
                                 }
                             }
