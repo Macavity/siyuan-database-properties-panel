@@ -52,10 +52,6 @@ jobs:
       - name: Build for production
         run: pnpm build
 
-      # Build for production, 这一步会生成一个 package.zip
-      - name: Build for production
-        run: pnpm build
-
       - name: Release
         uses: ncipollo/release-action@v1
         with:
