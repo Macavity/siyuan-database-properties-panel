@@ -1,16 +1,17 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, setContext } from "svelte";
     import { getAttributeViewKeys } from "@/api";
-    import AttributeViewPanel from "./libs/components/attribute-view-panel.svelte";
-    // import { I18N } from "siyuan";
+    import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
+    import type { I18N } from "siyuan";
 
-    // export let i18n: I18N;
+    export let i18n: I18N;
     export let blockId = "";
-    //export let showBuiltInAttributes: boolean = false;
     export let showDatabaseAttributes: boolean = false;
     export let showPrimaryKey: boolean = false;
 
     let avData = []
+
+    setContext("i18n", i18n);
 
     onMount(async () => {
         if(showDatabaseAttributes){

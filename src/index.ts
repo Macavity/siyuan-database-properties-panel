@@ -7,7 +7,7 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
-import PluginPanel from "@/plugin-panel.svelte";
+import PluginPanel from "@/PluginPanel.svelte";
 
 import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
@@ -152,6 +152,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     private protyleLoadedListener(event: TEventLoadedProtyle) {
         const openProtyle = event.detail.protyle;
+        console.log('plugin loaded protyle')
 
         if(!openProtyle.block.id){
             return;
@@ -189,7 +190,6 @@ export default class DatabasePropertiesPanel extends Plugin {
             props: {
                 showDatabaseAttributes: this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.ShowDatabaseAttributes),
                 showPrimaryKey: this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.ShowPrimaryKey),
-                // showBuiltInAttributes: this.settingUtils.get(DatabasePropertiesPanelConfig.ShowBuiltInAttributes),
                 i18n: this.i18n,
                 blockId,
             }

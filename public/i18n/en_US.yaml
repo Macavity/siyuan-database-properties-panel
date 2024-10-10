@@ -1,8 +1,7 @@
-{
-    "configShowBuiltInPropertiesTitle": "Show built-in properties",
-    "configShowBuiltInPropertiesDesc": "Show built-in properties <b>always</b> in the attribute panel",
-    "configShowPrimaryKeyTitle": "Show primary key",
-    "configShowPrimaryKeyDesc": "Show primary key in the attribute panel, which is usally the same as the page title.",
-    "configShowDatabasePropertiesTitle": "Show database properties",
-    "configShowDatabasePropertiesDesc": "Show database properties <b>always</b> in the attribute panel"
-}
+---
+configShowBuiltInPropertiesTitle: "Show built-in properties"
+configShowBuiltInPropertiesDesc: "Show built-in properties <b>always</b> in the attribute panel"
+configShowPrimaryKeyTitle: "Show primary key"
+configShowPrimaryKeyDesc: "Show primary key in the attribute panel, which is usually the same as the page title."
+configShowDatabasePropertiesTitle: "Show database properties"
+configShowDatabasePropertiesDesc: "Show database properties <b>always</b> in the attribute panel"

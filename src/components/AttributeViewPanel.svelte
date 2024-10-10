@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { AttributeView } from "@/types/AttributeView";
-    import { escapeAttr, genAVValueHTML, getColIconByType, unicode2Emoji } from "../siyuan-utils";
+    import { escapeAttr, genAVValueHTML, getColIconByType, unicode2Emoji } from "@/libs/siyuan-utils";
 
     export let avData: AttributeView[];
     export let showPrimaryKey: boolean = false;

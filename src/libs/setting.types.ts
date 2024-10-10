@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Copyright (c) 2024 by frostime. All Rights Reserved.
  * @Author       : frostime
@@ -11,7 +12,6 @@ type TSettingItemType = "checkbox" | "select" | "textinput" | "textarea" | "numb
 interface ISettingItemCore {
     type: TSettingItemType;
     key: string;
-    // eslint-disable-next-line
     value: any;
     placeholder?: string;
     slider?: {
