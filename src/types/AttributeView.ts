@@ -1,9 +1,9 @@
-import { TAVCol } from "siyuan";
+import { ExtendedTAVCol } from "@/types/siyuan.types";
 
 export interface AttributeView {
     keyValues: {
         key: {
-            type: TAVCol,
+            type: ExtendedTAVCol,
             name: string,
             icon: string,
             id: string,

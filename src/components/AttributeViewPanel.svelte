@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AttributeView } from "@/types/attribute-view";
+    import type { AttributeView } from "@/types/AttributeView";
     import { escapeAttr, genAVValueHTML, getColIconByType, unicode2Emoji } from "../siyuan-utils";
 
     export let avData: AttributeView[];

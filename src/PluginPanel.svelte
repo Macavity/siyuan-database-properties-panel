@@ -2,9 +2,9 @@
     import { onMount } from "svelte";
     import { getAttributeViewKeys } from "@/api";
     import AttributeViewPanel from "./libs/components/attribute-view-panel.svelte";
-    import { I18N } from "siyuan";
+    // import { I18N } from "siyuan";
 
-    export let i18n: I18N;
+    // export let i18n: I18N;
     export let blockId = "";
     //export let showBuiltInAttributes: boolean = false;
     export let showDatabaseAttributes: boolean = false;
