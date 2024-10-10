@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable svelte/no-at-html-tags */
     import type { AttributeView } from "@/types/AttributeView";
     import { escapeAttr, genAVValueHTML, getColIconByType } from "@/libs/siyuan-utils";
 
@@ -23,7 +24,7 @@
             <div class="block__icons av__row" data-col-id="{item.key.id}">
                 <div class="block__icon" draggable="true"><svg><use xlink:href="#iconDrag"></use></svg></div>
                 <div class="block__logo ariaLabel fn__pointer" data-type="editCol" data-position="parentW" aria-label="{escapeAttr(item.key.name)}">
-                        <svg class="block__logoicon"><use xlink:href="#{getColIconByType(item.key.type)}"></use></svg>
+                    <svg class="block__logoicon"><use xlink:href="#{getColIconByType(item.key.type)}"></use></svg>
                     <span>{item.key.name}</span>
                 </div>
                 <div data-av-id={table.avID}
