@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Copyright (c) 2024 by frostime. All Rights Reserved.
  * @Author       : frostime
@@ -37,7 +38,7 @@ interface ISettingUtilsItem extends ISettingItem {
     action?: {
         callback: () => void;
     }
-    createElement?: (currentVal: any) => HTMLElement;
-    getEleVal?: (ele: HTMLElement) => any;
-    setEleVal?: (ele: HTMLElement, val: any) => void;
+    createElement?: (currentVal: unknown) => HTMLElement;
+    getEleVal?: (ele: HTMLElement) => unknown;
+    setEleVal?: (ele: HTMLElement, val: unknown) => void;
 }

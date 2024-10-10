@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { defineConfig, loadEnv } from "vite"
+import { defineConfig /*, loadEnv */ } from "vite"
 import minimist from "minimist"
 import { viteStaticCopy } from "vite-plugin-static-copy"
 import livereload from "rollup-plugin-livereload"
@@ -98,7 +98,7 @@ export default defineConfig({
                                     './README*.md',
                                     './plugin.json'
                                 ]);
-                                for (let file of files) {
+                                for (const file of files) {
                                     this.addWatchFile(file);
                                 }
                             }

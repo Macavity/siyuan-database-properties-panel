@@ -91,16 +91,22 @@ type doOperation = {
 
 interface Window {
     siyuan: {
-        config: any;
-        notebooks: any;
-        menus: any;
-        dialogs: any;
-        blockPanels: any;
-        storage: any;
-        user: any;
-        ws: any;
-        languages: any;
-        emojis: any;
+        config: never;
+        notebooks: never;
+        menus: never;
+        dialogs: never;
+        blockPanels: never;
+        storage: never;
+        user: never;
+        ws: never;
+        languages: {
+            database: string,
+            openBy: string,
+            format: string,
+            addAttr: string,
+            untitled: string
+        };
+        emojis: never;
     };
-    Lute: any;
+    Lute: never;
 }

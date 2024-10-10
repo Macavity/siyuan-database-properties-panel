@@ -1,12 +1,13 @@
-name: Create Release on Tag Push
+name: Build
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -50,17 +51,8 @@ jobs:
 
       # Build for production, 这一步会生成一个 package.zip
       - name: Build for production
-        run: pnpm build
+        run: pnpm eslint
 
       # Build for production, 这一步会生成一个 package.zip
       - name: Build for production
         run: pnpm build
-
-      - name: Release
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifactErrorsFailBuild: true
-          artifacts: "package.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: true
