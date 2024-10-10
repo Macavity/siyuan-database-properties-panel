@@ -1,0 +1,8 @@
+{
+  "configShowBuiltInPropertiesTitle": "显示内置属性",
+  "configShowBuiltInPropertiesDesc": "在属性面板中<b>始终</b>显示内置属性",
+  "configShowPrimaryKeyTitle": "显示主键",
+  "configShowPrimaryKeyDesc": "在属性面板中显示主键，通常与页面标题相同。",
+  "configShowDatabasePropertiesTitle": "显示数据库属性",
+  "configShowDatabasePropertiesDesc": "在属性面板中<b>始终</b>显示数据库属性"
+}
