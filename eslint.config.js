@@ -34,6 +34,13 @@ export default [
         },
     },
     {
-        ignores: ["src/libs/siyuan-utils.ts", "vue/**", "scripts/**", "dev/**", "yaml-plugin.js"],
+        ignores: [
+            "src/libs/siyuan-utils.ts",
+            "vue/**",
+            "scripts/**",
+            "dev/**",
+            "yaml-plugin.js",
+            "dist/**"
+        ],
     }
 ];
