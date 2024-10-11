@@ -1,24 +1,14 @@
 <script lang="ts">
-    import { onMount, setContext } from "svelte";
-    import { getAttributeViewKeys } from "@/api";
+    import { setContext } from "svelte";
     import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
     import type { I18N } from "siyuan";
 
     export let i18n: I18N;
-    export let blockId = "";
-    export let showDatabaseAttributes: boolean = false;
     export let showPrimaryKey: boolean = false;
 
-    let avData = []
+    export let avData = [];
 
     setContext("i18n", i18n);
-
-    onMount(async () => {
-        if(showDatabaseAttributes){
-            avData = await getAttributeViewKeys(blockId);
-            console.log('getAttributeViewKeys', avData);
-        }
-    });
 </script>
 
 <div class="plugin-panel">
