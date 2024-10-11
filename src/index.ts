@@ -19,7 +19,7 @@ const STORAGE_NAME = "menu-config";
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper"
 const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
 
-type TEventLoadedProtyle = CustomEvent<IEventBusMap['loaded-protyle-static']>;
+type TEventLoadedProtyle = CustomEvent<IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]>;
 type TEventSwitchProtyle = CustomEvent<IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]>;
 
 enum DatabasePropertiesPanelConfig {
