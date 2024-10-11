@@ -5,10 +5,7 @@ import dayjs from "dayjs";
 import { ExtendedTAVCol } from "@/types/siyuan.types";
 
 /**
- * These functions are direct copies of the original functions from the SiYuan source code.
- */
-
-/**
+ * This function is a direct copy of the original source code.
  * @source app/src/util/escape.ts
  * @param html
  */
@@ -62,10 +59,10 @@ export const getColIconByType = (type: ExtendedTAVCol) => {
 };
 
 /**
+ * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
  * @source app/src/protyle/render/av/blockAttr.ts
- * @param value
  */
-export const genAVValueHTML = (value: IAVCellValue) => {
+const genAVValueHTML = (value: IAVCellValue) => {
     let html = "";
     switch (value.type) {
         case "block":
@@ -75,7 +72,10 @@ export const genAVValueHTML = (value: IAVCellValue) => {
             html = `<textarea style="resize: vertical" rows="${value.text.content.split("\n").length}" class="b3-text-field b3-text-field--text fn__flex-1">${value.text.content}</textarea>`;
             break;
         case "number":
-            html = `<input value="${value.number.isNotEmpty ? value.number.content : ""}" type="number" class="b3-text-field b3-text-field--text fn__flex-1">
+            html = `
+            <input value="${value.number.isNotEmpty ? value.number.content : ""}" 
+                    type="number" 
+                    class="b3-text-field b3-text-field--text fn__flex-1">
 <span class="fn__space"></span><span class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips" aria-label="${window.siyuan.languages.format}">${value.number.formattedContent}</span><span class="fn__space"></span>`;
             break;
         case "mSelect":
@@ -160,6 +160,10 @@ export const genAVValueHTML = (value: IAVCellValue) => {
     return html;
 };
 
+/**
+ * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
+ * @source app/src/protyle/render/av/blockAttr.ts
+ */
 const genAVRollupHTML = (value: IAVCellValue) => {
     let html = "";
     switch (value.type) {
