@@ -3,7 +3,7 @@ import {
     getFrontend,
     getBackend,
     IModel,
-    IEventBusMap
+    IEventBusMap, IProtyle
 } from "siyuan";
 import "@/index.scss";
 
@@ -11,13 +11,16 @@ import PluginPanel from "@/PluginPanel.svelte";
 
 import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
+import { getAttributeViewKeys } from "@/api";
+import { AttributeView } from "./types/AttributeView";
 
 const STORAGE_NAME = "menu-config";
 
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper"
-const PANEL_PARENT_CLASS_SELECTOR = "."+PANEL_PARENT_CLASS;
+const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
 
-type TEventLoadedProtyle = CustomEvent<IEventBusMap['loaded-protyle-static']>;
+type TEventLoadedProtyle = CustomEvent<IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]>;
+type TEventSwitchProtyle = CustomEvent<IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]>;
 
 enum DatabasePropertiesPanelConfig {
     ShowPrimaryKey = "showPrimaryKey",
@@ -29,9 +32,10 @@ export default class DatabasePropertiesPanel extends Plugin {
     customTab: () => IModel;
     private settingUtils: SettingUtils;
     boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
+    boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
 
     async onload() {
-        this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
+        this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
         console.log("onload");
 
         // const frontEnd = getFrontend();
@@ -41,7 +45,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         this.initSlashCommand()
     }
 
-    initSettings(){
+    initSettings() {
         this.settingUtils = new SettingUtils({
             plugin: this, name: STORAGE_NAME
         });
@@ -83,7 +87,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         }
     }
 
-    initSlashCommand(){
+    initSlashCommand() {
         /**
          * TODO Add Widget which adds panel manually if it is globally disabled.
          */
@@ -142,45 +146,68 @@ export default class DatabasePropertiesPanel extends Plugin {
         );
 
         this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+        this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
     }
 
     async onunload() {
-        console.log("onunload");
+        console.debug("onunload");
         this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+        this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
         document.querySelector(PANEL_PARENT_CLASS_SELECTOR)?.remove();
     }
 
+    private protyleSwitchListener(event: TEventSwitchProtyle) {
+        console.log('plugin switch protyle');
+        this.renderPanel(event.detail.protyle);
+    }
+
     private protyleLoadedListener(event: TEventLoadedProtyle) {
-        const openProtyle = event.detail.protyle;
         console.log('plugin loaded protyle')
 
-        if(!openProtyle.block.id){
-            return;
-        }
-        const blockId = openProtyle.block.id;
-        console.log({ openProtyle })
+        this.renderPanel(event.detail.protyle);
 
+    }
+
+    private findProtyleTitle(nodeId) {
         const parentNode = document.querySelector(
-            `div[data-node-id="${blockId}"].protyle-title`
+            `div[data-node-id="${nodeId}"].protyle-title`
         );
 
-        if(!parentNode){
-            console.log('No parent node found');
+        if (!parentNode) {
+            console.log('No title node found', {nodeId});
             return;
         }
 
-        const protyleAttrElement = parentNode.querySelector("div.protyle-attr");
-        const panelWrapper = parentNode.querySelector(PANEL_PARENT_CLASS_SELECTOR);
+        return parentNode;
+    }
 
-        if(!protyleAttrElement || !protyleAttrElement.firstChild){
+    private async renderPanel(openProtyle: IProtyle) {
+
+        if (!openProtyle.block.id) {
+            return;
+        }
+        const blockId = openProtyle.block.rootID;
+
+        console.log({openProtyle})
+
+        const titleNode = this.findProtyleTitle(blockId);
+        const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
+
+        if (!protyleAttrElement || !protyleAttrElement.firstChild) {
             console.log("No protyle-attr element found -> database panel hidden");
             return;
         }
 
+        const showDatabaseAttributes = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.ShowDatabaseAttributes);
+        let avData = [] as AttributeView[];
+
+        if (showDatabaseAttributes) {
+            avData = await getAttributeViewKeys(blockId);
+        }
+
+        const panelWrapper = titleNode.querySelector(PANEL_PARENT_CLASS_SELECTOR);
         if(panelWrapper){
-            // panel is already present.
-            console.log('panel already present');
-            return;
+            panelWrapper.remove();
         }
 
         const tabDiv = document.createElement(`div`);
@@ -188,13 +215,13 @@ export default class DatabasePropertiesPanel extends Plugin {
         new PluginPanel({
             target: tabDiv,
             props: {
-                showDatabaseAttributes: this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.ShowDatabaseAttributes),
                 showPrimaryKey: this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.ShowPrimaryKey),
                 i18n: this.i18n,
-                blockId,
+                avData,
             }
         });
         protyleAttrElement.after(tabDiv);
+
     }
 
     uninstall() {
