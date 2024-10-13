@@ -21,7 +21,7 @@ class LoggerService {
   }
 
   private shouldLog(level: LogLevel): boolean {
-    return level <= this.verbosity;
+    return this.verbosity !== LogLevel.OFF && level >= this.verbosity;
   }
 
   debug(...args: unknown[]) {
@@ -57,5 +57,4 @@ class LoggerService {
 
 const logLevel =
   process.env.NODE_ENV === "production" ? LogLevel.OFF : LogLevel.DEBUG;
-console.log({ logLevel, NODE_ENV: process.env.NODE_ENV });
 export const Logger = new LoggerService(logLevel);

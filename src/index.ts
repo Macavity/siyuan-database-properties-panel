@@ -46,9 +46,6 @@ export default class DatabasePropertiesPanel extends Plugin {
   async onload() {
     this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
 
-    // const frontEnd = getFrontend();
-    // this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
-
     this.initSettings();
     this.initSlashCommand();
   }
@@ -312,7 +309,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         dsn: process.env.SENTRY_DSN,
         environment: process.env.NODE_ENV || "development",
         maxBreadcrumbs: 50,
-        debug: true,
+        debug: false,
         release: process.env.PLUGIN_VERSION,
         beforeSend(event) {
           if (event.exception) {
@@ -334,6 +331,20 @@ export default class DatabasePropertiesPanel extends Plugin {
           }
           return event;
         },
+      });
+      if (window.siyuan.user.userId) {
+        Sentry.setUser({
+          id: window.siyuan.user.userId,
+        });
+      }
+
+      const frontend = getFrontend();
+      const backend = getBackend();
+
+      Sentry.setContext("SiYuan", {
+        frontend,
+        backend,
+        kernelVersion: window.siyuan.config?.system?.kernelVersion,
       });
     }
   }

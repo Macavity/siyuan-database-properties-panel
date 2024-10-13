@@ -123,6 +123,9 @@ type doOperation = {
 interface Window {
   siyuan: {
     config: {
+      system: {
+        kernelVersion: string;
+      };
       editor: {
         displayBookmarkIcon: boolean;
         fullWidth: boolean;
@@ -133,7 +136,9 @@ interface Window {
     dialogs: never;
     blockPanels: never;
     storage: never;
-    user: never;
+    user: {
+      userId: string;
+    };
     ws: never;
     languages: {
       database: string;
