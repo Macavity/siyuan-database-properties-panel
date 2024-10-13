@@ -16,6 +16,7 @@ import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
 import { Logger } from "./libs/logger";
+import { getPadding, setPadding } from "./libs/siyuan-utils";
 
 const STORAGE_NAME = "menu-config";
 
@@ -228,21 +229,29 @@ export default class DatabasePropertiesPanel extends Plugin {
     this.renderPanel(event.detail.protyle);
   }
 
-  private findProtyleTitle(nodeId) {
-    const parentNode = document.querySelector(
+  private getProtyleTopNode(nodeId) {
+    const titleNode = document.querySelector(
       `div[data-node-id="${nodeId}"].protyle-title`
     );
 
-    if (!parentNode) {
-      Logger.log("No title node found", { nodeId });
-      return;
+    if (!titleNode) {
+      Logger.debug("No title node found", { nodeId });
+      return false;
     }
 
-    return parentNode;
+    const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
+    if (!protyleAttrElement || !protyleAttrElement.firstChild) {
+      Logger.debug("No protyle-attr element found", { nodeId });
+      return false;
+    }
+
+    const topNode = titleNode.closest(".protyle-top");
+
+    return topNode;
   }
 
   private async renderPanel(openProtyle: IProtyle) {
-    if (!openProtyle.block.id) {
+    if (!openProtyle.block.rootID) {
       return;
     }
     const blockId = openProtyle.block.rootID;
@@ -252,16 +261,9 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     Logger.debug({ openProtyle });
 
-    const titleNode = this.findProtyleTitle(blockId);
-    if (!titleNode) {
-      Logger.info("No title node found -> database panel hidden");
-      return;
-    }
-
-    const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
-
-    if (!protyleAttrElement || !protyleAttrElement.firstChild) {
-      Logger.info("No protyle-attr element found -> database panel hidden");
+    const topNode = this.getProtyleTopNode(blockId);
+    if (!topNode) {
+      Logger.debug("=> database panel hidden");
       return;
     }
 
@@ -271,7 +273,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       avData = await getAttributeViewKeys(blockId);
     }
 
-    const panelWrapper = titleNode.querySelector(PANEL_PARENT_CLASS_SELECTOR);
+    const panelWrapper = document.querySelector(PANEL_PARENT_CLASS_SELECTOR);
     if (panelWrapper) {
       panelWrapper.remove();
     }
@@ -280,6 +282,9 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const tabDiv = document.createElement(`div`);
     tabDiv.className = PANEL_PARENT_CLASS;
+    const padding = getPadding(openProtyle);
+    tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
+
     new PluginPanel({
       target: tabDiv,
       props: {
@@ -293,7 +298,8 @@ export default class DatabasePropertiesPanel extends Plugin {
         avData,
       },
     });
-    protyleAttrElement.after(tabDiv);
+
+    topNode.after(tabDiv);
   }
 
   private initErrorReporting() {
