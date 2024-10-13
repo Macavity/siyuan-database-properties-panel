@@ -23,6 +23,7 @@
   {#each avData as table}
     {#each getKeyValues(table.keyValues) as item}
       <div class="block__icons av__row" data-col-id={item.key.id}>
+        <!--
         <div class="block__icon" draggable="true">
           <svg><use xlink:href="#iconDrag"></use></svg>
         </div>
