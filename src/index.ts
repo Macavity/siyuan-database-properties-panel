@@ -33,6 +33,7 @@ enum DatabasePropertiesPanelConfig {
   ShowPrimaryKey = "showPrimaryKey",
   ShowDatabaseAttributes = "showDatabaseAttributes",
   AllowErrorReporting = "allowErrorReporting",
+  ShowEmptyAttributes = "showEmptyAttributes",
 }
 
 export default class DatabasePropertiesPanel extends Plugin {
@@ -51,29 +52,17 @@ export default class DatabasePropertiesPanel extends Plugin {
     this.initSlashCommand();
   }
 
+  private changeCheckboxSetting(key: string): () => void {
+    return () => {
+      const value = !this.settingUtils.get(key);
+      this.settingUtils.set(key, value);
+    };
+  }
+
   initSettings() {
     this.settingUtils = new SettingUtils({
       plugin: this,
       name: STORAGE_NAME,
-    });
-
-    this.settingUtils.addItem({
-      key: DatabasePropertiesPanelConfig.ShowPrimaryKey,
-      value: false,
-      type: "checkbox",
-      title: this.i18n.configShowPrimaryKeyTitle,
-      description: this.i18n.configShowPrimaryKeyDesc,
-      action: {
-        callback: () => {
-          const value = !this.settingUtils.get(
-            DatabasePropertiesPanelConfig.ShowPrimaryKey
-          );
-          this.settingUtils.set(
-            DatabasePropertiesPanelConfig.ShowPrimaryKey,
-            value
-          );
-        },
-      },
     });
 
     this.settingUtils.addItem({
@@ -84,12 +73,38 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowDatabasePropertiesDesc,
       action: {
         callback: () => {
-          const value = !this.settingUtils.get(
+          this.changeCheckboxSetting(
             DatabasePropertiesPanelConfig.ShowDatabaseAttributes
           );
-          this.settingUtils.set(
-            DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
-            value
+        },
+      },
+    });
+
+    this.settingUtils.addItem({
+      key: DatabasePropertiesPanelConfig.ShowPrimaryKey,
+      value: false,
+      type: "checkbox",
+      title: this.i18n.configShowPrimaryKeyTitle,
+      description: this.i18n.configShowPrimaryKeyDesc,
+      action: {
+        callback: () => {
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowPrimaryKey
+          );
+        },
+      },
+    });
+
+    this.settingUtils.addItem({
+      key: DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+      value: false,
+      type: "checkbox",
+      title: this.i18n.configShowEmptyPropertiesTitle,
+      description: this.i18n.configShowEmptyPropertiesDesc,
+      action: {
+        callback: () => {
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowEmptyAttributes
           );
         },
       },
@@ -103,12 +118,8 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowErrorReportingDesc,
       action: {
         callback: () => {
-          const value = !this.settingUtils.get(
+          this.changeCheckboxSetting(
             DatabasePropertiesPanelConfig.AllowErrorReporting
-          );
-          this.settingUtils.set(
-            DatabasePropertiesPanelConfig.AllowErrorReporting,
-            value
           );
         },
       },
@@ -175,11 +186,13 @@ export default class DatabasePropertiesPanel extends Plugin {
     await this.settingUtils.load();
     Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-    Logger.debug(
+    Logger.info(
       `Database Properties Panel Config:
 - Version: ${process.env.PLUGIN_VERSION}
+- Show DB: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowDatabaseAttributes)}
 - Show Primary: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey)}
-- Show DB: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowDatabaseAttributes)}`
+- Allow Error Reporting: ${this.settingUtils.get(DatabasePropertiesPanelConfig.AllowErrorReporting)}
+- Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`
     );
 
     this.eventBus.on(
@@ -272,6 +285,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       props: {
         showPrimaryKey: this.settingUtils.get<boolean>(
           DatabasePropertiesPanelConfig.ShowPrimaryKey
+        ),
+        showEmptyAttributes: this.settingUtils.get<boolean>(
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes
         ),
         i18n: this.i18n,
         avData,

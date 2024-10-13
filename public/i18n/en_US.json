@@ -3,6 +3,8 @@
   "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
   "configShowBuiltInPropertiesTitle": "Show built-in properties",
   "configShowBuiltInPropertiesDesc": "Show built-in properties <b>always</b> in the attribute panel",
+  "configShowEmptyPropertiesTitle": "Show empty properties",
+  "configShowEmptyPropertiesDesc": "(Experimental) Use to hide properties that have no value in the panel. Does not fully work with template properties, which contain html, or numbers, which often have the value \"0\".",
   "configShowPrimaryKeyTitle": "Show primary key",
   "configShowPrimaryKeyDesc": "Show primary key in the attribute panel, which is usually the same as the page title.",
   "configShowDatabasePropertiesTitle": "Show database properties",

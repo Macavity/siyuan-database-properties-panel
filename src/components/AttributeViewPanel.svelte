@@ -3,19 +3,30 @@
   import { escapeAttr, getColIconByType } from "@/libs/siyuan-utils";
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
   import { Logger } from "@/libs/logger";
+  import { isEmpty } from "@/libs/is-empty";
 
   export let avData: AttributeView[];
   export let showPrimaryKey: boolean = false;
+  export let showEmptyAttributes: boolean = false;
 
   $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
-    Logger.debug(keyValues);
-    if (showPrimaryKey) {
-      Logger.debug("showPrimaryKey");
-      return keyValues;
+    let entries = [...keyValues];
+    const hidePrimaryKey = !showPrimaryKey;
+    const hideEmptyAttributes = !showEmptyAttributes;
+
+    if (hidePrimaryKey) {
+      Logger.debug("hide primary key");
+      entries = entries.slice(1);
     }
 
-    Logger.debug("hidePrimaryKey");
-    return keyValues.slice(1);
+    if (hideEmptyAttributes) {
+      Logger.debug("hide empty attributes");
+      entries = entries.filter((item) => !isEmpty(item.values[0]));
+    }
+
+    Logger.debug("filtered attributes", entries);
+
+    return entries;
   };
 </script>
 
@@ -23,7 +34,7 @@
   {#each avData as table}
     {#each getKeyValues(table.keyValues) as item}
       <div class="block__icons av__row" data-col-id={item.key.id}>
-        <div class="block__icon" draggable="true">
+        <!-- <div class="block__icon" draggable="true">
           <svg><use xlink:href="#iconDrag"></use></svg>
         </div>
         -->
