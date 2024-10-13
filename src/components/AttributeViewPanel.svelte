@@ -8,12 +8,13 @@
   export let showPrimaryKey: boolean = false;
 
   $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
+    Logger.debug(keyValues);
     if (showPrimaryKey) {
-      Logger.log("showPrimaryKey");
+      Logger.debug("showPrimaryKey");
       return keyValues;
     }
 
-    Logger.log("hidePrimaryKey");
+    Logger.debug("hidePrimaryKey");
     return keyValues.slice(1);
   };
 </script>
@@ -22,9 +23,10 @@
   {#each avData as table}
     {#each getKeyValues(table.keyValues) as item}
       <div class="block__icons av__row" data-col-id={item.key.id}>
-        <!--<div class="block__icon" draggable="true">
-                    <svg><use xlink:href="#iconDrag"></use></svg>
-                </div>-->
+        <div class="block__icon" draggable="true">
+          <svg><use xlink:href="#iconDrag"></use></svg>
+        </div>
+        -->
         <div
           class="block__logo ariaLabel fn__pointer"
           data-type="editCol"

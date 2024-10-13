@@ -285,11 +285,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       DatabasePropertiesPanelConfig.AllowErrorReporting
     );
 
-    if (allowErrorReporting) {
+    if (allowErrorReporting && process.env.SENTRY_DSN) {
       Sentry.init({
-        dsn:
-          process.env.SENTRY_DSN ||
-          "https://dbf931d87f66b4a49a028092dc40d379@o103906.ingest.us.sentry.io/4508111546482688",
+        dsn: process.env.SENTRY_DSN,
         environment: process.env.NODE_ENV || "development",
         maxBreadcrumbs: 50,
         debug: true,

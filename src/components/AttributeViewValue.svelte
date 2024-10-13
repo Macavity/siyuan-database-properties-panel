@@ -5,7 +5,7 @@
   import MAssetValue from "./ValueTypes/MAssetValue.svelte";
   import DateValue from "./ValueTypes/DateValue.svelte";
   import RelationValue from "./ValueTypes/RelationValue.svelte";
-  import SelectChip from "./ValueTypes/SelectChip.svelte";
+  import MultiSelectValue from "./ValueTypes/MultiSelectValue.svelte";
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
 
@@ -34,9 +34,7 @@
     <span class="fn__space"></span>-->
   <span class="fn__flex-1">{value.number.formattedContent}</span>
 {:else if value.type === "select" || value.type === "mSelect"}
-  {#each value.mSelect as item}
-    <SelectChip color={item.color} content={item.content} />
-  {/each}
+  <MultiSelectValue {value} />
 {:else if value.type === "mAsset"}
   <MAssetValue {value} />
 {:else if value.type === "date"}
