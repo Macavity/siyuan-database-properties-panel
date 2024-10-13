@@ -1,4 +1,6 @@
 {
+  "configAllowErrorReportingTitle": "允许错误报告",
+  "configAllowErrorReportingDesc": "如果您发现插件中的行为出现故障，请在 Github 上创建问题前激活此功能。这样会更容易找到解决方案。",
   "configShowBuiltInPropertiesTitle": "显示内置属性",
   "configShowBuiltInPropertiesDesc": "在属性面板中<b>始终</b>显示内置属性",
   "configShowPrimaryKeyTitle": "显示主键",

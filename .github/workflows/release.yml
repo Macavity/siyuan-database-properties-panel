@@ -13,6 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Environment Variables
+      - name: Set Environment Variable
+        run: |
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> $GITHUB_ENV
+          echo "NODE_ENV=production" >> $GITHUB_ENV
+
       # Install Node.js
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -51,6 +57,14 @@ jobs:
       # Build for production, 这一步会生成一个 package.zip
       - name: Build for production
         run: pnpm build
+
+      - name: Upload source maps to Sentry
+        run: |
+          npx @sentry/cli releases new ${{ github.sha }}
+          npx @sentry/cli releases files ${{ github.sha }} upload-sourcemaps ./dist --rewrite
+          npx @sentry/cli releases finalize ${{ github.sha }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Release
         uses: ncipollo/release-action@v1
