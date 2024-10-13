@@ -291,6 +291,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         environment: process.env.NODE_ENV || "development",
         maxBreadcrumbs: 50,
         debug: true,
+        release: process.env.PLUGIN_VERSION,
         beforeSend(event) {
           if (event.exception) {
             const exception = event.exception.values[0];
