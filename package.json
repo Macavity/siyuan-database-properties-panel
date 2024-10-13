@@ -15,19 +15,21 @@
     "build": "vite build",
     "make-install": "vite build && node --no-warnings ./scripts/make_install.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "@eslint/js": "^9.12.0",
+    "@sentry/browser": "^8.34.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tsconfig/svelte": "^4.0.1",
     "@types/node": "^20.3.0",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
+    "dayjs": "^1.11.13",
     "eslint": "^9.12.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-svelte": "^2.44.1",
     "fast-glob": "^3.2.12",
-    "glob": "^7.2.3",
+    "glob": "^11.0.0",
     "globals": "^15.11.0",
     "js-yaml": "^4.1.0",
     "minimist": "^1.2.8",
@@ -43,9 +45,5 @@
     "vite": "^5.0.0",
     "vite-plugin-static-copy": "^1.0.2",
     "vite-plugin-zip-pack": "^1.0.5"
-  },
-  "dependencies": {
-    "@sentry/browser": "^8.34.0",
-    "dayjs": "^1.11.13"
   }
 }

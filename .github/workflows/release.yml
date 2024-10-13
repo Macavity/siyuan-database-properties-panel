@@ -58,13 +58,13 @@ jobs:
       - name: Build for production
         run: pnpm build
 
-      - name: Upload source maps to Sentry
-        run: |
-          npx @sentry/cli releases new ${{ github.sha }}
-          npx @sentry/cli releases files ${{ github.sha }} upload-sourcemaps ./dist --rewrite
-          npx @sentry/cli releases finalize ${{ github.sha }}
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      # - name: Upload source maps to Sentry
+      #   run: |
+      #     npx @sentry/cli releases new ${{ github.sha }}
+      #     npx @sentry/cli releases files ${{ github.sha }} upload-sourcemaps ./dist --rewrite
+      #     npx @sentry/cli releases finalize ${{ github.sha }}
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Release
         uses: ncipollo/release-action@v1
