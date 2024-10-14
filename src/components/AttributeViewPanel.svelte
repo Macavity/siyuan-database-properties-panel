@@ -16,7 +16,7 @@
 
     if (hidePrimaryKey) {
       Logger.debug("hide primary key");
-      entries = entries.slice(1);
+      entries = entries.filter((item) => item.key.type !== "block");
     }
 
     if (hideEmptyAttributes) {
