@@ -332,7 +332,7 @@ export default class DatabasePropertiesPanel extends Plugin {
           return event;
         },
       });
-      if (window.siyuan.user.userId) {
+      if (window.siyuan.user?.userId) {
         Sentry.setUser({
           id: window.siyuan.user.userId,
         });

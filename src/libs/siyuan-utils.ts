@@ -284,6 +284,7 @@ export const setPadding = (protyle: IProtyle) => {
   };
 };
 
+// app/src/protyle/ui/initUI.ts
 export const getPadding = (protyle: IProtyle) => {
   let right = 16;
   let left = 24;
