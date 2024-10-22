@@ -1,66 +1,13 @@
-// noinspection JSUnreachableSwitchBranches
-
-import { Constants, IAVCellValue, IProtyle } from "siyuan";
-import dayjs from "dayjs";
-import { ExtendedTAVCol } from "@/types/siyuan.types";
-
 /**
- * This function is a direct copy of the original source code.
- * @source app/src/util/escape.ts
- * @param html
+ * These functions are direct copies of not exposed functions from siyuan.
+ * @source app/src/protyle/render/av/blockAttr.ts
  */
-export const escapeAttr = (html: string) => {
-  if (!html) {
-    return html;
-  }
-  return html.replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-};
 
-/**
- * @source app/src/protyle/render/av/col.ts
- * @param type
- */
-export const getColIconByType = (type: ExtendedTAVCol) => {
-  switch (type) {
-    case "text":
-      return "iconAlignLeft";
-    case "block":
-      return "iconKey";
-    case "number":
-      return "iconNumber";
-    case "select":
-      return "iconListItem";
-    case "mSelect":
-      return "iconList";
-    case "relation":
-      return "iconOpen";
-    case "rollup":
-      return "iconSearch";
-    case "date":
-      return "iconCalendar";
-    case "updated":
-    case "created":
-      return "iconClock";
-    case "url":
-      return "iconLink";
-    case "mAsset":
-      return "iconImage";
-    case "email":
-      return "iconEmail";
-    case "phone":
-      return "iconPhone";
-    case "template":
-      return "iconMath";
-    case "checkbox":
-      return "iconCheck";
-    case "lineNumber":
-      return "iconOrderedList";
-  }
-};
+import { IAVCellValue, IProtyle } from "siyuan";
+import { hasClosestBlock } from "../../util/hasClosest";
 
 /**
  * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
- * @source app/src/protyle/render/av/blockAttr.ts
  */
 const genAVValueHTML = (value: IAVCellValue) => {
   let html = "";
@@ -73,10 +20,10 @@ const genAVValueHTML = (value: IAVCellValue) => {
       break;
     case "number":
       html = `
-            <input value="${value.number.isNotEmpty ? value.number.content : ""}" 
-                    type="number" 
-                    class="b3-text-field b3-text-field--text fn__flex-1">
-<span class="fn__space"></span><span class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips" aria-label="${window.siyuan.languages.format}">${value.number.formattedContent}</span><span class="fn__space"></span>`;
+              <input value="${value.number.isNotEmpty ? value.number.content : ""}" 
+                      type="number" 
+                      class="b3-text-field b3-text-field--text fn__flex-1">
+  <span class="fn__space"></span><span class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips" aria-label="${window.siyuan.languages.format}">${value.number.formattedContent}</span><span class="fn__space"></span>`;
       break;
     case "mSelect":
     case "select":
@@ -120,13 +67,13 @@ const genAVValueHTML = (value: IAVCellValue) => {
       break;
     case "url":
       html = `<input value="${value.url.content}" class="b3-text-field b3-text-field--text fn__flex-1">
-<span class="fn__space"></span>
-<a href="${value.url.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconLink"></use></svg></a>`;
+  <span class="fn__space"></span>
+  <a href="${value.url.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconLink"></use></svg></a>`;
       break;
     case "phone":
       html = `<input value="${value.phone.content}" class="b3-text-field b3-text-field--text fn__flex-1">
-<span class="fn__space"></span>
-<a href="tel:${value.phone.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconPhone"></use></svg></a>`;
+  <span class="fn__space"></span>
+  <a href="tel:${value.phone.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconPhone"></use></svg></a>`;
       break;
     case "checkbox":
       html = `<svg class="av__checkbox"><use xlink:href="#icon${value.checkbox.checked ? "Check" : "Uncheck"}"></use></svg>`;
@@ -136,8 +83,8 @@ const genAVValueHTML = (value: IAVCellValue) => {
       break;
     case "email":
       html = `<input value="${value.email.content}" class="b3-text-field b3-text-field--text fn__flex-1">
-<span class="fn__space"></span>
-<a href="mailto:${value.email.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconEmail"></use></svg></a>`;
+  <span class="fn__space"></span>
+  <a href="mailto:${value.email.content}" target="_blank" aria-label="${window.siyuan.languages.openBy}" class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"><svg><use xlink:href="#iconEmail"></use></svg></a>`;
       break;
     case "relation":
       value?.relation?.contents?.forEach((item) => {
@@ -232,96 +179,135 @@ const genAVRollupHTML = (value: IAVCellValue) => {
   return html;
 };
 
-export const isMobile = () => {
-  return document.getElementById("sidebar") ? true : false;
-};
-
-export const setPadding = (protyle: IProtyle) => {
-  if (protyle.options.action.includes(Constants.CB_GET_HISTORY)) {
-    return {
-      width: 0,
-      padding: 0,
-    };
+export const openEdit = (
+  protyle: IProtyle,
+  element: HTMLElement,
+  event: MouseEvent
+) => {
+  let target = event.target as HTMLElement;
+  const blockElement = hasClosestBlock(target);
+  if (!blockElement) {
+    return;
   }
-  const oldLeft = parseInt(protyle.wysiwyg.element.style.paddingLeft);
-  const padding = getPadding(protyle);
-  const left = padding.left;
-  const right = padding.right;
-  if (protyle.options.backlinkData) {
-    protyle.wysiwyg.element.style.padding = `4px ${right}px 4px ${left}px`;
-  } else {
-    protyle.wysiwyg.element.style.padding = `${padding.top}px ${right}px ${padding.bottom}px ${left}px`;
-  }
-  if (protyle.options.render.background) {
-    protyle.background.element
-      .querySelector(".protyle-background__ia")
-      .setAttribute("style", `margin-left:${left}px;margin-right:${right}px`);
-  }
-  if (protyle.options.render.title) {
-    /// #if MOBILE
-    protyle.title.element.style.margin = `16px ${right}px 0 ${left}px`;
-    /// #else
-    protyle.title.element.style.margin = `5px ${right}px 0 ${left}px`;
-    /// #endif
-  }
-  if (window.siyuan.config.editor.displayBookmarkIcon) {
-    const editorAttrElement = document.getElementById("editorAttr");
-    if (editorAttrElement) {
-      editorAttrElement.innerHTML = `.protyle-wysiwyg--attr .b3-tooltips:after { max-width: ${protyle.wysiwyg.element.clientWidth - left - right}px; }`;
-    }
-  }
-  const oldWidth = protyle.wysiwyg.element.getAttribute("data-realwidth");
-  const newWidth =
-    protyle.wysiwyg.element.clientWidth -
-    parseInt(protyle.wysiwyg.element.style.paddingLeft) -
-    parseInt(protyle.wysiwyg.element.style.paddingRight);
-  protyle.wysiwyg.element.setAttribute("data-realwidth", newWidth.toString());
-  return {
-    width: Math.abs(parseInt(oldWidth) - newWidth),
-    padding: Math.abs(
-      oldLeft - parseInt(protyle.wysiwyg.element.style.paddingLeft)
-    ),
-  };
-};
-
-// app/src/protyle/ui/initUI.ts
-export const getPadding = (protyle: IProtyle) => {
-  let right = 16;
-  let left = 24;
-  let bottom = 16;
-  if (protyle.options.typewriterMode) {
-    if (isMobile()) {
-      bottom = window.innerHeight / 5;
-    } else {
-      bottom = protyle.element.clientHeight / 2;
-    }
-  }
-  if (!isMobile()) {
-    let isFullWidth = protyle.wysiwyg.element.getAttribute(
-      Constants.CUSTOM_SY_FULLWIDTH
-    );
-    if (!isFullWidth) {
-      isFullWidth = window.siyuan.config.editor.fullWidth ? "true" : "false";
-    }
-    let padding =
-      (protyle.element.clientWidth - Constants.SIZE_EDITOR_WIDTH) / 2;
-    if (isFullWidth === "false" && padding > 96) {
-      if (padding > Constants.SIZE_EDITOR_WIDTH) {
-        // 超宽屏调整 https://ld246.com/article/1668266637363
-        padding = (protyle.element.clientWidth * 0.382) / 1.382;
+  while (target && !element.isSameNode(target)) {
+    const type = target.getAttribute("data-type");
+    if (
+      target.classList.contains("av__celltext--url") ||
+      target.classList.contains("av__cellassetimg")
+    ) {
+      if (
+        event.type === "contextmenu" ||
+        (!target.dataset.url && target.tagName !== "IMG")
+      ) {
+        let index = 0;
+        Array.from(target.parentElement.children).find((item, i) => {
+          if (item.isSameNode(target)) {
+            index = i;
+            return true;
+          }
+        });
+        editAssetItem({
+          protyle,
+          cellElements: [target.parentElement],
+          blockElement: hasClosestBlock(target) as HTMLElement,
+          content:
+            target.tagName === "IMG"
+              ? target.getAttribute("src")
+              : target.getAttribute("data-url"),
+          type: target.tagName === "IMG" ? "image" : "file",
+          name:
+            target.tagName === "IMG" ? "" : target.getAttribute("data-name"),
+          index,
+          rect: target.getBoundingClientRect(),
+        });
+      } else {
+        if (target.tagName === "IMG") {
+          previewImage(target.getAttribute("src"));
+        } else {
+          openLink(
+            protyle,
+            target.dataset.url,
+            event,
+            event.ctrlKey || event.metaKey
+          );
+        }
       }
-      padding = Math.ceil(padding);
-      left = padding;
-      right = padding;
-    } else if (protyle.element.clientWidth > Constants.SIZE_EDITOR_WIDTH) {
-      left = 96;
-      right = 96;
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "date") {
+      popTextCell(protyle, [target], "date");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "select" || type === "mSelect") {
+      popTextCell(
+        protyle,
+        [target],
+        target.getAttribute("data-type") as TAVCol
+      );
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "mAsset") {
+      element
+        .querySelectorAll('.custom-attr__avvalue[data-type="mAsset"]')
+        .forEach((item) => {
+          item.removeAttribute("data-active");
+        });
+      target.setAttribute("data-active", "true");
+      target.focus();
+      popTextCell(protyle, [target], "mAsset");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "checkbox") {
+      popTextCell(protyle, [target], "checkbox");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "relation") {
+      popTextCell(protyle, [target], "relation");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "template") {
+      popTextCell(protyle, [target], "template");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "rollup") {
+      popTextCell(protyle, [target], "rollup");
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "addColumn") {
+      const rowElements = blockElement.querySelectorAll(".av__row");
+      const addMenu = addCol(
+        protyle,
+        blockElement,
+        rowElements[rowElements.length - 1].getAttribute("data-col-id")
+      );
+      const addRect = target.getBoundingClientRect();
+      addMenu.open({
+        x: addRect.left,
+        y: addRect.bottom,
+        h: addRect.height,
+      });
+      event.stopPropagation();
+      event.preventDefault();
+      break;
+    } else if (type === "editCol") {
+      openMenuPanel({
+        protyle,
+        blockElement,
+        type: "edit",
+        colId: target.parentElement.dataset.colId,
+      });
+      event.stopPropagation();
+      event.preventDefault();
+      break;
     }
+    target = target.parentElement;
   }
-  return {
-    left,
-    right,
-    bottom,
-    top: 16,
-  };
 };

@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { AttributeView } from "@/types/AttributeView";
-  import { escapeAttr, getColIconByType } from "@/libs/siyuan-utils";
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
   import { Logger } from "@/libs/logger";
   import { isEmpty } from "@/libs/is-empty";
+  import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
+  import { getColIconByType } from "@/libs/siyuan/protyle/render/av/col";
 
   export let avData: AttributeView[];
   export let showPrimaryKey: boolean = false;
