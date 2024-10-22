@@ -13,7 +13,8 @@ import vitePluginYamlI18n from "./yaml-plugin";
 const args = minimist(process.argv.slice(2));
 const isWatch = args.watch || args.w || false;
 const devDistDir = "dev";
-const distDir = isWatch ? devDistDir : "dist";
+const isProdBuild = process.env.NODE_ENV === "production";
+const distDir = isProdBuild ? "dist" : devDistDir;
 
 function getPluginVersion(): string {
   const pluginJsonPath = path.resolve(__dirname, "plugin.json");
@@ -21,10 +22,44 @@ function getPluginVersion(): string {
   return pluginJson.version;
 }
 
+console.log("isProdBuild:    ", isProdBuild);
 console.log("isWatch:        ", isWatch);
 console.log("distDir:        ", distDir);
 console.log("NODE_ENV:       ", process.env.NODE_ENV);
 console.log("PLUGIN_VERSION: ", getPluginVersion());
+
+let plugins = [];
+
+if (isWatch) {
+  plugins = [
+    livereload(devDistDir),
+    {
+      //监听静态资源文件
+      name: "watch-external",
+      async buildStart() {
+        const files = await fg([
+          "public/i18n/**",
+          "./README*.md",
+          "./plugin.json",
+        ]);
+        for (const file of files) {
+          this.addWatchFile(file);
+        }
+      },
+    },
+  ]
+}
+
+if(isProdBuild){
+  plugins = [
+    zipPack({
+      inDir: "./dist",
+      outDir: "./",
+      outFileName: "package.zip",
+    }),
+  ]
+}
+
 
 export default defineConfig({
   resolve: {
@@ -80,13 +115,13 @@ export default defineConfig({
     emptyOutDir: false,
 
     // 构建后是否生成 source map 文件
-    sourcemap: isWatch ? "inline" : true,
+    sourcemap: !isProdBuild ? "inline" : true,
 
     // 设置为 false 可以禁用最小化混淆
     // 或是用来指定是应用哪种混淆器
     // boolean | 'terser' | 'esbuild'
     // 不压缩，用于调试
-    minify: !isWatch,
+    minify: isProdBuild,
 
     lib: {
       // Could also be a dictionary or array of multiple entry points
@@ -96,33 +131,7 @@ export default defineConfig({
       formats: ["cjs"],
     },
     rollupOptions: {
-      plugins: [
-        ...(isWatch
-          ? [
-              livereload(devDistDir),
-              {
-                //监听静态资源文件
-                name: "watch-external",
-                async buildStart() {
-                  const files = await fg([
-                    "public/i18n/**",
-                    "./README*.md",
-                    "./plugin.json",
-                  ]);
-                  for (const file of files) {
-                    this.addWatchFile(file);
-                  }
-                },
-              },
-            ]
-          : [
-              zipPack({
-                inDir: "./dist",
-                outDir: "./",
-                outFileName: "package.zip",
-              }),
-            ]),
-      ],
+      plugins,
 
       // make sure to externalize deps that shouldn't be bundled
       // into your library
