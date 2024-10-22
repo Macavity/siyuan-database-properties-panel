@@ -10,7 +10,8 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Recent Changes
 
-- [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - Fix an issue with empty relation values
+- [0.4.4](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.4) - Fix issues with empty asset fields
+- [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - Fix issues with empty relation fields
 - [0.4.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.2) - Fix an issue with guest users
 - [0.4.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.1) - Improve hiding primary keys
 

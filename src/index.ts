@@ -275,7 +275,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       panelWrapper.remove();
     }
 
-    this.initErrorReporting();
+    this.initErrorReporting(avData);
 
     const tabDiv = document.createElement(`div`);
     tabDiv.className = PANEL_PARENT_CLASS;
@@ -299,7 +299,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     topNode.after(tabDiv);
   }
 
-  private initErrorReporting() {
+  private initErrorReporting(avData: AttributeView[]) {
     const allowErrorReporting = this.settingUtils.get<boolean>(
       DatabasePropertiesPanelConfig.AllowErrorReporting
     );
@@ -337,6 +337,20 @@ export default class DatabasePropertiesPanel extends Plugin {
           id: window.siyuan.user.userId,
         });
       }
+
+      Sentry.setContext("Config", {
+        showDatabaseAttributes: this.settingUtils.get(
+          DatabasePropertiesPanelConfig.ShowDatabaseAttributes
+        ),
+        showPrimaryKey: this.settingUtils.get(
+          DatabasePropertiesPanelConfig.ShowPrimaryKey
+        ),
+        showEmptyAttributes: this.settingUtils.get(
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes
+        ),
+      });
+
+      Sentry.setContext("AttributeView", avData);
 
       const frontend = getFrontend();
       const backend = getBackend();
