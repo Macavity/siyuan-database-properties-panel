@@ -8,6 +8,12 @@ The SiYuan Database Properties Panel plugin enhances your SiYuan experience by e
 It's heavily inspired by the now archived and no longer maintained [SiYuan-Attributes-Panel](https://github.com/TransMux/SiYuan-Attributes-Panel/).
 This plugin allows users to view database row attributes directly on the dedicated pages created from those rows.
 
+## Recent Changes
+
+- [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - Fix an issue with empty relation values
+- [0.4.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.2) - Fix an issue with guest users
+- [0.4.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.1) - Improve hiding primary keys
+
 ## Features
 
 - Attribute Display: Automatically display database row attributes on their corresponding pages
