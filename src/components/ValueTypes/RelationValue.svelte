@@ -3,7 +3,7 @@
   import AttributeViewRollup from "./AttributeViewRollup.svelte";
 
   export let value: IAVCellValue;
-  const lastId = value.relation.contents[value.relation.contents.length - 1].id;
+  const lastId = value.relation?.contents ? value.relation.contents[value.relation.contents?.length - 1].id : null;
 </script>
 
 {#if value?.relation?.contents}
