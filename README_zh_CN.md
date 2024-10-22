@@ -9,6 +9,12 @@
 它在很大程度上受到现已归档且不再维护的 [SiYuan-Attributes-Panel](https://github.com/TransMux/SiYuan-Attributes-Panel/) 的启发。
 该插件允许用户直接在根据这些行创建的专用页面上查看数据库行的属性。
 
+## 最近更改
+
+- [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - 修复关系值为空的问题
+- [0.4.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.2) - 修复访客用户问题
+- [0.4.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.1) - 改进隐藏主键的功能
+
 
 ## 功能
 - 属性显示： 在相应页面上自动显示数据库行属性
