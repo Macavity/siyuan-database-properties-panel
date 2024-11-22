@@ -4,6 +4,7 @@
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
   import { Logger } from "@/libs/logger";
   import { isEmpty } from "@/libs/is-empty";
+  import ColumnIcon from "./ColumnIcon.svelte";
 
   export let avData: AttributeView[];
   export let showPrimaryKey: boolean = false;
@@ -38,17 +39,7 @@
           <svg><use xlink:href="#iconDrag"></use></svg>
         </div>
         -->
-        <div
-          class="block__logo ariaLabel fn__pointer"
-          data-type="editCol"
-          data-position="parentW"
-          aria-label={escapeAttr(item.key.name)}
-        >
-          <svg class="block__logoicon">
-            <use xlink:href="#{getColIconByType(item.key.type)}"></use></svg
-          >
-          <span>{item.key.name}</span>
-        </div>
+        <ColumnIcon key={item.key} />
         <div
           data-av-id={table.avID}
           data-col-id={item.values[0].keyID}
