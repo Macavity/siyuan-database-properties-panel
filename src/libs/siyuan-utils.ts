@@ -1,8 +1,7 @@
-// noinspection JSUnreachableSwitchBranches
-
-import { Constants, IAVCellValue, IProtyle } from "siyuan";
+import { type TAVCol, type IProtyle } from "siyuan";
+import { Constants } from "siyuan";
 import dayjs from "dayjs";
-import { ExtendedTAVCol } from "@/types/siyuan.types";
+import { type IAVCellValue } from "@/types/siyuan.types";
 
 /**
  * This function is a direct copy of the original source code.
@@ -20,7 +19,7 @@ export const escapeAttr = (html: string) => {
  * @source app/src/protyle/render/av/col.ts
  * @param type
  */
-export const getColIconByType = (type: ExtendedTAVCol) => {
+export const getColIconByType = (type: TAVCol) => {
   switch (type) {
     case "text":
       return "iconAlignLeft";
