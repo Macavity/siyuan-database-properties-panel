@@ -14,6 +14,7 @@
     "dev-watch": "NODE_ENV=development vite build --watch",
     "update-version": "node --no-warnings ./scripts/update_version.js",
     "build": "vite build",
+    "test": "vitest",
     "make-install": "vite build && node --no-warnings ./scripts/make_install.js"
   },
   "dependencies": {
@@ -21,7 +22,6 @@
     "@sentry/browser": "^8.34.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tsconfig/svelte": "^4.0.1",
-    "@types/node": "^20.3.0",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
     "dayjs": "^1.11.13",
@@ -46,5 +46,14 @@
     "vite": "^5.0.0",
     "vite-plugin-static-copy": "^1.0.2",
     "vite-plugin-zip-pack": "^1.0.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.6",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.16.11",
+    "jest-dom": "^4.0.0",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.5"
   }
 }

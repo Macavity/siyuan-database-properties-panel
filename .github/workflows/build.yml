@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -49,10 +49,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Build for production, 这一步会生成一个 package.zip
-      - name: Build for production
+      - name: Lint
         run: pnpm eslint
 
-      # Build for production, 这一步会生成一个 package.zip
+      - name: Test
+        run: pnpm vitest run
+
       - name: Build for production
         run: pnpm build
