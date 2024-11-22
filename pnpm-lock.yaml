@@ -69,8 +69,8 @@ importers:
         specifier: ^1.63.3
         version: 1.79.5
       siyuan:
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: ^1.0.6
+        version: 1.0.6
       svelte:
         specifier: ^4.2.0
         version: 4.2.19
@@ -1282,8 +1282,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  siyuan@1.0.3:
-    resolution: {integrity: sha512-AbaIcts3BosLyEnxF+Pq+H2z41Qy6UNbr/RIvdleZ9Ay1tN2ZTRIFG7Wo7USZTsXKL4/D0CjUJ9G9FzG1yg+2A==}
+  siyuan@1.0.6:
+    resolution: {integrity: sha512-ogCCzhz0CBr56uIWdd//an58FFw+lJQXsrdOZlR2EMnVGjjvfGTEjNX7+ok49p4+D1ytxSq9oTtlfHCIpGUw7w==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2610,7 +2610,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  siyuan@1.0.3: {}
+  siyuan@1.0.6: {}
 
   source-map-js@1.2.1: {}
 
