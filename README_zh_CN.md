@@ -10,6 +10,7 @@
 
 ## 最近更改
 
+- [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - 添加对列图标的支持
 - [0.4.4](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.4) - 修复资产字段为空的问题
 - [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - 修复关系值为空的问题
 - [0.4.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.2) - 修复访客用户问题
