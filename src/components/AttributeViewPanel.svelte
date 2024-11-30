@@ -3,12 +3,13 @@
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
   import { Logger } from "@/libs/logger";
   import { isEmpty } from "@/libs/is-empty";
-  import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-  import { getColIconByType } from "@/libs/siyuan/protyle/render/av/col";
+  import { getColIconByType } from "siyuan/app/src/protyle/render/av/col";
+  import { escapeAttr } from "@siyuan/app/util/escape";
 
   export let avData: AttributeView[];
   export let showPrimaryKey: boolean = false;
   export let showEmptyAttributes: boolean = false;
+  export let enableDragAndDrop: boolean = false;
 
   $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
     let entries = [...keyValues];
@@ -35,10 +36,11 @@
   {#each avData as table}
     {#each getKeyValues(table.keyValues) as item}
       <div class="block__icons av__row" data-col-id={item.key.id}>
-        <!-- <div class="block__icon" draggable="true">
-          <svg><use xlink:href="#iconDrag"></use></svg>
-        </div>
-        -->
+        {#if enableDragAndDrop}
+          <div class="block__icon" draggable="true">
+            <svg><use xlink:href="#iconDrag"></use></svg>
+          </div>
+        {/if}
         <div
           class="block__logo ariaLabel fn__pointer"
           data-type="editCol"

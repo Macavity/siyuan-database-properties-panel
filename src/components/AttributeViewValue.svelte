@@ -8,8 +8,13 @@
   import MultiSelectValue from "./ValueTypes/MultiSelectValue.svelte";
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
+  import { openEdit } from "@/libs/siyuan/protyle/render/av/blockAttr";
 
   export let value: IAVCellValue;
+
+  $: triggerEditMode = (event: MouseEvent) => {
+    openEdit(value)
+  }
 </script>
 
 {#if value.type === "block"}
@@ -34,7 +39,7 @@
     <span class="fn__space"></span>-->
   <span class="fn__flex-1">{value.number.formattedContent}</span>
 {:else if value.type === "select" || value.type === "mSelect"}
-  <MultiSelectValue {value} />
+  <MultiSelectValue {value} onClick={triggerEditMode} />
 {:else if value.type === "mAsset"}
   <MAssetValue {value} />
 {:else if value.type === "date"}

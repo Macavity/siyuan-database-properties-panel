@@ -3,8 +3,8 @@
  * @source app/src/protyle/ui/initUI.ts
  */
 
-import { Constants, IProtyle } from "siyuan";
-import { isMobile } from "../util/functions";
+import { Constants } from "siyuan/app/src/constants";
+import { isMobile } from "siyuan/app/src/util/functions";
 
 export const getPadding = (protyle: IProtyle) => {
   let right = 16;

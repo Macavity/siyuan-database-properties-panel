@@ -3,6 +3,7 @@ import tseslint from "typescript-eslint";
 import eslintPluginSvelte from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
 import js from "@eslint/js";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default [
     js.configs.recommended,
@@ -20,6 +21,12 @@ export default [
         },
         rules: {
             ...eslintPluginSvelte.configs.recommended.rules,
+            // Disable specific a11y rules
+            'svelte/a11y-click-events-have-key-events': 'off',
+            'svelte/a11y-missing-attribute': 'off',
+            svelte:{
+                'svelte/a11y-click-events-have-key-events': 'off',
+            }
         },
     },
     {
@@ -35,7 +42,7 @@ export default [
     },
     {
         ignores: [
-            "src/libs/siyuan-utils.ts",
+            "src/libs/siyuan/**/*",
             "vue/**",
             "scripts/**",
             "dev/**",

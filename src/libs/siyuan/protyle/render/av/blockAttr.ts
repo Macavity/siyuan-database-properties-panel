@@ -2,9 +2,8 @@
  * These functions are direct copies of not exposed functions from siyuan.
  * @source app/src/protyle/render/av/blockAttr.ts
  */
-
-import { IAVCellValue, IProtyle } from "siyuan";
-import { hasClosestBlock } from "../../util/hasClosest";
+import dayjs from "dayjs";
+import { escapeAttr } from "@siyuan/app/util/escape";
 
 /**
  * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
@@ -199,38 +198,38 @@ export const openEdit = (
         event.type === "contextmenu" ||
         (!target.dataset.url && target.tagName !== "IMG")
       ) {
-        let index = 0;
-        Array.from(target.parentElement.children).find((item, i) => {
-          if (item.isSameNode(target)) {
-            index = i;
-            return true;
-          }
-        });
-        editAssetItem({
-          protyle,
-          cellElements: [target.parentElement],
-          blockElement: hasClosestBlock(target) as HTMLElement,
-          content:
-            target.tagName === "IMG"
-              ? target.getAttribute("src")
-              : target.getAttribute("data-url"),
-          type: target.tagName === "IMG" ? "image" : "file",
-          name:
-            target.tagName === "IMG" ? "" : target.getAttribute("data-name"),
-          index,
-          rect: target.getBoundingClientRect(),
-        });
+        // let index = 0;
+        // Array.from(target.parentElement.children).find((item, i) => {
+        //   if (item.isSameNode(target)) {
+        //     index = i;
+        //     return true;
+        //   }
+        // });
+        // editAssetItem({
+        //   protyle,
+        //   cellElements: [target.parentElement],
+        //   blockElement: hasClosestBlock(target) as HTMLElement,
+        //   content:
+        //     target.tagName === "IMG"
+        //       ? target.getAttribute("src")
+        //       : target.getAttribute("data-url"),
+        //   type: target.tagName === "IMG" ? "image" : "file",
+        //   name:
+        //     target.tagName === "IMG" ? "" : target.getAttribute("data-name"),
+        //   index,
+        //   rect: target.getBoundingClientRect(),
+        // });
       } else {
-        if (target.tagName === "IMG") {
-          previewImage(target.getAttribute("src"));
-        } else {
-          openLink(
-            protyle,
-            target.dataset.url,
-            event,
-            event.ctrlKey || event.metaKey
-          );
-        }
+        // if (target.tagName === "IMG") {
+        //   previewImage(target.getAttribute("src"));
+        // } else {
+        //   openLink(
+        //     protyle,
+        //     target.dataset.url,
+        //     event,
+        //     event.ctrlKey || event.metaKey
+        //   );
+        // }
       }
       event.stopPropagation();
       event.preventDefault();
@@ -282,32 +281,104 @@ export const openEdit = (
       event.preventDefault();
       break;
     } else if (type === "addColumn") {
-      const rowElements = blockElement.querySelectorAll(".av__row");
-      const addMenu = addCol(
-        protyle,
-        blockElement,
-        rowElements[rowElements.length - 1].getAttribute("data-col-id")
-      );
-      const addRect = target.getBoundingClientRect();
-      addMenu.open({
-        x: addRect.left,
-        y: addRect.bottom,
-        h: addRect.height,
-      });
-      event.stopPropagation();
-      event.preventDefault();
-      break;
+      // const rowElements = blockElement.querySelectorAll(".av__row");
+      // const addMenu = addCol(
+      //   protyle,
+      //   blockElement,
+      //   rowElements[rowElements.length - 1].getAttribute("data-col-id")
+      // );
+      // const addRect = target.getBoundingClientRect();
+      // addMenu.open({
+      //   x: addRect.left,
+      //   y: addRect.bottom,
+      //   h: addRect.height,
+      // });
+      // event.stopPropagation();
+      // event.preventDefault();
+      // break;
     } else if (type === "editCol") {
-      openMenuPanel({
-        protyle,
-        blockElement,
-        type: "edit",
-        colId: target.parentElement.dataset.colId,
-      });
-      event.stopPropagation();
-      event.preventDefault();
-      break;
+      // openMenuPanel({
+      //   protyle,
+      //   blockElement,
+      //   type: "edit",
+      //   colId: target.parentElement.dataset.colId,
+      // });
+      // event.stopPropagation();
+      // event.preventDefault();
+      // break;
     }
     target = target.parentElement;
   }
+}
+
+export const cellScrollIntoView = (blockElement: HTMLElement, cellElement: Element, onlyHeight = true) => {
+  const cellRect = cellElement.getBoundingClientRect();
+  if (!onlyHeight) {
+    const avScrollElement = blockElement.querySelector(".av__scroll");
+    if (avScrollElement) {
+      const avScrollRect = avScrollElement.getBoundingClientRect();
+      if (avScrollRect.right < cellRect.right) {
+        avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.right - avScrollRect.right;
+      } else {
+        const rowElement = hasClosestByClassName(cellElement, "av__row");
+        if (rowElement) {
+          const stickyElement = rowElement.querySelector(".av__colsticky");
+          if (stickyElement) {
+            if (!stickyElement.contains(cellElement)) { // https://github.com/siyuan-note/siyuan/issues/12162
+              const stickyRight = stickyElement.getBoundingClientRect().right;
+              if (stickyRight > cellRect.left) {
+                avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.left - stickyRight;
+              }
+            }
+          } else if (avScrollRect.left > cellRect.left) {
+            avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.left - avScrollRect.left;
+          }
+        }
+      }
+    }
+  }
+  /// #if MOBILE
+  const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+  if (contentElement && cellElement.getAttribute("data-dtype") !== "checkbox") {
+    const keyboardToolbarElement = document.getElementById("keyboardToolbar");
+    const keyboardH = parseInt(keyboardToolbarElement.getAttribute("data-keyboardheight")) || (window.outerHeight / 2 - 42);
+    console.log(keyboardH, window.innerHeight, cellRect.bottom);
+    if (cellRect.bottom > window.innerHeight - keyboardH - 42) {
+      contentElement.scrollTop += cellRect.bottom - window.innerHeight + 42 + keyboardH;
+    } else if (cellRect.top < 110) {
+      contentElement.scrollTop -= 110 - cellRect.top;
+    }
+  }
+  /// #else
+  if (!blockElement.querySelector(".av__header")) {
+    // 属性面板
+    return;
+  }
+  const avHeaderRect = blockElement.querySelector(".av__row--header").getBoundingClientRect();
+  if (avHeaderRect.bottom > cellRect.top) {
+    const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+    if (contentElement) {
+      contentElement.scrollTop = contentElement.scrollTop + cellRect.top - avHeaderRect.bottom;
+    }
+  } else {
+    const footerElement = blockElement.querySelector(".av__row--footer");
+    if (footerElement.querySelector(".av__calc--ashow")) {
+      const avFooterRect = footerElement.getBoundingClientRect();
+      if (avFooterRect.top < cellRect.bottom) {
+        const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+        if (contentElement) {
+          contentElement.scrollTop = contentElement.scrollTop + cellRect.bottom - avFooterRect.top;
+        }
+      }
+    } else {
+      const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+      if (contentElement) {
+        const contentRect = contentElement.getBoundingClientRect();
+        if (cellRect.bottom > contentRect.bottom) {
+          contentElement.scrollTop = contentElement.scrollTop + (cellRect.top - contentRect.top - 33);
+        }
+      }
+    }
+  }
+  /// #endif
 };
