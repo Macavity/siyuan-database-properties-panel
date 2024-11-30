@@ -1,4 +1,4 @@
-import { TAVCol } from "@siyuan/petal";
+import { TAVCol } from "siyuan";
 
 export interface AVKey {
   type: TAVCol;

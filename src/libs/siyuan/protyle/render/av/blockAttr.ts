@@ -3,6 +3,14 @@
  * @source app/src/protyle/render/av/blockAttr.ts
  */
 import dayjs from "dayjs";
+import {
+  hasClosestBlock,
+  hasClosestByClassName,
+} from "siyuan-app/app/src/protyle/util/hasClosest";
+import { IProtyle } from "siyuan";
+import { IAVCellValue } from "@/types/siyuan.types";
+import { popTextCell } from "siyuan-app/app/src/protyle/render/av/cell";
+import { TAVCol } from "siyuan";
 import { escapeAttr } from "@siyuan/app/util/escape";
 
 /**
@@ -45,7 +53,7 @@ const genAVValueHTML = (value: IAVCellValue) => {
       html = `<span class="av__celltext" data-value='${JSON.stringify(value[value.type])}'>`;
       if (value[value.type] && value[value.type].isNotEmpty) {
         html += dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
         );
       }
       if (
@@ -144,7 +152,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
     case "date":
       if (value[value.type] && value[value.type].isNotEmpty) {
         html = dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
         );
       }
       if (
@@ -181,7 +189,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
 export const openEdit = (
   protyle: IProtyle,
   element: HTMLElement,
-  event: MouseEvent
+  event: MouseEvent,
 ) => {
   let target = event.target as HTMLElement;
   const blockElement = hasClosestBlock(target);
@@ -243,7 +251,7 @@ export const openEdit = (
       popTextCell(
         protyle,
         [target],
-        target.getAttribute("data-type") as TAVCol
+        target.getAttribute("data-type") as TAVCol,
       );
       event.stopPropagation();
       event.preventDefault();
@@ -309,42 +317,57 @@ export const openEdit = (
     }
     target = target.parentElement;
   }
-}
+};
 
-export const cellScrollIntoView = (blockElement: HTMLElement, cellElement: Element, onlyHeight = true) => {
+export const cellScrollIntoView = (
+  blockElement: HTMLElement,
+  cellElement: Element,
+  onlyHeight = true,
+) => {
   const cellRect = cellElement.getBoundingClientRect();
   if (!onlyHeight) {
     const avScrollElement = blockElement.querySelector(".av__scroll");
     if (avScrollElement) {
       const avScrollRect = avScrollElement.getBoundingClientRect();
       if (avScrollRect.right < cellRect.right) {
-        avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.right - avScrollRect.right;
+        avScrollElement.scrollLeft =
+          avScrollElement.scrollLeft + cellRect.right - avScrollRect.right;
       } else {
         const rowElement = hasClosestByClassName(cellElement, "av__row");
         if (rowElement) {
           const stickyElement = rowElement.querySelector(".av__colsticky");
           if (stickyElement) {
-            if (!stickyElement.contains(cellElement)) { // https://github.com/siyuan-note/siyuan/issues/12162
+            if (!stickyElement.contains(cellElement)) {
+              // https://github.com/siyuan-note/siyuan/issues/12162
               const stickyRight = stickyElement.getBoundingClientRect().right;
               if (stickyRight > cellRect.left) {
-                avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.left - stickyRight;
+                avScrollElement.scrollLeft =
+                  avScrollElement.scrollLeft + cellRect.left - stickyRight;
               }
             }
           } else if (avScrollRect.left > cellRect.left) {
-            avScrollElement.scrollLeft = avScrollElement.scrollLeft + cellRect.left - avScrollRect.left;
+            avScrollElement.scrollLeft =
+              avScrollElement.scrollLeft + cellRect.left - avScrollRect.left;
           }
         }
       }
     }
   }
   /// #if MOBILE
-  const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+  const contentElement = hasClosestByClassName(
+    blockElement,
+    "protyle-content",
+    true,
+  );
   if (contentElement && cellElement.getAttribute("data-dtype") !== "checkbox") {
     const keyboardToolbarElement = document.getElementById("keyboardToolbar");
-    const keyboardH = parseInt(keyboardToolbarElement.getAttribute("data-keyboardheight")) || (window.outerHeight / 2 - 42);
+    const keyboardH =
+      parseInt(keyboardToolbarElement.getAttribute("data-keyboardheight")) ||
+      window.outerHeight / 2 - 42;
     console.log(keyboardH, window.innerHeight, cellRect.bottom);
     if (cellRect.bottom > window.innerHeight - keyboardH - 42) {
-      contentElement.scrollTop += cellRect.bottom - window.innerHeight + 42 + keyboardH;
+      contentElement.scrollTop +=
+        cellRect.bottom - window.innerHeight + 42 + keyboardH;
     } else if (cellRect.top < 110) {
       contentElement.scrollTop -= 110 - cellRect.top;
     }
@@ -354,28 +377,45 @@ export const cellScrollIntoView = (blockElement: HTMLElement, cellElement: Eleme
     // 属性面板
     return;
   }
-  const avHeaderRect = blockElement.querySelector(".av__row--header").getBoundingClientRect();
+  const avHeaderRect = blockElement
+    .querySelector(".av__row--header")
+    .getBoundingClientRect();
   if (avHeaderRect.bottom > cellRect.top) {
-    const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+    const contentElement = hasClosestByClassName(
+      blockElement,
+      "protyle-content",
+      true,
+    );
     if (contentElement) {
-      contentElement.scrollTop = contentElement.scrollTop + cellRect.top - avHeaderRect.bottom;
+      contentElement.scrollTop =
+        contentElement.scrollTop + cellRect.top - avHeaderRect.bottom;
     }
   } else {
     const footerElement = blockElement.querySelector(".av__row--footer");
     if (footerElement.querySelector(".av__calc--ashow")) {
       const avFooterRect = footerElement.getBoundingClientRect();
       if (avFooterRect.top < cellRect.bottom) {
-        const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+        const contentElement = hasClosestByClassName(
+          blockElement,
+          "protyle-content",
+          true,
+        );
         if (contentElement) {
-          contentElement.scrollTop = contentElement.scrollTop + cellRect.bottom - avFooterRect.top;
+          contentElement.scrollTop =
+            contentElement.scrollTop + cellRect.bottom - avFooterRect.top;
         }
       }
     } else {
-      const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
+      const contentElement = hasClosestByClassName(
+        blockElement,
+        "protyle-content",
+        true,
+      );
       if (contentElement) {
         const contentRect = contentElement.getBoundingClientRect();
         if (cellRect.bottom > contentRect.bottom) {
-          contentElement.scrollTop = contentElement.scrollTop + (cellRect.top - contentRect.top - 33);
+          contentElement.scrollTop =
+            contentElement.scrollTop + (cellRect.top - contentRect.top - 33);
         }
       }
     }

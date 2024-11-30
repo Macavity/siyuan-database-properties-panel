@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
-  import type { I18N } from "siyuan";
+  import { I18N } from "@/types/siyuan.types";
 
   export let i18n: I18N;
   export let showPrimaryKey: boolean = false;

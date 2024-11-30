@@ -47,10 +47,7 @@
         "./src/libs/*"
       ],
       "@siyuan/app/*": [
-        "node_modules/siyuan/app/src/*"
-      ],
-      "@siyuan/petal/*": [
-        "node_modules/siyuan-petal/*"
+        "node_modules/siyuan-app/app/src/*"
       ]
     }
   },
@@ -61,8 +58,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.svelte",
-    "node_modules/siyuan/app/src/types/**/*.ts",
-    "node_modules/siyuan-petal/**/*.d.ts"
+    "node_modules/siyuan/**/*.d.ts"
   ],
   "references": [
     {

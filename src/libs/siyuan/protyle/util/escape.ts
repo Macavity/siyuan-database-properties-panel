@@ -4,6 +4,6 @@
  */
 import { escapeAttr as SiyuanEscapeAttr } from "@siyuan/app/util/escape";
 
-function escapeAttr(html: string){
-    return SiyuanEscapeAttr(html)
+export function escapeAttr(html: string) {
+  return SiyuanEscapeAttr(html);
 }

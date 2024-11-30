@@ -3,8 +3,9 @@
  * @source app/src/protyle/ui/initUI.ts
  */
 
-import { Constants } from "siyuan/app/src/constants";
-import { isMobile } from "siyuan/app/src/util/functions";
+import { Constants } from "@siyuan/app/constants";
+import { isMobile } from "@siyuan/app/util/functions";
+import { IProtyle } from "siyuan";
 
 export const getPadding = (protyle: IProtyle) => {
   let right = 16;
@@ -19,7 +20,7 @@ export const getPadding = (protyle: IProtyle) => {
   }
   if (!isMobile()) {
     let isFullWidth = protyle.wysiwyg.element.getAttribute(
-      Constants.CUSTOM_SY_FULLWIDTH
+      Constants.CUSTOM_SY_FULLWIDTH,
     );
     if (!isFullWidth) {
       isFullWidth = window.siyuan.config.editor.fullWidth ? "true" : "false";
@@ -90,7 +91,7 @@ export const setPadding = (protyle: IProtyle) => {
   return {
     width: Math.abs(parseInt(oldWidth) - newWidth),
     padding: Math.abs(
-      oldLeft - parseInt(protyle.wysiwyg.element.style.paddingLeft)
+      oldLeft - parseInt(protyle.wysiwyg.element.style.paddingLeft),
     ),
   };
 };
