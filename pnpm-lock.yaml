@@ -69,8 +69,11 @@ importers:
         specifier: ^1.63.3
         version: 1.79.5
       siyuan:
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: github:Macavity/siyuan#738a9074cfaad9db08fab3b23858d025801e3120
+        version: siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120
+      siyuan-petal:
+        specifier: github:Macavity/petal#chore/update-tavcol
+        version: siyuan@https://codeload.github.com/Macavity/petal/tar.gz/871d216d14d7317d1f52a8e28de0eba7d4d0b865
       svelte:
         specifier: ^4.2.0
         version: 4.2.19
@@ -1282,8 +1285,13 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  siyuan@1.0.3:
-    resolution: {integrity: sha512-AbaIcts3BosLyEnxF+Pq+H2z41Qy6UNbr/RIvdleZ9Ay1tN2ZTRIFG7Wo7USZTsXKL4/D0CjUJ9G9FzG1yg+2A==}
+  siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120:
+    resolution: {tarball: https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120}
+    version: 0.0.0
+
+  siyuan@https://codeload.github.com/Macavity/petal/tar.gz/871d216d14d7317d1f52a8e28de0eba7d4d0b865:
+    resolution: {tarball: https://codeload.github.com/Macavity/petal/tar.gz/871d216d14d7317d1f52a8e28de0eba7d4d0b865}
+    version: 1.0.4
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2610,7 +2618,9 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  siyuan@1.0.3: {}
+  siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120: {}
+
+  siyuan@https://codeload.github.com/Macavity/petal/tar.gz/871d216d14d7317d1f52a8e28de0eba7d4d0b865: {}
 
   source-map-js@1.2.1: {}
 

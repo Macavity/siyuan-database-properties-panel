@@ -65,6 +65,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
+      "@siyuan/app": resolve(__dirname, "node_modules/siyuan/app/src"),
+      "@siyuan/petal": resolve(__dirname, "node_modules/siyuan-petal"),
     },
   },
 
