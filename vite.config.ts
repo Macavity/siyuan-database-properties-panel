@@ -1,5 +1,5 @@
 import path, { resolve } from "path";
-import { defineConfig /*, loadEnv */ } from "vite";
+import { defineConfig } from "vitest/config";
 import minimist from "minimist";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import livereload from "rollup-plugin-livereload";
@@ -47,19 +47,18 @@ if (isWatch) {
         }
       },
     },
-  ]
+  ];
 }
 
-if(isProdBuild){
+if (isProdBuild) {
   plugins = [
     zipPack({
       inDir: "./dist",
       outDir: "./",
       outFileName: "package.zip",
     }),
-  ]
+  ];
 }
-
 
 export default defineConfig({
   resolve: {

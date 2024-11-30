@@ -34,8 +34,10 @@
     "types": [
       "node",
       "vite/client",
-      "svelte"
-    ],
+      "svelte",
+    "vitest/globals",
+            "@testing-library/jest-dom",
+            "./src/types/siyuan.types.ts"],
     // "baseUrl": "./src",
     "paths": {
       "@/*": [
