@@ -1,6 +1,6 @@
 {
   "name": "siyuan-database-properties-panel",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "module",
   "description": "Plugin for Siyuan (https://b3log.org/siyuan). Provides a panel to view database properties of a page created from a database.",
   "repository": "https://github.com/Macavity/siyuan-database-properties-panel",
@@ -46,14 +46,11 @@
     "typescript-eslint": "^8.8.1",
     "vite": "^5.0.0",
     "vite-plugin-static-copy": "^1.0.2",
-    "vite-plugin-zip-pack": "^1.0.5"
-  },
-  "devDependencies": {
+    "vite-plugin-zip-pack": "^1.0.5",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.6",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.16.11",
-    "jest-dom": "^4.0.0",
     "jsdom": "^25.0.1",
     "vitest": "^2.1.5"
   }
