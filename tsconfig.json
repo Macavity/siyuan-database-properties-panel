@@ -35,10 +35,11 @@
       "node",
       "vite/client",
       "svelte",
-    "vitest/globals",
-            "@testing-library/jest-dom",
-            "./src/types/siyuan.types.ts"],
-    // "baseUrl": "./src",
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "./src/types/siyuan.types.ts"
+    ],
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "./src/*"
@@ -58,7 +59,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.svelte",
-    "node_modules/siyuan/**/*.d.ts"
+    "node_modules/siyuan/**/*.d.ts",
+    "node_modules/.pnpm/siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https+++codeload.github.com+Macavity+siyuan+t_yokw3chlgvnmvnvon6w6ghufgy/node_modules/siyuan#738a9074cfaad9db08fab3b23858d025801e3120/app/src/types/index.d.ts"
   ],
   "references": [
     {

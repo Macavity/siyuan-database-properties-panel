@@ -4,8 +4,6 @@
   import { Logger } from "@/libs/logger";
   import { isEmpty } from "@/libs/is-empty";
   import ColumnIcon from "./ColumnIcon.svelte";
-  import { getColIconByType } from "siyuan/app/src/protyle/render/av/col";
-  import { escapeAttr } from "@siyuan/app/util/escape";
 
   export let avData: AttributeView[];
   export let showPrimaryKey: boolean = false;

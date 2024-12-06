@@ -4,8 +4,8 @@
  */
 
 import { Constants } from "@siyuan/app/constants";
-import { isMobile } from "@siyuan/app/util/functions";
 import { IProtyle } from "siyuan";
+import { isMobile } from "@/libs/siyuan/protyle/util/functions";
 
 export const getPadding = (protyle: IProtyle) => {
   let right = 16;

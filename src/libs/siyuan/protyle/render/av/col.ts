@@ -2,9 +2,46 @@
  * These functions are direct copies of not exposed functions from siyuan.
  * @source app/src/protyle/render/av/col.ts
  */
-import Col from "siyuan/app/src/protyle/render/av/col";
-import { ExtendedTAVCol } from "@/types/siyuan.types";
-
-export const getColIconByType = (type: ExtendedTAVCol) => {
-  return Col.getColIconByType(type);
+import { TAVCol } from "siyuan";
+// import { getColIconByType as _getColIconByType } from "@siyuan/app/protyle/render/av/col";
+//
+// export const getColIconByType = (type: TAVCol) => {
+//   return _getColIconByType(type);
+// };
+export const getColIconByType = (type: TAVCol) => {
+  switch (type) {
+    case "text":
+      return "iconAlignLeft";
+    case "block":
+      return "iconKey";
+    case "number":
+      return "iconNumber";
+    case "select":
+      return "iconListItem";
+    case "mSelect":
+      return "iconList";
+    case "relation":
+      return "iconOpen";
+    case "rollup":
+      return "iconSearch";
+    case "date":
+      return "iconCalendar";
+    case "updated":
+    case "created":
+      return "iconClock";
+    case "url":
+      return "iconLink";
+    case "mAsset":
+      return "iconImage";
+    case "email":
+      return "iconEmail";
+    case "phone":
+      return "iconPhone";
+    case "template":
+      return "iconMath";
+    case "checkbox":
+      return "iconCheck";
+    case "lineNumber":
+      return "iconOrderedList";
+  }
 };
