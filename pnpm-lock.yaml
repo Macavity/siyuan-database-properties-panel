@@ -83,9 +83,6 @@ importers:
       siyuan:
         specifier: ^1.0.6
         version: 1.0.6
-      siyuan-app:
-        specifier: github:Macavity/siyuan#738a9074cfaad9db08fab3b23858d025801e3120
-        version: siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120
       svelte:
         specifier: ^4.2.0
         version: 4.2.19
@@ -1628,10 +1625,6 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
-
-  siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120:
-    resolution: {tarball: https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120}
-    version: 0.0.0
 
   siyuan@1.0.6:
     resolution: {integrity: sha512-ogCCzhz0CBr56uIWdd//an58FFw+lJQXsrdOZlR2EMnVGjjvfGTEjNX7+ok49p4+D1ytxSq9oTtlfHCIpGUw7w==}
@@ -3451,8 +3444,6 @@ snapshots:
   siginfo@2.0.0: {}
 
   signal-exit@4.1.0: {}
-
-  siyuan#738a9074cfaad9db08fab3b23858d025801e3120@https://codeload.github.com/Macavity/siyuan/tar.gz/738a9074cfaad9db08fab3b23858d025801e3120: {}
 
   siyuan@1.0.6: {}
 

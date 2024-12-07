@@ -3,11 +3,7 @@
  * @source app/src/protyle/render/av/col.ts
  */
 import { TAVCol } from "siyuan";
-// import { getColIconByType as _getColIconByType } from "@siyuan/app/protyle/render/av/col";
-//
-// export const getColIconByType = (type: TAVCol) => {
-//   return _getColIconByType(type);
-// };
+
 export const getColIconByType = (type: TAVCol) => {
   switch (type) {
     case "text":

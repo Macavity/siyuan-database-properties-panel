@@ -1,4 +1,13 @@
-import { type TAVCol } from "siyuan";
+import { type TAVCol, type IProtyle } from "siyuan";
+
+declare module "siyuan" {
+  //openEdit: (protyle: IProtyle, element: HTMLElement, event: MouseEvent) => void;
+  export function blockAttrOpenEdit(
+    protyle: IProtyle,
+    element: HTMLElement,
+    event: MouseEvent
+  );
+}
 
 interface IAVCellSelectValue {
   content: string;

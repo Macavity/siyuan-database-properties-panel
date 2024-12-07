@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAVCellValue } from "siyuan";
+  import { blockAttrOpenEdit } from "siyuan";
   import dayjs from "dayjs";
 
   import MAssetValue from "./ValueTypes/MAssetValue.svelte";
@@ -8,13 +8,15 @@
   import MultiSelectValue from "./ValueTypes/MultiSelectValue.svelte";
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
-  import { openEdit } from "@/libs/siyuan/protyle/render/av/blockAttr";
+  import { type IAVCellValue } from "@/types/siyuan.types";
 
   export let value: IAVCellValue;
 
   $: triggerEditMode = (event: MouseEvent) => {
-    openEdit(value)
-  }
+    // TODO
+    let protyle, element;
+    blockAttrOpenEdit(protyle, element, event);
+  };
 </script>
 
 {#if value.type === "block"}

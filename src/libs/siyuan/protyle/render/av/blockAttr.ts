@@ -11,7 +11,7 @@ import { IProtyle } from "siyuan";
 import { IAVCellValue } from "@/types/siyuan.types";
 import { popTextCell } from "siyuan-app/app/src/protyle/render/av/cell";
 import { TAVCol } from "siyuan";
-import { escapeAttr } from "@siyuan/app/util/escape";
+import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
 
 /**
  * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
@@ -53,7 +53,7 @@ const genAVValueHTML = (value: IAVCellValue) => {
       html = `<span class="av__celltext" data-value='${JSON.stringify(value[value.type])}'>`;
       if (value[value.type] && value[value.type].isNotEmpty) {
         html += dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
         );
       }
       if (
@@ -152,7 +152,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
     case "date":
       if (value[value.type] && value[value.type].isNotEmpty) {
         html = dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
         );
       }
       if (
@@ -189,7 +189,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
 export const openEdit = (
   protyle: IProtyle,
   element: HTMLElement,
-  event: MouseEvent,
+  event: MouseEvent
 ) => {
   let target = event.target as HTMLElement;
   const blockElement = hasClosestBlock(target);
@@ -251,7 +251,7 @@ export const openEdit = (
       popTextCell(
         protyle,
         [target],
-        target.getAttribute("data-type") as TAVCol,
+        target.getAttribute("data-type") as TAVCol
       );
       event.stopPropagation();
       event.preventDefault();
@@ -322,7 +322,7 @@ export const openEdit = (
 export const cellScrollIntoView = (
   blockElement: HTMLElement,
   cellElement: Element,
-  onlyHeight = true,
+  onlyHeight = true
 ) => {
   const cellRect = cellElement.getBoundingClientRect();
   if (!onlyHeight) {
@@ -357,7 +357,7 @@ export const cellScrollIntoView = (
   const contentElement = hasClosestByClassName(
     blockElement,
     "protyle-content",
-    true,
+    true
   );
   if (contentElement && cellElement.getAttribute("data-dtype") !== "checkbox") {
     const keyboardToolbarElement = document.getElementById("keyboardToolbar");
@@ -384,7 +384,7 @@ export const cellScrollIntoView = (
     const contentElement = hasClosestByClassName(
       blockElement,
       "protyle-content",
-      true,
+      true
     );
     if (contentElement) {
       contentElement.scrollTop =
@@ -398,7 +398,7 @@ export const cellScrollIntoView = (
         const contentElement = hasClosestByClassName(
           blockElement,
           "protyle-content",
-          true,
+          true
         );
         if (contentElement) {
           contentElement.scrollTop =
@@ -409,7 +409,7 @@ export const cellScrollIntoView = (
       const contentElement = hasClosestByClassName(
         blockElement,
         "protyle-content",
-        true,
+        true
       );
       if (contentElement) {
         const contentRect = contentElement.getBoundingClientRect();
