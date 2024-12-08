@@ -10,15 +10,20 @@
   export let protyle: IProtyle;
   export let avData: AttributeView[];
   export let blockId: string;
+
+  // Configuration
   export let showPrimaryKey: boolean = false;
   export let showEmptyAttributes: boolean = false;
   export let enableDragAndDrop: boolean = false;
+  export let allowEditing: boolean = false;
 
-  let element: HTMLElement | null = null;
+  let element: HTMLDivElement | null = null;
+  let isHovered = false;
 
   // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
   $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
+    console.log("blub");
     let entries = [...keyValues];
     const hidePrimaryKey = !showPrimaryKey;
     const hideEmptyAttributes = !showEmptyAttributes;
@@ -39,8 +44,22 @@
   };
 
   $: triggerEditMode = (event: MouseEvent) => {
+    console.log(allowEditing);
+    if (!allowEditing) return;
     blockAttrOpenEdit(protyle, element, event);
   };
+
+  function handleMouseEnter() {
+    if (!allowEditing) return;
+    console.log("enter");
+    isHovered = true;
+  }
+
+  function handleMouseLeave() {
+    if (!allowEditing) return;
+    console.log("leave");
+    isHovered = false;
+  }
 </script>
 
 <div class="custom-attr">
@@ -74,7 +93,7 @@
             data-options={item.key?.options
               ? escapeAttr(JSON.stringify(item.key.options))
               : []}
-            class="fn__flex-1 fn__flex"
+            class="fn__flex-1 fn__flex {isHovered ? 'protyle-wysiwyg--hl' : ''}"
             class:custom-attr__avvalue={![
               "url",
               "text",
@@ -84,6 +103,8 @@
               "block",
             ].includes(item.values[0].type)}
             on:click={triggerEditMode}
+            on:mouseenter={handleMouseEnter}
+            on:mouseleave={handleMouseLeave}
             role="none"
           >
             <AttributeViewValue value={item.values[0]} />

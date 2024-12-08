@@ -8,8 +8,13 @@
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
   import { type IAVCellValue } from "@/types/siyuan.types";
+  import { ChangeEventHandler } from "svelte/elements";
 
   export let value: IAVCellValue;
+
+  $: updateCellValue = (event: Event) => {
+    value[event.detail.key] = event.detail.value;
+  };
 </script>
 
 {#if value.type === "block"}
@@ -19,6 +24,7 @@
     style="resize: vertical"
     rows={value.text.content.split("\n").length}
     class="b3-text-field b3-text-field--text fn__flex-1"
+    on:change={updateCellValue}
   >
     {value.text.content}
   </textarea>

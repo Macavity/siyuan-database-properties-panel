@@ -30,6 +30,7 @@ enum DatabasePropertiesPanelConfig {
   ShowDatabaseAttributes = "showDatabaseAttributes",
   AllowErrorReporting = "allowErrorReporting",
   ShowEmptyAttributes = "showEmptyAttributes",
+  AllowEditing = "allowEditing",
 }
 
 export default class DatabasePropertiesPanel extends Plugin {
@@ -98,6 +99,21 @@ export default class DatabasePropertiesPanel extends Plugin {
         callback: () => {
           this.changeCheckboxSetting(
             DatabasePropertiesPanelConfig.ShowEmptyAttributes
+          );
+        },
+      },
+    });
+
+    this.settingUtils.addItem({
+      key: DatabasePropertiesPanelConfig.AllowEditing,
+      value: false,
+      type: "checkbox",
+      title: this.i18n.configAllowEditingTitle,
+      description: this.i18n.configAllowEditingDesc,
+      action: {
+        callback: () => {
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.AllowEditing
           );
         },
       },
@@ -287,6 +303,9 @@ export default class DatabasePropertiesPanel extends Plugin {
         ),
         showEmptyAttributes: this.settingUtils.get<boolean>(
           DatabasePropertiesPanelConfig.ShowEmptyAttributes
+        ),
+        allowEditing: this.settingUtils.get<boolean>(
+          DatabasePropertiesPanelConfig.AllowEditing
         ),
         i18n: this.i18n as I18N,
         avData,

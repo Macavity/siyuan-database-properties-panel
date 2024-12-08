@@ -6,6 +6,7 @@
 
   export let i18n: I18N;
   export let showPrimaryKey: boolean = false;
+  export let allowEditing: boolean = false;
   export let showEmptyAttributes: boolean = false;
 
   export let avData = [];
@@ -22,5 +23,6 @@
     {avData}
     {showPrimaryKey}
     {showEmptyAttributes}
+    {allowEditing}
   />
 </div>

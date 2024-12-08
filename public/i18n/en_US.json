@@ -1,6 +1,8 @@
 {
   "configAllowErrorReportingTitle": "Allow error reporting",
   "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
+  "configAllowEditingTitle": "Allow editing",
+  "configAllowEditingDesc": "(Experimental) Allow editing of the page properties in the attribute panel. This requires a modified SiYuan version.",
   "configShowBuiltInPropertiesTitle": "Show built-in properties",
   "configShowBuiltInPropertiesDesc": "Show built-in properties <b>always</b> in the attribute panel",
   "configShowEmptyPropertiesTitle": "Show empty properties",
