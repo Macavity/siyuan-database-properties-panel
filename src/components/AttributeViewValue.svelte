@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { blockAttrOpenEdit } from "siyuan";
   import dayjs from "dayjs";
 
   import MAssetValue from "./ValueTypes/MAssetValue.svelte";
@@ -11,12 +10,6 @@
   import { type IAVCellValue } from "@/types/siyuan.types";
 
   export let value: IAVCellValue;
-
-  $: triggerEditMode = (event: MouseEvent) => {
-    // TODO
-    let protyle, element;
-    blockAttrOpenEdit(protyle, element, event);
-  };
 </script>
 
 {#if value.type === "block"}
@@ -41,7 +34,7 @@
     <span class="fn__space"></span>-->
   <span class="fn__flex-1">{value.number.formattedContent}</span>
 {:else if value.type === "select" || value.type === "mSelect"}
-  <MultiSelectValue {value} onClick={triggerEditMode} />
+  <MultiSelectValue {value} />
 {:else if value.type === "mAsset"}
   <MAssetValue {value} />
 {:else if value.type === "date"}

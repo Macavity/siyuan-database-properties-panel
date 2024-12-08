@@ -37,6 +37,14 @@ export default [
     },
   },
   {
+    rules: {
+      // Disable specific a11y rules
+      "svelte/a11y-click-events-have-key-events": "off",
+      "svelte/no-static-element-interactions": "off",
+      "svelte/a11y-missing-attribute": "off",   
+    }
+  },
+  {
     ignores: [
       "src/libs/siyuan/**/*",
       "vue/**",
