@@ -8,13 +8,42 @@
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
   import { type IAVCellValue } from "@/types/siyuan.types";
-  import { ChangeEventHandler } from "svelte/elements";
+  import { blockAttrOpenEdit, type IProtyle } from "siyuan";
+  import { getContext } from "svelte";
+  import { type AVKey } from "@/types/AttributeView";
 
+  // Props
   export let value: IAVCellValue;
+  export let allowEditing: boolean = false;
+  // export let avKey: AVKey;
+  // export let avID: string;
+
+  // State
+  let element: HTMLDivElement | null = null;
+  let isHovered = false;
+  const protyle = getContext("protyle");
+  const blockId = getContext("blockId");
+
+  $: triggerEditMode = (event: MouseEvent) => {
+    console.log(allowEditing);
+    if (!allowEditing) return;
+    console.log("value", value.type);
+    blockAttrOpenEdit(protyle, element, event);
+  };
 
   $: updateCellValue = (event: Event) => {
-    value[event.detail.key] = event.detail.value;
+    console.log("updateCellValue");
   };
+
+  function handleMouseEnter() {
+    if (!allowEditing) return;
+    isHovered = true;
+  }
+
+  function handleMouseLeave() {
+    if (!allowEditing) return;
+    isHovered = false;
+  }
 </script>
 
 {#if value.type === "block"}

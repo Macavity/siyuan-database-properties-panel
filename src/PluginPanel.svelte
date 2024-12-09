@@ -3,6 +3,7 @@
   import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
   import { type I18N } from "@/types/i18n";
   import { IProtyle } from "siyuan";
+  import { Context } from "./types/context";
 
   export let i18n: I18N;
   export let showPrimaryKey: boolean = false;
@@ -13,13 +14,13 @@
   export let protyle: IProtyle;
   export let blockId: string;
 
-  setContext("i18n", i18n);
+  setContext(Context.I18N, i18n);
+  setContext(Context.Protyle, protyle);
+  setContext(Context.BlockID, blockId);
 </script>
 
 <div class="plugin-panel">
   <AttributeViewPanel
-    {protyle}
-    {blockId}
     {avData}
     {showPrimaryKey}
     {showEmptyAttributes}

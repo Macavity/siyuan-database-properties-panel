@@ -4,12 +4,12 @@
   import { Logger } from "@/libs/logger";
   import { isEmpty } from "@/libs/is-empty";
   import ColumnIcon from "./ColumnIcon.svelte";
+  import { getContext } from "svelte";
+  import { Context } from "@/types/context";
+  import { blockAttrOpenEdit, type IProtyle } from "siyuan";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-  import { IProtyle, blockAttrOpenEdit } from "siyuan";
 
-  export let protyle: IProtyle;
   export let avData: AttributeView[];
-  export let blockId: string;
 
   // Configuration
   export let showPrimaryKey: boolean = false;
@@ -18,12 +18,13 @@
   export let allowEditing: boolean = false;
 
   let element: HTMLDivElement | null = null;
-  let isHovered = false;
+  // State
+  const blockId = getContext(Context.BlockID);
+  const protyle = getContext(Context.Protyle);
 
   // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
   $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
-    console.log("blub");
     let entries = [...keyValues];
     const hidePrimaryKey = !showPrimaryKey;
     const hideEmptyAttributes = !showEmptyAttributes;
@@ -48,18 +49,6 @@
     if (!allowEditing) return;
     blockAttrOpenEdit(protyle, element, event);
   };
-
-  function handleMouseEnter() {
-    if (!allowEditing) return;
-    console.log("enter");
-    isHovered = true;
-  }
-
-  function handleMouseLeave() {
-    if (!allowEditing) return;
-    console.log("leave");
-    isHovered = false;
-  }
 </script>
 
 <div class="custom-attr">
@@ -71,7 +60,8 @@
     >
       {#each getKeyValues(table.keyValues) as item}
         <div
-          class="block__icons av__row"
+          class="av-panel-row block__icons av__row"
+          class:av-panel-row--editable={allowEditing}
           data-id={blockId}
           data-col-id={item.key.id}
         >
@@ -93,7 +83,7 @@
             data-options={item.key?.options
               ? escapeAttr(JSON.stringify(item.key.options))
               : []}
-            class="fn__flex-1 fn__flex {isHovered ? 'protyle-wysiwyg--hl' : ''}"
+            class="fn__flex-1 fn__flex"
             class:custom-attr__avvalue={![
               "url",
               "text",
@@ -103,8 +93,6 @@
               "block",
             ].includes(item.values[0].type)}
             on:click={triggerEditMode}
-            on:mouseenter={handleMouseEnter}
-            on:mouseleave={handleMouseLeave}
             role="none"
           >
             <AttributeViewValue value={item.values[0]} />
@@ -115,3 +103,9 @@
     <div class="fn__hr"></div>
   {/each}
 </div>
+
+<style lang="css">
+  .av-panel-row--editable:hover {
+    background-color: var(--b3-theme-primary-lightest);
+  }
+</style>
