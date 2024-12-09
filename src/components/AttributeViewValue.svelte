@@ -34,16 +34,6 @@
   $: updateCellValue = (event: Event) => {
     console.log("updateCellValue");
   };
-
-  function handleMouseEnter() {
-    if (!allowEditing) return;
-    isHovered = true;
-  }
-
-  function handleMouseLeave() {
-    if (!allowEditing) return;
-    isHovered = false;
-  }
 </script>
 
 {#if value.type === "block"}
@@ -54,8 +44,8 @@
     rows={value.text.content.split("\n").length}
     class="b3-text-field b3-text-field--text fn__flex-1"
     on:change={updateCellValue}
-  >{value.text.content}
-</textarea>
+    >{value.text.content}
+  </textarea>
 {:else if value.type === "number"}
   <!--<input value={value.number.isNotEmpty ? value.number.content : ''}
            type="number"

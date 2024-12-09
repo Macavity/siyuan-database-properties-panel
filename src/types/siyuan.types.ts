@@ -6,7 +6,7 @@ declare module "siyuan" {
     protyle: IProtyle,
     element: HTMLElement,
     event: MouseEvent
-  );
+  ): void;
 }
 
 interface IAVCellSelectValue {

@@ -6,7 +6,7 @@
   import ColumnIcon from "./ColumnIcon.svelte";
   import { getContext } from "svelte";
   import { Context } from "@/types/context";
-  import { blockAttrOpenEdit, type IProtyle } from "siyuan";
+  import { blockAttrOpenEdit } from "siyuan";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
 
   export let avData: AttributeView[];
