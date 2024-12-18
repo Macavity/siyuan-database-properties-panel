@@ -5,9 +5,7 @@
   import ColumnIcon from "./ColumnIcon.svelte";
   import { getContext } from "svelte";
   import { Context } from "@/types/context";
-  import { blockAttrOpenEdit } from "siyuan";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-  import AttributeViewValueV2 from "./AttributeViewValueV2.svelte";
 
   export let avData: AttributeView[];
 
@@ -20,19 +18,11 @@
   let element: HTMLDivElement | null = null;
   // State
   const blockId = getContext(Context.BlockID);
-  const protyle = getContext(Context.Protyle);
 
   // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
   $: filteredKeyValues = (keyValues: AttributeView["keyValues"]) =>
     filterAVKeyAndValues(keyValues, showPrimaryKey, showEmptyAttributes);
-
-  $: triggerEditMode = (event: MouseEvent) => {
-    console.log(allowEditing);
-    if (!allowEditing) return;
-    console.log("V1 blockAttrOpenEdit with:", element);
-    blockAttrOpenEdit(protyle, element, event);
-  };
 </script>
 
 <div class="custom-attr">
@@ -77,15 +67,9 @@
               "phone",
               "block",
             ].includes(item.values[0].type)}
-            on:click={triggerEditMode}
             role="none"
           >
-            <AttributeViewValue
-              {item}
-              {table}
-              value={item.values[0]}
-              {allowEditing}
-            />
+            <AttributeViewValue value={item.values[0]} />
           </div>
         </div>
       {/each}
