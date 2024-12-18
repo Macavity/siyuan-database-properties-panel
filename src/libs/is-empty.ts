@@ -14,6 +14,18 @@ export function isEmpty(value: IAVCellValue): boolean {
     return true;
   }
 
+  if (value.type === "number") {
+    return value.number?.isNotEmpty === false;
+  }
+
+  if (value.type === "date") {
+    return value.date?.isNotEmpty === false;
+  }
+
+  if (value.type === "rollup") {
+    return content.length === 0;
+  }
+
   return false;
 }
 
