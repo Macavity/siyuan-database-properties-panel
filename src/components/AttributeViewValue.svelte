@@ -8,32 +8,17 @@
   import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.svelte";
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
   import { type IAVCellValue } from "@/types/siyuan.types";
-  import { blockAttrOpenEdit, type IProtyle } from "siyuan";
+  import { blockAttrOpenEdit } from "siyuan";
   import { getContext } from "svelte";
-  import { type AVKey } from "@/types/AttributeView";
+  import { Context } from "@/types/context";
 
   // Props
   export let value: IAVCellValue;
+  export let item: any;
+  export let table: any;
   export let allowEditing: boolean = false;
   // export let avKey: AVKey;
   // export let avID: string;
-
-  // State
-  let element: HTMLDivElement | null = null;
-  let isHovered = false;
-  const protyle = getContext("protyle");
-  const blockId = getContext("blockId");
-
-  $: triggerEditMode = (event: MouseEvent) => {
-    console.log(allowEditing);
-    if (!allowEditing) return;
-    console.log("value", value.type);
-    blockAttrOpenEdit(protyle, element, event);
-  };
-
-  $: updateCellValue = (event: Event) => {
-    console.log("updateCellValue");
-  };
 </script>
 
 {#if value.type === "block"}
@@ -43,7 +28,6 @@
     style="resize: vertical"
     rows={value.text.content.split("\n").length}
     class="b3-text-field b3-text-field--text fn__flex-1"
-    on:change={updateCellValue}
     >{value.text.content}
   </textarea>
 {:else if value.type === "number"}

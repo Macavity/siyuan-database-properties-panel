@@ -8,6 +8,7 @@
   import { Context } from "@/types/context";
   import { blockAttrOpenEdit } from "siyuan";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
+  import AttributeViewValueV2 from "./AttributeViewValueV2.svelte";
 
   export let avData: AttributeView[];
 
@@ -47,6 +48,7 @@
   $: triggerEditMode = (event: MouseEvent) => {
     console.log(allowEditing);
     if (!allowEditing) return;
+    console.log("V1 blockAttrOpenEdit with:", element);
     blockAttrOpenEdit(protyle, element, event);
   };
 </script>
@@ -73,6 +75,7 @@
             <ColumnIcon key={item.key} />
           {/if}
           <!-- svelte-ignore a11y-no-static-element-interactions -->
+
           <div
             bind:this={element}
             data-av-id={table.avID}
@@ -95,8 +98,19 @@
             on:click={triggerEditMode}
             role="none"
           >
-            <AttributeViewValue value={item.values[0]} />
+            <AttributeViewValue
+              {item}
+              {table}
+              value={item.values[0]}
+              {allowEditing}
+            />
           </div>
+          <AttributeViewValueV2
+            {item}
+            {table}
+            value={item.values[0]}
+            {allowEditing}
+          />
         </div>
       {/each}
     </div>
