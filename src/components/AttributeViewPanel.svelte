@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { AttributeView } from "@/types/AttributeView";
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
-  import { Logger } from "@/libs/logger";
-  import { isEmpty } from "@/libs/is-empty";
+  import { filterAVKeyAndValues } from "@/libs/getAVKeyAndValues";
   import ColumnIcon from "./ColumnIcon.svelte";
   import { getContext } from "svelte";
   import { Context } from "@/types/context";
@@ -25,25 +24,8 @@
 
   // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
-  $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
-    let entries = [...keyValues];
-    const hidePrimaryKey = !showPrimaryKey;
-    const hideEmptyAttributes = !showEmptyAttributes;
-
-    if (hidePrimaryKey) {
-      Logger.debug("hide primary key");
-      entries = entries.filter((item) => item.key.type !== "block");
-    }
-
-    if (hideEmptyAttributes) {
-      Logger.debug("hide empty attributes");
-      entries = entries.filter((item) => !isEmpty(item.values[0]));
-    }
-
-    Logger.debug("filtered attributes", entries);
-
-    return entries;
-  };
+  $: filteredKeyValues = (keyValues: AttributeView["keyValues"]) =>
+    filterAVKeyAndValues(keyValues, showPrimaryKey, showEmptyAttributes);
 
   $: triggerEditMode = (event: MouseEvent) => {
     console.log(allowEditing);
@@ -60,7 +42,7 @@
       data-node-id={blockId}
       data-type="NodeAttributeView"
     >
-      {#each getKeyValues(table.keyValues) as item}
+      {#each filteredKeyValues(table.keyValues) as item}
         <div
           class="av-panel-row block__icons av__row"
           class:av-panel-row--editable={allowEditing}
@@ -105,12 +87,6 @@
               {allowEditing}
             />
           </div>
-          <AttributeViewValueV2
-            {item}
-            {table}
-            value={item.values[0]}
-            {allowEditing}
-          />
         </div>
       {/each}
     </div>

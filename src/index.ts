@@ -9,9 +9,9 @@ import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
 import { Logger } from "./libs/logger";
-import { I18N } from "@/types/siyuan.types";
 import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
+import { I18N } from "./types/i18n";
 
 const STORAGE_NAME = "menu-config";
 
@@ -276,6 +276,9 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     let avData = [] as AttributeView[];
+    const allowEditing = this.settingUtils.get<boolean>(
+      DatabasePropertiesPanelConfig.AllowEditing
+    );
 
     if (showDatabaseAttributes) {
       avData = await getAttributeViewKeys(blockId);
@@ -304,9 +307,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         showEmptyAttributes: this.settingUtils.get<boolean>(
           DatabasePropertiesPanelConfig.ShowEmptyAttributes
         ),
-        allowEditing: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.AllowEditing
-        ),
+        allowEditing,
         i18n: this.i18n as I18N,
         avData,
       },

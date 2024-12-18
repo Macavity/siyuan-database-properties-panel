@@ -2,8 +2,11 @@
   import { setContext } from "svelte";
   import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
   import { type I18N } from "@/types/i18n";
-  import { IProtyle } from "siyuan";
+  import { IProtyle, renderAVAttribute } from "siyuan";
   import { Context } from "./types/context";
+  import { Logger } from "./libs/logger";
+  import { onMount } from "svelte";
+  import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
 
   export let i18n: I18N;
   export let showPrimaryKey: boolean = false;
@@ -20,10 +23,14 @@
 </script>
 
 <div class="plugin-panel">
-  <AttributeViewPanel
-    {avData}
-    {showPrimaryKey}
-    {showEmptyAttributes}
-    {allowEditing}
-  />
+  {#if allowEditing}
+    <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes} />
+  {:else}
+    <AttributeViewPanel
+      {avData}
+      {showPrimaryKey}
+      {showEmptyAttributes}
+      {allowEditing}
+    />
+  {/if}
 </div>

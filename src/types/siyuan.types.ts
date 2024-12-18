@@ -1,11 +1,11 @@
 import { type TAVCol, type IProtyle } from "siyuan";
 
 declare module "siyuan" {
-  //openEdit: (protyle: IProtyle, element: HTMLElement, event: MouseEvent) => void;
-  export function blockAttrOpenEdit(
-    protyle: IProtyle,
+  export function renderAVAttribute(
     element: HTMLElement,
-    event: MouseEvent
+    id: string,
+    protyle: IProtyle,
+    cb?: (element: HTMLElement) => void
   ): void;
 }
 
