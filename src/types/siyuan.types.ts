@@ -1,10 +1,4 @@
-import * as enUs from "../../public/i18n/en_US.json";
 import { type TAVCol } from "siyuan";
-
-declare module "siyuan" {
-  // eslint-disable-next-line
-  export interface I18N extends Record<keyof typeof enUs, string> {}
-}
 
 interface IAVCellSelectValue {
   content: string;

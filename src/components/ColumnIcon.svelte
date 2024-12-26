@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { escapeAttr, getColIconByType } from "@/libs/siyuan-utils";
   import { type AVKey } from "@/types/AttributeView";
   import CustomIcon from "./CustomIcon.svelte";
-
+  import { getColIconByType } from "@/libs/siyuan/protyle/render/av/col";
+  import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
   export let key: AVKey;
 </script>
 
@@ -20,8 +20,8 @@
     />
   {:else}
     <svg class="block__logoicon">
-      <use xlink:href="#{getColIconByType(key.type)}"></use></svg
-    >
+      <use xlink:href="#{getColIconByType(key.type)}"></use>
+    </svg>
   {/if}
   <span>{key.name}</span>
 </div>

@@ -1,6 +1,6 @@
 # Database Properties Panel Plugin
 
-[中文版](./README_zh_CN.md)
+[英文版](./README.md)
 
 ## 概述
 
@@ -10,6 +10,8 @@
 
 ## 最近更改
 
+- [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - 添加编辑功能
+- [0.5.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.2) - 修复 #20： 移除文本缩进
 - [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - 添加对列图标的支持
 - [0.4.4](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.4) - 修复资产字段为空的问题
 - [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - 修复关系值为空的问题
@@ -23,8 +25,9 @@
 
 ## 限制
 
-目前，该插件仅支持在数据库行创建的页面上显示属性。
-尚不支持直接从页面调整属性。
+现在支持在页面上编辑属性。
+~~目前，该插件仅支持在数据库行创建的页面上显示属性。
+尚不支持直接从页面调整属性。~~
 
 ### 数据安全声明
 

@@ -1,64 +1,77 @@
 <script lang="ts">
   import type { AttributeView } from "@/types/AttributeView";
-  import { escapeAttr, getColIconByType } from "@/libs/siyuan-utils";
   import AttributeViewValue from "@/components/AttributeViewValue.svelte";
-  import { Logger } from "@/libs/logger";
-  import { isEmpty } from "@/libs/is-empty";
+  import { filterAVKeyAndValues } from "@/libs/getAVKeyAndValues";
   import ColumnIcon from "./ColumnIcon.svelte";
+  import { getContext } from "svelte";
+  import { Context } from "@/types/context";
+  import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
 
   export let avData: AttributeView[];
+
+  // Configuration
   export let showPrimaryKey: boolean = false;
   export let showEmptyAttributes: boolean = false;
+  export let enableDragAndDrop: boolean = false;
+  export let allowEditing: boolean = false;
 
-  $: getKeyValues = (keyValues: AttributeView["keyValues"]) => {
-    let entries = [...keyValues];
-    const hidePrimaryKey = !showPrimaryKey;
-    const hideEmptyAttributes = !showEmptyAttributes;
+  let element: HTMLDivElement | null = null;
+  // State
+  const blockId = getContext(Context.BlockID);
 
-    if (hidePrimaryKey) {
-      Logger.debug("hide primary key");
-      entries = entries.filter((item) => item.key.type !== "block");
-    }
+  // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
-    if (hideEmptyAttributes) {
-      Logger.debug("hide empty attributes");
-      entries = entries.filter((item) => !isEmpty(item.values[0]));
-    }
-
-    Logger.debug("filtered attributes", entries);
-
-    return entries;
-  };
+  $: filteredKeyValues = (keyValues: AttributeView["keyValues"]) =>
+    filterAVKeyAndValues(keyValues, showPrimaryKey, showEmptyAttributes);
 </script>
 
 <div class="custom-attr">
   {#each avData as table}
-    {#each getKeyValues(table.keyValues) as item}
-      <div class="block__icons av__row" data-col-id={item.key.id}>
-        <!-- <div class="block__icon" draggable="true">
-          <svg><use xlink:href="#iconDrag"></use></svg>
-        </div>
-        -->
-        <ColumnIcon key={item.key} />
+    <div data-av-id={table.avID} data-node-id={blockId} data-type="NodeAttributeView">
+      {#each filteredKeyValues(table.keyValues) as item}
         <div
-          data-av-id={table.avID}
-          data-col-id={item.values[0].keyID}
-          data-block-id={item.values[0].blockID}
-          data-id={item.values[0].id}
-          class="fn__flex-1 fn__flex"
-          class:custom-attr__avvalue={![
-            "url",
-            "text",
-            "number",
-            "email",
-            "phone",
-            "block",
-          ].includes(item.values[0].type)}
+          class="av-panel-row block__icons av__row"
+          class:av-panel-row--editable={allowEditing}
+          data-id={blockId}
+          data-col-id={item.key.id}
         >
-          <AttributeViewValue value={item.values[0]} />
+          {#if enableDragAndDrop}
+            <div class="block__icon" draggable="true">
+              <svg><use xlink:href="#iconDrag"></use></svg>
+            </div>
+          {:else}
+            <ColumnIcon key={item.key} />
+          {/if}
+          <div
+            bind:this={element}
+            data-av-id={table.avID}
+            data-col-id={item.values[0].keyID}
+            data-block-id={item.values[0].blockID}
+            data-id={item.values[0].id}
+            data-type={item.values[0].type}
+            data-options={item.key?.options ? escapeAttr(JSON.stringify(item.key.options)) : []}
+            class="fn__flex-1 fn__flex"
+            class:custom-attr__avvalue={![
+              "url",
+              "text",
+              "number",
+              "email",
+              "phone",
+              "block",
+            ].includes(item.values[0].type)}
+            role="none"
+          >
+            <AttributeViewValue value={item.values[0]} />
+          </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
     <div class="fn__hr"></div>
   {/each}
 </div>
+
+<style lang="css">
+  .av-panel-row--editable:hover {
+    background-color: var(--b3-theme-primary-lightest);
+  }
+</style>
