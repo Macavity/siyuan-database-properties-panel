@@ -27,11 +27,7 @@
 
 <div class="custom-attr">
   {#each avData as table}
-    <div
-      data-av-id={table.avID}
-      data-node-id={blockId}
-      data-type="NodeAttributeView"
-    >
+    <div data-av-id={table.avID} data-node-id={blockId} data-type="NodeAttributeView">
       {#each filteredKeyValues(table.keyValues) as item}
         <div
           class="av-panel-row block__icons av__row"
@@ -46,8 +42,6 @@
           {:else}
             <ColumnIcon key={item.key} />
           {/if}
-          <!-- svelte-ignore a11y-no-static-element-interactions -->
-
           <div
             bind:this={element}
             data-av-id={table.avID}
@@ -55,9 +49,7 @@
             data-block-id={item.values[0].blockID}
             data-id={item.values[0].id}
             data-type={item.values[0].type}
-            data-options={item.key?.options
-              ? escapeAttr(JSON.stringify(item.key.options))
-              : []}
+            data-options={item.key?.options ? escapeAttr(JSON.stringify(item.key.options)) : []}
             class="fn__flex-1 fn__flex"
             class:custom-attr__avvalue={![
               "url",

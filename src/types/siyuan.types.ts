@@ -1,14 +1,5 @@
 import { type TAVCol } from "siyuan";
 
-// declare module "siyuan" {
-// export function renderAVAttribute(
-//   element: HTMLElement,
-//   id: string,
-//   protyle: IProtyle,
-//   cb?: (element: HTMLElement) => void
-// ): void;
-// }
-
 interface IAVCellSelectValue {
   content: string;
   color: string;

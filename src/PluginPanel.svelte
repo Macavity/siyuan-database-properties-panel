@@ -2,10 +2,7 @@
   import { setContext } from "svelte";
   import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
   import { type I18N } from "@/types/i18n";
-  import { IProtyle, renderAVAttribute } from "siyuan";
   import { Context } from "./types/context";
-  import { Logger } from "./libs/logger";
-  import { onMount } from "svelte";
   import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
   import { Protyle } from "siyuan";
 
@@ -27,11 +24,6 @@
   {#if allowEditing}
     <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes} />
   {:else}
-    <AttributeViewPanel
-      {avData}
-      {showPrimaryKey}
-      {showEmptyAttributes}
-      {allowEditing}
-    />
+    <AttributeViewPanel {avData} {showPrimaryKey} {showEmptyAttributes} {allowEditing} />
   {/if}
 </div>
