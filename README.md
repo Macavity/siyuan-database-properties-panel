@@ -1,6 +1,7 @@
 # Database Properties Panel Plugin
 
-[中文版](./README_zh_CN.md)
+[中文版](./README.zh_CN.md)
+[Changelog](./CHANGELOG.md)
 
 ## Overview
 
@@ -10,6 +11,7 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Recent Changes
 
+- [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - Add edit functionality
 - [0.5.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.2) - Fix #20: Remove text indentation
 - [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - Add support for column icons
 - [0.4.4](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.4) - Fix issues with empty asset fields
@@ -19,15 +21,16 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Features
 
-- Attribute Display: Automatically display database row attributes on their corresponding pages
+- Attribute Display: Automatically display and edit database row attributes on their corresponding pages
 - Familiar Interface: Provides a user experience similar to popular note-taking applications like Notion and Anytype while keeping the design of SiYuan
 - Allow optionally to hide the primary key
 - Allow optionally to hide empty fields
 
 ## Limitations
 
-Currently, the plugin only supports the display of attributes on the page created from the database row.
-Adjusting the attributes directly from the page is not yet supported.
+Editing attributes on the page is now supported.
+~~Currently, the plugin only supports the display of attributes on the page created from the database row.
+Adjusting the attributes directly from the page is not yet supported.~~
 
 ## Data Security Statement
 
