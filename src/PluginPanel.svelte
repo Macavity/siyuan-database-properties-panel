@@ -7,6 +7,7 @@
   import { Logger } from "./libs/logger";
   import { onMount } from "svelte";
   import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
+  import { Protyle } from "siyuan";
 
   export let i18n: I18N;
   export let showPrimaryKey: boolean = false;
@@ -14,7 +15,7 @@
   export let showEmptyAttributes: boolean = false;
 
   export let avData = [];
-  export let protyle: IProtyle;
+  export let protyle: Protyle;
   export let blockId: string;
 
   setContext(Context.I18N, i18n);

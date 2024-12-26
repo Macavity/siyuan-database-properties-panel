@@ -12,18 +12,15 @@ import { Logger } from "./libs/logger";
 import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
+import { getAllEditor } from "siyuan";
 
 const STORAGE_NAME = "menu-config";
 
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper";
 const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
 
-type TEventLoadedProtyle = CustomEvent<
-  IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]
->;
-type TEventSwitchProtyle = CustomEvent<
-  IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]
->;
+type TEventLoadedProtyle = CustomEvent<IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]>;
+type TEventSwitchProtyle = CustomEvent<IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]>;
 
 enum DatabasePropertiesPanelConfig {
   ShowPrimaryKey = "showPrimaryKey",
@@ -67,9 +64,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowDatabasePropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.ShowDatabaseAttributes
-          );
+          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowDatabaseAttributes);
         },
       },
     });
@@ -82,9 +77,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowPrimaryKeyDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.ShowPrimaryKey
-          );
+          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowPrimaryKey);
         },
       },
     });
@@ -97,9 +90,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowEmptyPropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.ShowEmptyAttributes
-          );
+          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowEmptyAttributes);
         },
       },
     });
@@ -112,9 +103,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowEditingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.AllowEditing
-          );
+          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowEditing);
         },
       },
     });
@@ -127,9 +116,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowErrorReportingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.AllowErrorReporting
-          );
+          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowErrorReporting);
         },
       },
     });
@@ -137,10 +124,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     try {
       this.settingUtils.load();
     } catch (error) {
-      console.error(
-        "Error loading settings storage, probably empty config json:",
-        error
-      );
+      console.error("Error loading settings storage, probably empty config json:", error);
     }
   }
 
@@ -204,43 +188,29 @@ export default class DatabasePropertiesPanel extends Plugin {
 - Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`
     );
 
-    this.eventBus.on(
-      SiyuanEvents.LOADED_PROTYLE_STATIC,
-      this.boundProtyleLoadedListener
-    );
-    this.eventBus.on(
-      SiyuanEvents.SWITCH_PROTYLE,
-      this.boundProtyleSwitchListener
-    );
+    this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
   }
 
   async onunload() {
-    this.eventBus.off(
-      SiyuanEvents.LOADED_PROTYLE_STATIC,
-      this.boundProtyleLoadedListener
-    );
-    this.eventBus.off(
-      SiyuanEvents.SWITCH_PROTYLE,
-      this.boundProtyleSwitchListener
-    );
+    this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
     document.querySelector(PANEL_PARENT_CLASS_SELECTOR)?.remove();
   }
 
   private protyleSwitchListener(event: TEventSwitchProtyle) {
-    Logger.debug("plugin switch protyle");
+    // Logger.debug("plugin switch protyle");
     this.renderPanel(event.detail.protyle);
   }
 
   private protyleLoadedListener(event: TEventLoadedProtyle) {
-    Logger.debug("plugin loaded protyle");
+    // Logger.debug("plugin loaded protyle");
 
     this.renderPanel(event.detail.protyle);
   }
 
   private getProtyleTopNode(nodeId) {
-    const titleNode = document.querySelector(
-      `div[data-node-id="${nodeId}"].protyle-title`
-    );
+    const titleNode = document.querySelector(`div[data-node-id="${nodeId}"].protyle-title`);
 
     if (!titleNode) {
       Logger.debug("No title node found", { nodeId });
@@ -262,12 +232,13 @@ export default class DatabasePropertiesPanel extends Plugin {
     if (!openProtyle.block.rootID) {
       return;
     }
+
     const blockId = openProtyle.block.rootID;
     const showDatabaseAttributes = this.settingUtils.get<boolean>(
       DatabasePropertiesPanelConfig.ShowDatabaseAttributes
     );
 
-    Logger.debug({ openProtyle });
+    // Logger.debug({ openProtyle });
 
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
@@ -275,10 +246,14 @@ export default class DatabasePropertiesPanel extends Plugin {
       return;
     }
 
+    const editor = getAllEditor().find((editor) => editor.protyle.id === openProtyle.id);
+    if (!editor) {
+      Logger.error("=> editor not found");
+      return;
+    }
+
     let avData = [] as AttributeView[];
-    const allowEditing = this.settingUtils.get<boolean>(
-      DatabasePropertiesPanelConfig.AllowEditing
-    );
+    const allowEditing = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.AllowEditing);
 
     if (showDatabaseAttributes) {
       avData = await getAttributeViewKeys(blockId);
@@ -300,7 +275,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       target: tabDiv,
       props: {
         blockId,
-        protyle: openProtyle,
+        protyle: editor,
         showPrimaryKey: this.settingUtils.get<boolean>(
           DatabasePropertiesPanelConfig.ShowPrimaryKey
         ),
@@ -336,8 +311,7 @@ export default class DatabasePropertiesPanel extends Plugin {
               if (frames) {
                 const isPluginError = frames.some(
                   (frame) =>
-                    frame.filename &&
-                    frame.filename.includes("siyuan-database-properties-panel")
+                    frame.filename && frame.filename.includes("siyuan-database-properties-panel")
                 );
 
                 if (!isPluginError) {
@@ -359,9 +333,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         showDatabaseAttributes: this.settingUtils.get(
           DatabasePropertiesPanelConfig.ShowDatabaseAttributes
         ),
-        showPrimaryKey: this.settingUtils.get(
-          DatabasePropertiesPanelConfig.ShowPrimaryKey
-        ),
+        showPrimaryKey: this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey),
         showEmptyAttributes: this.settingUtils.get(
           DatabasePropertiesPanelConfig.ShowEmptyAttributes
         ),

@@ -3,7 +3,7 @@
   "author": "Macavity",
   "url": "https://github.com/Macavity/siyuan-database-properties-panel",
   "version": "0.5.2",
-  "minAppVersion": "3.0.12",
+  "minAppVersion": "3.0.17",
   "backends": [
     "windows",
     "linux",
