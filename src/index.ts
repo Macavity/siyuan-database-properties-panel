@@ -253,7 +253,11 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     let avData = [] as AttributeView[];
-    const allowEditing = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.AllowEditing);
+    let allowEditing = false;
+
+    if (typeof editor?.renderAVAttribute !== "undefined") {
+      allowEditing = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.AllowEditing);
+    }
 
     if (showDatabaseAttributes) {
       avData = await getAttributeViewKeys(blockId);
