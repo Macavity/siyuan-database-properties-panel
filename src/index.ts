@@ -110,7 +110,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     this.settingUtils.addItem({
       key: DatabasePropertiesPanelConfig.AllowEditing,
-      value: false,
+      value: true,
       type: "checkbox",
       title: this.i18n.configAllowEditingTitle,
       description: this.i18n.configAllowEditingDesc,
@@ -359,13 +359,27 @@ export default class DatabasePropertiesPanel extends Plugin {
                     frame.filename.includes("siyuan-database-properties-panel"),
                 );
 
-                if (!isPluginError) {
-                  return null;
+                const firstFrame = frames[0];
+                if (firstFrame && firstFrame.filename) {
+                  const pluginsWithKnownIssues = ["plugin:custom-block"];
+                  if (pluginsWithKnownIssues.includes(firstFrame.filename)) {
+                    this.logger.info(
+                      "Silenced Error because of other plugins",
+                      event,
+                    );
+                    return null;
+                  }
+                }
+
+                if (isPluginError) {
+                  return event;
                 }
               }
             }
           }
-          return event;
+          this.logger.error("Silenced Error", event);
+
+          return null;
         },
       });
       if (window.siyuan.user?.userId) {
@@ -386,8 +400,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         ),
       });
 
-      Sentry.setContext("AttributeView", avData);
-
+      Sentry.setContext("AttributeView", { avData });
       const frontend = getFrontend();
       const backend = getBackend();
 

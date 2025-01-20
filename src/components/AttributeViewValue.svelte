@@ -17,7 +17,7 @@
 
 {#if value.type === "block"}
   <div class="fn__flex-1">{value.block.content}</div>
-{:else if value.type === "text"}
+{:else if value.type === "text" && value?.text?.content}
   <textarea
     style="resize: vertical"
     rows={value.text.content.split("\n").length}

@@ -2,13 +2,15 @@ import { render } from "@testing-library/svelte";
 import ColumnIcon from "./ColumnIcon.svelte";
 import { describe, it, expect } from "vitest";
 import "@testing-library/jest-dom";
+import { TAVCol } from "siyuan";
 
 describe("ColumnIcon", () => {
   it("renders CustomIcon when key.icon is provided", () => {
     const key = {
+      id: "test",
       name: "Test Column",
       icon: "1f600",
-      type: "text",
+      type: "text" as TAVCol,
     };
 
     const { container } = render(ColumnIcon, {
@@ -22,9 +24,10 @@ describe("ColumnIcon", () => {
 
   it("renders default icon when key.icon is not provided", () => {
     const key = {
+      id: "test",
       name: "Test Column",
       icon: "",
-      type: "text",
+      type: "text" as TAVCol,
     };
 
     const { container } = render(ColumnIcon, {
@@ -37,9 +40,10 @@ describe("ColumnIcon", () => {
 
   it("renders the column name", () => {
     const key = {
+      id: "test",
       name: "Test Column",
       icon: "",
-      type: "text",
+      type: "text" as TAVCol,
     };
 
     const { getByText } = render(ColumnIcon, {
@@ -52,9 +56,10 @@ describe("ColumnIcon", () => {
 
   it("sets the correct aria-label", () => {
     const key = {
+      id: "test",
       name: "Test Column",
       icon: "",
-      type: "text",
+      type: "text" as TAVCol,
     };
 
     const { container } = render(ColumnIcon, {
