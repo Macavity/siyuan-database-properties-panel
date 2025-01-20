@@ -6,8 +6,7 @@
     import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
     import {Protyle} from "siyuan";
     import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
-    import {isDocumentCollapsed} from "@/stores/localSettingStore";
-    import Button from "@/components/ui/Button.svelte";
+    import {isCollapsed} from "@/stores/localSettingStore";
     import {type AttributeView} from "@/types/AttributeView";
     import Icon from "@/components/ui/Icon.svelte";
 
@@ -19,17 +18,24 @@
     export let avData: AttributeView[] = [];
     export let protyle: Protyle;
     export let blockId: string;
-    const isCollapsed = isDocumentCollapsed(blockId);
 
     setContext(Context.I18N, i18n);
     setContext(Context.Protyle, protyle);
     setContext(Context.BlockID, blockId);
+
+    const openAvPanel = (avId: string) => {
+        //
+    }
 </script>
 
 <div class="plugin-panel">
     <ProtyleBreadcrumb>
-        {#each avData as av}
-            <span class="protyle-breadcrumb__item" on:click={() => {  }}>
+        {#each avData as av, i}
+            <span class="protyle-breadcrumb__item"
+                  role="button"
+                  tabindex={i}
+                  on:click={() => { openAvPanel(av.avID) }}
+                  on:keydown={() => { openAvPanel(av.avID) }}>
                 <Icon icon="iconDatabase"/>
                 <span class="protyle-breadcrumb__text">{av.avName}</span>
             </span>
