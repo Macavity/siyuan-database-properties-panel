@@ -31,9 +31,7 @@
 <div class="protyle-breadcrumb" id="top-navigation-bar">
     <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
         {#if $isCollapsed}
-            <span class="block__logo">
-                {i18n.databasePropertyPanel}
-            </span>
+            <slot/>
         {/if}
     </div>
 
@@ -43,7 +41,7 @@
             on:click={toggleCollapseTab}
             tooltip={$isCollapsed ? i18n.expand : i18n.collapse}/>
     {#if false}
-        <Button icon="iconSettings"/>
+        <Button icon="iconSettings" />
     {/if}
 </div>
 

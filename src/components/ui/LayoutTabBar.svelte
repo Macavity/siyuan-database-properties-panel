@@ -1,7 +1,7 @@
 <script lang="ts">
     import Icon from "@/components/ui/Icon.svelte";
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
-    import {createEventDispatcher, onMount} from "svelte";
+    import {createEventDispatcher} from "svelte";
 
     export let tabs: {
         key: string;
@@ -12,10 +12,6 @@
     }[];
     export let focus: string;
     const dispatch = createEventDispatcher();
-
-    onMount(() => {
-        console.log("LayoutTabBar", tabs);
-    });
 
     function activateTab(key: string) {
         dispatch("click", { key });
@@ -35,7 +31,7 @@
             >
                 <span class="fn__flex-1"></span>
                 {#if tab.icon}
-                    <Icon icon={tab.icon}/>
+                    <Icon class="block__logoicon" icon={tab.icon}/>
                 {/if}
 
                 <span class="item__text">

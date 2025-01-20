@@ -12,7 +12,9 @@
 </script>
 
 <button
-        class="block__icon block__icon--show b3-tooltips__w b3-tooltips"
+        class="block__icon block__icon--show"
+        class:b3-tooltips__w={tooltip !== null}
+        class:b3-tooltips={tooltip !== null}
         class:item--focus={isFocused}
         on:click={(event) => dispatch("click", { event })}
         on:keydown={(event) => dispatch("click", { event})}
