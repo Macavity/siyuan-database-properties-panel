@@ -12,6 +12,8 @@
   "configShowPrimaryKeyDesc": "Show primary key in the attribute panel, which is usually the same as the page title.",
   "configShowDatabasePropertiesTitle": "Show database properties",
   "configShowDatabasePropertiesDesc": "Show database properties <b>always</b> in the attribute panel",
+  "configUseMultipleTableLayout": "Layout for multiple databases",
+  "configUseMultipleTableLayoutDesc": "Decide how multiple databases are displayed in the panel.",
   "collapse": "Collapse",
   "expand": "Expand"
 }

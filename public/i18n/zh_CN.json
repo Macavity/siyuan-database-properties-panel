@@ -12,6 +12,8 @@
   "configShowPrimaryKeyDesc": "在属性面板中显示主键，通常与页面标题相同。",
   "configShowDatabasePropertiesTitle": "显示数据库属性",
   "configShowDatabasePropertiesDesc": "在属性面板中<b>始终</b>显示数据库属性",
+  "configUseMultipleTableLayout": "多个数据库的布局",
+  "configUseMultipleTableLayoutDesc": "决定如何在面板中显示多个数据库。",
   "collapse": "折叠",
   "expand": "展开"
 }
