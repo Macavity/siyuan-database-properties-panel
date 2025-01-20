@@ -7,17 +7,22 @@ export enum LogLevel {
   ERROR = 4,
 }
 
-const PREFIX = "[plugin:database-properties-panel]";
+const PLUGIN = "plugin:database-properties-panel";
+export const DEFAULT_LOGLEVEL =
+  process.env.NODE_ENV === "production" ? LogLevel.OFF : LogLevel.DEBUG;
 
-class LoggerService {
-  private verbosity: LogLevel;
-
-  constructor(verbosity: LogLevel = LogLevel.OFF) {
-    this.verbosity = verbosity;
-  }
+export class LoggerService {
+  constructor(
+    private serviceName = null,
+    private verbosity: LogLevel = DEFAULT_LOGLEVEL,
+  ) {}
 
   public setVerbosity(verbosity: LogLevel) {
     this.verbosity = verbosity;
+  }
+
+  get prefix() {
+    return this.serviceName ? `${PLUGIN}:${this.serviceName} |` : `${PLUGIN} |`;
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -26,35 +31,33 @@ class LoggerService {
 
   debug(...args: unknown[]) {
     if (this.shouldLog(LogLevel.DEBUG)) {
-      console.debug(PREFIX, ...args);
+      console.debug(this.prefix, ...args);
     }
   }
 
   info(...args: unknown[]) {
     if (this.shouldLog(LogLevel.INFO)) {
-      console.info(PREFIX, ...args);
+      console.info(this.prefix, ...args);
     }
   }
 
   warn(...args: unknown[]) {
     if (this.shouldLog(LogLevel.WARN)) {
-      console.warn(PREFIX, ...args);
+      console.warn(this.prefix, ...args);
     }
   }
 
   log(...args: unknown[]) {
     if (this.shouldLog(LogLevel.LOG)) {
-      console.log(PREFIX, ...args);
+      console.log(this.prefix, ...args);
     }
   }
 
   error(...args: unknown[]) {
     if (this.shouldLog(LogLevel.ERROR)) {
-      console.error(PREFIX, ...args);
+      console.error(this.prefix, ...args);
     }
   }
 }
 
-const logLevel =
-  process.env.NODE_ENV === "production" ? LogLevel.OFF : LogLevel.DEBUG;
-export const Logger = new LoggerService(logLevel);
+export const Logger = new LoggerService(null, DEFAULT_LOGLEVEL);

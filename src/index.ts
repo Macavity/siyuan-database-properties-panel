@@ -8,11 +8,12 @@ import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
-import { Logger } from "./libs/logger";
+import { LoggerService } from "./libs/logger";
 import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
+import { storageService } from "@/services/StorageService";
 
 const STORAGE_NAME = "menu-config";
 
@@ -37,10 +38,12 @@ enum DatabasePropertiesPanelConfig {
 export default class DatabasePropertiesPanel extends Plugin {
   customTab: () => Model;
   private settingUtils: SettingUtils;
+  private logger: LoggerService;
   boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
   boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
 
   async onload() {
+    this.logger = new LoggerService();
     this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
 
     this.initSettings();
@@ -196,7 +199,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     await this.settingUtils.load();
     // Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-    Logger.debug(
+    this.logger.debug(
       `Database Properties Panel Config:
 - Version: ${process.env.PLUGIN_VERSION}
 - Show DB: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowDatabaseAttributes)}
@@ -244,13 +247,13 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     if (!titleNode) {
-      Logger.debug("No title node found", { nodeId });
+      this.logger.debug("No title node found", { nodeId });
       return false;
     }
 
     const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
     if (!protyleAttrElement || !protyleAttrElement.firstChild) {
-      Logger.debug("No protyle-attr element found", { nodeId });
+      this.logger.debug("No protyle-attr element found", { nodeId });
       return false;
     }
 
@@ -273,7 +276,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
-      Logger.debug("=> database panel hidden");
+      this.logger.debug("=> database panel hidden");
       return;
     }
 
@@ -281,9 +284,11 @@ export default class DatabasePropertiesPanel extends Plugin {
       (editor) => editor.protyle.id === openProtyle.id,
     );
     if (!editor) {
-      Logger.error("=> editor not found");
+      this.logger.error("=> editor not found");
       return;
     }
+
+    storageService.fetchSettings(blockId);
 
     let avData = [] as AttributeView[];
     let allowEditing = false;
@@ -395,6 +400,6 @@ export default class DatabasePropertiesPanel extends Plugin {
   }
 
   uninstall() {
-    Logger.log("uninstall");
+    this.logger.log("uninstall");
   }
 }

@@ -2,6 +2,12 @@
 
 [Changelog](./CHANGELOG.md)
 
+## [Draft] [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
+
+### Features
+
+- Adds toggle which allows to hide the database properties panel for a document. This setting is stored per document.
+
 ## [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0)
 
 ### Features

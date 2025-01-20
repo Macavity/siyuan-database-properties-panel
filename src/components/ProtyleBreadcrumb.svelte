@@ -2,23 +2,36 @@
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import Button from "@/components/ui/Button.svelte";
-    import {isCollapsed} from "@/stores/localSettingStore";
-    import {Logger} from "@/libs/logger";
+    import {documentSettingStore, isDocumentCollapsed} from "@/stores/localSettingStore";
+    import { LoggerService} from "@/libs/logger";
+    import {storageService} from "@/services/StorageService";
+    import {createDefaultSettingsDTO} from "@/types/dto/SettingsDTO";
 
     const i18n = getContext(Context.I18N);
+    const documentId = getContext(Context.BlockID);
+    const logger = new LoggerService('ProtyleBreadcrumb');
+
+    const isCollapsed = isDocumentCollapsed(documentId);
 
     const toggleCollapseTab = async () => {
-        Logger.debug('toggleCollapseTab');
-        isCollapsed.update(value => !value);
-        //await settingsService.saveWidgetSettings();
-        //updateFrameHeight();
+        logger.debug('toggleCollapseTab');
+
+        documentSettingStore.update((docs) => {
+            let settings = docs.get(documentId) ?? createDefaultSettingsDTO(documentId);
+
+            settings.isCollapsed = !settings.isCollapsed;
+            docs.set(documentId, settings);
+            storageService.saveSettings(documentId, settings);
+
+            return docs;
+        });
     }
 </script>
 
 <div class="protyle-breadcrumb" id="top-navigation-bar">
     <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
         {#if $isCollapsed}
-            <span class="b3-label b3-label__text">
+            <span class="block__logo">
                 {i18n.databasePropertyPanel}
             </span>
         {/if}

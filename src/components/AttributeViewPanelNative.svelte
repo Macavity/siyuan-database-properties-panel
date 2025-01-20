@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Logger} from "@/libs/logger";
+    import {LoggerService} from "@/libs/logger";
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import {onMount} from "svelte";
@@ -15,17 +15,17 @@
     // State
     const blockId = getContext(Context.BlockID);
     const protyle = getContext(Context.Protyle);
+    const logger = new LoggerService("AttributeViewPanelNative");
 
-    // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
     onMount(() => {
         protyle.renderAVAttribute(element, blockId, (element) => {
-            Logger.debug("renderAVAttribute", element, blockId)
+            logger.debug("renderAVAttribute", element, blockId)
             if (!showPrimaryKey) {
-                // Logger.debug("hide primary key");
+                logger.debug("hide primary key");
                 const primaryKeyValueField = element.querySelectorAll(
                     `[data-node-id='${blockId}'] [data-type='block']`
                 );
-                // Logger.debug("identify primary key", primaryKeyValueField);
+                logger.debug("identify primary key", primaryKeyValueField);
                 primaryKeyValueField.forEach((field) => {
                     const fieldElement = field as HTMLElement;
                     const colId = fieldElement.dataset?.colId;
@@ -35,7 +35,7 @@
             }
 
             if (!showEmptyAttributes) {
-                // Logger.debug("hide empty attributes");
+                logger.debug("hide empty attributes");
                 avData.forEach((table) => {
                     const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
                     emptyKeyAndValues.forEach((item) => {
@@ -54,7 +54,6 @@
                 // Remove the two following dividers
                 const firstDivider = button.nextElementSibling;
                 const secondDivider = firstDivider?.nextElementSibling;
-                // console.log(firstDivider, secondDivider);
 
                 if (firstDivider?.classList.contains("fn__hr--b")) {
                     firstDivider.classList.add("dpp-av-panel--hidden");

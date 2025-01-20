@@ -6,7 +6,7 @@
     import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
     import {Protyle} from "siyuan";
     import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
-    import {isCollapsed} from "@/stores/localSettingStore";
+    import {isDocumentCollapsed} from "@/stores/localSettingStore";
 
     export let i18n: I18N;
     export let showPrimaryKey: boolean = false;
@@ -16,6 +16,7 @@
     export let avData = [];
     export let protyle: Protyle;
     export let blockId: string;
+    const isCollapsed = isDocumentCollapsed(blockId);
 
     setContext(Context.I18N, i18n);
     setContext(Context.Protyle, protyle);
