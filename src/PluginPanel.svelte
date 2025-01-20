@@ -1,29 +1,34 @@
 <script lang="ts">
-  import { setContext } from "svelte";
-  import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
-  import { type I18N } from "@/types/i18n";
-  import { Context } from "./types/context";
-  import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
-  import { Protyle } from "siyuan";
+    import {setContext} from "svelte";
+    import AttributeViewPanel from "./components/AttributeViewPanel.svelte";
+    import {type I18N} from "@/types/i18n";
+    import {Context} from "./types/context";
+    import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
+    import {Protyle} from "siyuan";
+    import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
+    import {isCollapsed} from "@/stores/localSettingStore";
 
-  export let i18n: I18N;
-  export let showPrimaryKey: boolean = false;
-  export let allowEditing: boolean = false;
-  export let showEmptyAttributes: boolean = false;
+    export let i18n: I18N;
+    export let showPrimaryKey: boolean = false;
+    export let allowEditing: boolean = false;
+    export let showEmptyAttributes: boolean = false;
 
-  export let avData = [];
-  export let protyle: Protyle;
-  export let blockId: string;
+    export let avData = [];
+    export let protyle: Protyle;
+    export let blockId: string;
 
-  setContext(Context.I18N, i18n);
-  setContext(Context.Protyle, protyle);
-  setContext(Context.BlockID, blockId);
+    setContext(Context.I18N, i18n);
+    setContext(Context.Protyle, protyle);
+    setContext(Context.BlockID, blockId);
 </script>
 
 <div class="plugin-panel">
-  {#if allowEditing}
-    <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes} />
-  {:else}
-    <AttributeViewPanel {avData} {showPrimaryKey} {showEmptyAttributes} {allowEditing} />
-  {/if}
+    <ProtyleBreadcrumb/>
+    {#if !$isCollapsed}
+        {#if allowEditing}
+            <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes}/>
+        {:else}
+            <AttributeViewPanel {avData} {showPrimaryKey} {showEmptyAttributes} {allowEditing}/>
+        {/if}
+    {/if}
 </div>

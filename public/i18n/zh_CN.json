@@ -1,4 +1,5 @@
 {
+  "databasePropertyPanel": "数据库属性",
   "configAllowErrorReportingTitle": "允许错误报告",
   "configAllowErrorReportingDesc": "如果您发现插件中的行为出现故障，请在 Github 上创建问题前激活此功能。这样会更容易找到解决方案。",
   "configAllowEditingTitle": "允许编辑",
@@ -10,5 +11,7 @@
   "configShowPrimaryKeyTitle": "显示主键",
   "configShowPrimaryKeyDesc": "在属性面板中显示主键，通常与页面标题相同。",
   "configShowDatabasePropertiesTitle": "显示数据库属性",
-  "configShowDatabasePropertiesDesc": "在属性面板中<b>始终</b>显示数据库属性"
+  "configShowDatabasePropertiesDesc": "在属性面板中<b>始终</b>显示数据库属性",
+  "collapse": "折叠",
+  "expand": "展开"
 }

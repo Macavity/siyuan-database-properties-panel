@@ -19,8 +19,12 @@ const STORAGE_NAME = "menu-config";
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper";
 const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
 
-type TEventLoadedProtyle = CustomEvent<IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]>;
-type TEventSwitchProtyle = CustomEvent<IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]>;
+type TEventLoadedProtyle = CustomEvent<
+  IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]
+>;
+type TEventSwitchProtyle = CustomEvent<
+  IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]
+>;
 
 enum DatabasePropertiesPanelConfig {
   ShowPrimaryKey = "showPrimaryKey",
@@ -64,7 +68,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowDatabasePropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowDatabaseAttributes);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
+          );
         },
       },
     });
@@ -77,7 +83,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowPrimaryKeyDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowPrimaryKey);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowPrimaryKey,
+          );
         },
       },
     });
@@ -90,7 +98,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowEmptyPropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowEmptyAttributes);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+          );
         },
       },
     });
@@ -103,7 +113,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowEditingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowEditing);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.AllowEditing,
+          );
         },
       },
     });
@@ -116,7 +128,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowErrorReportingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowErrorReporting);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.AllowErrorReporting,
+          );
         },
       },
     });
@@ -124,7 +138,10 @@ export default class DatabasePropertiesPanel extends Plugin {
     try {
       this.settingUtils.load();
     } catch (error) {
-      console.error("Error loading settings storage, probably empty config json:", error);
+      console.error(
+        "Error loading settings storage, probably empty config json:",
+        error,
+      );
     }
   }
 
@@ -177,24 +194,36 @@ export default class DatabasePropertiesPanel extends Plugin {
   async onLayoutReady() {
     await this.loadData(STORAGE_NAME);
     await this.settingUtils.load();
-    Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
+    // Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-    Logger.info(
+    Logger.debug(
       `Database Properties Panel Config:
 - Version: ${process.env.PLUGIN_VERSION}
 - Show DB: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowDatabaseAttributes)}
 - Show Primary: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey)}
 - Allow Error Reporting: ${this.settingUtils.get(DatabasePropertiesPanelConfig.AllowErrorReporting)}
-- Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`
+- Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`,
     );
 
-    this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
-    this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
+    this.eventBus.on(
+      SiyuanEvents.LOADED_PROTYLE_STATIC,
+      this.boundProtyleLoadedListener,
+    );
+    this.eventBus.on(
+      SiyuanEvents.SWITCH_PROTYLE,
+      this.boundProtyleSwitchListener,
+    );
   }
 
   async onunload() {
-    this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
-    this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
+    this.eventBus.off(
+      SiyuanEvents.LOADED_PROTYLE_STATIC,
+      this.boundProtyleLoadedListener,
+    );
+    this.eventBus.off(
+      SiyuanEvents.SWITCH_PROTYLE,
+      this.boundProtyleSwitchListener,
+    );
     document.querySelector(PANEL_PARENT_CLASS_SELECTOR)?.remove();
   }
 
@@ -210,7 +239,9 @@ export default class DatabasePropertiesPanel extends Plugin {
   }
 
   private getProtyleTopNode(nodeId) {
-    const titleNode = document.querySelector(`div[data-node-id="${nodeId}"].protyle-title`);
+    const titleNode = document.querySelector(
+      `div[data-node-id="${nodeId}"].protyle-title`,
+    );
 
     if (!titleNode) {
       Logger.debug("No title node found", { nodeId });
@@ -235,7 +266,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const blockId = openProtyle.block.rootID;
     const showDatabaseAttributes = this.settingUtils.get<boolean>(
-      DatabasePropertiesPanelConfig.ShowDatabaseAttributes
+      DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
     );
 
     // Logger.debug({ openProtyle });
@@ -246,7 +277,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       return;
     }
 
-    const editor = getAllEditor().find((editor) => editor.protyle.id === openProtyle.id);
+    const editor = getAllEditor().find(
+      (editor) => editor.protyle.id === openProtyle.id,
+    );
     if (!editor) {
       Logger.error("=> editor not found");
       return;
@@ -256,7 +289,9 @@ export default class DatabasePropertiesPanel extends Plugin {
     let allowEditing = false;
 
     if (typeof editor?.renderAVAttribute !== "undefined") {
-      allowEditing = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.AllowEditing);
+      allowEditing = this.settingUtils.get<boolean>(
+        DatabasePropertiesPanelConfig.AllowEditing,
+      );
     }
 
     if (showDatabaseAttributes) {
@@ -281,10 +316,10 @@ export default class DatabasePropertiesPanel extends Plugin {
         blockId,
         protyle: editor,
         showPrimaryKey: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowPrimaryKey
+          DatabasePropertiesPanelConfig.ShowPrimaryKey,
         ),
         showEmptyAttributes: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowEmptyAttributes
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes,
         ),
         allowEditing,
         i18n: this.i18n as I18N,
@@ -297,7 +332,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
   private initErrorReporting(avData: AttributeView[]) {
     const allowErrorReporting = this.settingUtils.get<boolean>(
-      DatabasePropertiesPanelConfig.AllowErrorReporting
+      DatabasePropertiesPanelConfig.AllowErrorReporting,
     );
 
     if (allowErrorReporting && process.env.SENTRY_DSN) {
@@ -315,7 +350,8 @@ export default class DatabasePropertiesPanel extends Plugin {
               if (frames) {
                 const isPluginError = frames.some(
                   (frame) =>
-                    frame.filename && frame.filename.includes("siyuan-database-properties-panel")
+                    frame.filename &&
+                    frame.filename.includes("siyuan-database-properties-panel"),
                 );
 
                 if (!isPluginError) {
@@ -335,11 +371,13 @@ export default class DatabasePropertiesPanel extends Plugin {
 
       Sentry.setContext("Config", {
         showDatabaseAttributes: this.settingUtils.get(
-          DatabasePropertiesPanelConfig.ShowDatabaseAttributes
+          DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
         ),
-        showPrimaryKey: this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey),
+        showPrimaryKey: this.settingUtils.get(
+          DatabasePropertiesPanelConfig.ShowPrimaryKey,
+        ),
         showEmptyAttributes: this.settingUtils.get(
-          DatabasePropertiesPanelConfig.ShowEmptyAttributes
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes,
         ),
       });
 

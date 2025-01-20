@@ -1,4 +1,5 @@
 {
+  "databasePropertyPanel": "Database properties",
   "configAllowErrorReportingTitle": "Allow error reporting",
   "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
   "configAllowEditingTitle": "Allow editing",
@@ -10,5 +11,7 @@
   "configShowPrimaryKeyTitle": "Show primary key",
   "configShowPrimaryKeyDesc": "Show primary key in the attribute panel, which is usually the same as the page title.",
   "configShowDatabasePropertiesTitle": "Show database properties",
-  "configShowDatabasePropertiesDesc": "Show database properties <b>always</b> in the attribute panel"
+  "configShowDatabasePropertiesDesc": "Show database properties <b>always</b> in the attribute panel",
+  "collapse": "Collapse",
+  "expand": "Expand"
 }
