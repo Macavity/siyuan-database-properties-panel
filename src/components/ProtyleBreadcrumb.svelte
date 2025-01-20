@@ -39,11 +39,11 @@
 
     <span class="protyle-breadcrumb__space"></span>
 
-    <Button icon={$isCollapsed ? "#iconExpand" : "#iconContract"}
+    <Button icon={$isCollapsed ? "iconExpand" : "iconContract"}
             on:click={toggleCollapseTab}
             tooltip={$isCollapsed ? i18n.expand : i18n.collapse}/>
     {#if false}
-        <Button icon="#iconSettings"/>
+        <Button icon="iconSettings"/>
     {/if}
 </div>
 
