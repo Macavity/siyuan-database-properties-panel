@@ -39,6 +39,7 @@
     "globals": "^15.11.0",
     "js-yaml": "^4.1.0",
     "jsdom": "^25.0.1",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "prettier": "^3.3.3",
     "rollup-plugin-livereload": "^2.0.5",
@@ -54,5 +55,8 @@
     "vite-plugin-static-copy": "^1.0.2",
     "vite-plugin-zip-pack": "^1.0.5",
     "vitest": "^2.1.5"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.14"
   }
 }

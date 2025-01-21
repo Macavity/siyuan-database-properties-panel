@@ -1,40 +1,79 @@
 import { get, writable } from "svelte/store";
+import debounce from "lodash/debounce";
 import { storageService } from "@/services/StorageService";
 import { LoggerService } from "@/libs/logger";
 import { SettingsDTO } from "@/types/dto/SettingsDTO";
 
-export const documentId = writable<string | null>(null);
-export const isCollapsed = writable<boolean>(false);
-export const lastSelectedAttributeView = writable<string | null>(null);
-
 const logger = new LoggerService("Store");
 
-const saveSettings = async (settings: SettingsDTO) => {
-  logger.info("trigger saveSettings", settings);
-  storageService
-    .saveSettings(settings)
-    .then(() => {
-      logger.info("savedSettings", settings);
-    })
-    .catch((e) => {
-      logger.error("error on saving settings", e, settings);
-    });
-};
+interface SettingsState {
+  documentId: string | null;
+  isCollapsed: boolean;
+  lastSelectedAttributeView: string | null;
+}
 
-isCollapsed.subscribe(async (newCollapseState) => {
-  const settings = new SettingsDTO(
-    get(documentId),
-    newCollapseState,
-    get(lastSelectedAttributeView),
-  );
-  await saveSettings(settings);
-});
+function createSettingsStore() {
+  const state = writable<SettingsState>({
+    documentId: null,
+    isCollapsed: false,
+    lastSelectedAttributeView: null,
+  });
 
-lastSelectedAttributeView.subscribe(async (newSelectedTab) => {
+  return {
+    ...state,
+    getDocumentId: () => get(state).documentId,
+    isAnyTabActive: () => get(state).lastSelectedAttributeView !== null,
+    getActiveTab: () => get(state).lastSelectedAttributeView,
+    setFromDTO: (dto: SettingsDTO) => {
+      state.update((state) => {
+        if (state.documentId && state.documentId !== dto.documentId) {
+          logger.error(
+            "Trying to change documentId. Abort.",
+            dto.documentId,
+            state.documentId,
+          );
+          return state;
+        }
+        return {
+          documentId: dto.documentId,
+          isCollapsed: dto.isCollapsed,
+          lastSelectedAttributeView: dto.lastSelectedAttributeView,
+        };
+      });
+    },
+    activateTab: (avID: string) => {
+      state.update((s) => ({
+        ...s,
+        isCollapsed: false,
+        lastSelectedAttributeView: avID,
+      }));
+    },
+    toggleCollapsed: () => {
+      state.update((s) => ({
+        ...s,
+        isCollapsed: !s.isCollapsed,
+      }));
+    },
+  };
+}
+
+const debouncedSaveSettings = debounce(async (settings: SettingsDTO) => {
+  try {
+    await storageService.saveSettings(settings);
+    logger.info("savedSettings", settings);
+  } catch (e) {
+    logger.error("error on saving settings", e, settings);
+  }
+}, 500);
+
+export const settingsStore = createSettingsStore();
+
+// Single subscription for all changes
+settingsStore.subscribe(async (state) => {
   const settings = new SettingsDTO(
-    get(documentId),
-    get(isCollapsed),
-    newSelectedTab,
+    state.documentId,
+    state.isCollapsed,
+    state.lastSelectedAttributeView,
   );
-  await saveSettings(settings);
+  await debouncedSaveSettings(settings);
 });

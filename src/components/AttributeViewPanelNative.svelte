@@ -6,7 +6,7 @@
     import {type AttributeView} from "@/types/AttributeView";
     import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
-    import {lastSelectedAttributeView} from "@/stores/localSettingStore";
+    import {settingsStore} from "@/stores/localSettingStore";
 
     export let avData: AttributeView[];
     export let showPrimaryKey: boolean = false;
@@ -51,7 +51,7 @@
             logger.info("showContent: No target tab found");
             return;
         }
-        lastSelectedAttributeView.set(tabFocus);
+        settingsStore.activateTab(tabFocus);
 
         targetTab.forEach((item: HTMLElement) => {
             item.classList.remove("dpp-av-panel--hidden");
@@ -111,11 +111,11 @@
                 item.classList.add("dpp-av-panel--hidden");
             });
 
-            if($lastSelectedAttributeView === null){
+            if(!settingsStore.isAnyTabActive()){
                 const first = element.querySelector(`[data-type="NodeAttributeView"]`);
                 activateTab(first.getAttribute("data-av-id"));
             } else {
-                activateTab($lastSelectedAttributeView);
+                activateTab(settingsStore.getActiveTab());
             }
         });
     }
@@ -123,7 +123,7 @@
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={$lastSelectedAttributeView} on:click={showContent}/>
+    <LayoutTabBar {tabs} focus={$settingsStore.lastSelectedAttributeView} on:click={showContent}/>
     <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
 

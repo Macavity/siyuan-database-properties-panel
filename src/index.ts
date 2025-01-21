@@ -14,11 +14,7 @@ import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
-import {
-  documentId,
-  isCollapsed,
-  lastSelectedAttributeView,
-} from "@/stores/localSettingStore";
+import { settingsStore } from "@/stores/localSettingStore";
 
 const STORAGE_NAME = "menu-config";
 
@@ -294,9 +290,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     const settings = await storageService.fetchSettings(blockId);
-    documentId.set(blockId);
-    isCollapsed.set(settings.isCollapsed);
-    lastSelectedAttributeView.set(settings.lastSelectedAttributeView);
+    settingsStore.setFromDTO(settings);
 
     let avData = [] as AttributeView[];
     let allowEditing = false;

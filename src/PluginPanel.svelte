@@ -6,9 +6,9 @@
     import AttributeViewPanelNative from "./components/AttributeViewPanelNative.svelte";
     import {Protyle} from "siyuan";
     import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.svelte";
-    import {isCollapsed} from "@/stores/localSettingStore";
     import {type AttributeView} from "@/types/AttributeView";
     import Icon from "@/components/ui/Icon.svelte";
+    import {settingsStore} from "@/stores/localSettingStore";
 
     export let i18n: I18N;
     export let showPrimaryKey: boolean = false;
@@ -24,7 +24,7 @@
     setContext(Context.BlockID, blockId);
 
     const openAvPanel = (avId: string) => {
-        //
+        settingsStore.activateTab(avId);
     }
 </script>
 
@@ -41,7 +41,7 @@
             </span>
         {/each}
     </ProtyleBreadcrumb>
-    {#if !$isCollapsed}
+    {#if !$settingsStore.isCollapsed}
         {#if allowEditing}
             <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes}/>
         {:else}

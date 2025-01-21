@@ -68,6 +68,9 @@ importers:
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       minimist:
         specifier: ^1.2.8
         version: 1.2.8
@@ -113,6 +116,10 @@ importers:
       vitest:
         specifier: ^2.1.5
         version: 2.1.5(@types/node@20.16.11)(jsdom@25.0.1)(sass@1.79.5)
+    devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.14
+        version: 4.17.14
 
 packages:
 
@@ -642,6 +649,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/lodash@4.17.14':
+    resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
 
   '@types/node@20.16.11':
     resolution: {integrity: sha512-y+cTCACu92FyA5fgQSAI8A1H429g7aSK2HsO7K4XYUWc4dY5IUz55JSDIYT6/VsOLfGy8vmvQYC2hfb0iF16Uw==}
@@ -2414,6 +2424,8 @@ snapshots:
       pretty-format: 29.7.0
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/lodash@4.17.14': {}
 
   '@types/node@20.16.11':
     dependencies:
