@@ -9,15 +9,13 @@ The SiYuan Database Properties Panel plugin enhances your SiYuan experience by e
 It's heavily inspired by the now archived and no longer maintained [SiYuan-Attributes-Panel](https://github.com/TransMux/SiYuan-Attributes-Panel/).
 This plugin allows users to view database row attributes directly on the dedicated pages created from those rows.
 
-## Recent Changes
+## Changes in last release
 
-- [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - Add edit functionality
-- [0.5.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.2) - Fix #20: Remove text indentation
-- [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - Add support for column icons
-- [0.4.4](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.4) - Fix issues with empty asset fields
-- [0.4.3](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.3) - Fix issues with empty relation fields
-- [0.4.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.2) - Fix an issue with guest users
-- [0.4.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.4.1) - Improve hiding primary keys
+## [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
+
+- Adds toggle which allows to hide the database properties panel for a document. This setting is stored per document.
+- Adds a tabbed layout to reduce used space for the panel (requires SiYuan >=3.0.17)
+- Removed setting to disable editing as it works well.
 
 ## Features
 

@@ -13,7 +13,6 @@ import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
 import { settingsStore } from "@/stores/localSettingStore";
-import { PLUGIN_NAME } from "./constants";
 
 const STORAGE_NAME = "menu-config";
 
@@ -32,7 +31,6 @@ enum DatabasePropertiesPanelConfig {
   ShowDatabaseAttributes = "showDatabaseAttributes",
   AllowErrorReporting = "allowErrorReporting",
   ShowEmptyAttributes = "showEmptyAttributes",
-  AllowEditing = "allowEditing",
 }
 
 export default class DatabasePropertiesPanel extends Plugin {
@@ -103,21 +101,6 @@ export default class DatabasePropertiesPanel extends Plugin {
         callback: () => {
           this.changeCheckboxSetting(
             DatabasePropertiesPanelConfig.ShowEmptyAttributes,
-          );
-        },
-      },
-    });
-
-    this.settingUtils.addItem({
-      key: DatabasePropertiesPanelConfig.AllowEditing,
-      value: true,
-      type: "checkbox",
-      title: this.i18n.configAllowEditingTitle,
-      description: this.i18n.configAllowEditingDesc,
-      action: {
-        callback: () => {
-          this.changeCheckboxSetting(
-            DatabasePropertiesPanelConfig.AllowEditing,
           );
         },
       },
