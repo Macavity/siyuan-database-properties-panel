@@ -51,7 +51,7 @@
             logger.info("showContent: No target tab found");
             return;
         }
-        settingsStore.activateTab(tabFocus);
+        settingsStore.activateTab(blockId, tabFocus);
 
         targetTab.forEach((item: HTMLElement) => {
             item.classList.remove("dpp-av-panel--hidden");
@@ -111,19 +111,20 @@
                 item.classList.add("dpp-av-panel--hidden");
             });
 
-            if(!settingsStore.isAnyTabActive()){
+            if(!settingsStore.isAnyTabActive(blockId)){
                 const first = element.querySelector(`[data-type="NodeAttributeView"]`);
                 activateTab(first.getAttribute("data-av-id"));
             } else {
-                activateTab(settingsStore.getActiveTab());
+                activateTab(settingsStore.getActiveTab(blockId));
             }
         });
     }
 
+    $: currentSettings = $settingsStore.get(blockId);
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={$settingsStore.lastSelectedAttributeView} on:click={showContent}/>
+    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} on:click={showContent}/>
     <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
 

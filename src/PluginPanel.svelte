@@ -24,8 +24,11 @@
     setContext(Context.BlockID, blockId);
 
     const openAvPanel = (avId: string) => {
-        settingsStore.activateTab(avId);
+        settingsStore.activateTab(blockId, avId);
     }
+
+    $: isCollapsed = $settingsStore.get(blockId).isCollapsed;
+
     // function onError(error: Error) {
     //     Sentry.withScope(scope => {
     //         scope.setTag('errorSource', PLUGIN_NAME);
@@ -47,7 +50,7 @@
             </span>
         {/each}
     </ProtyleBreadcrumb>
-    {#if !$settingsStore.isCollapsed}
+    {#if !isCollapsed}
         {#if allowEditing}
             <AttributeViewPanelNative {avData} {showPrimaryKey} {showEmptyAttributes}/>
         {:else}
