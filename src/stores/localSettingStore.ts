@@ -7,73 +7,96 @@ import { SettingsDTO } from "@/types/dto/SettingsDTO";
 const logger = new LoggerService("Store");
 
 interface SettingsState {
-  documentId: string | null;
   isCollapsed: boolean;
   lastSelectedAttributeView: string | null;
 }
 
+type DocumentSettings = Map<string, SettingsState>;
+
 function createSettingsStore() {
-  const state = writable<SettingsState>({
-    documentId: null,
-    isCollapsed: false,
-    lastSelectedAttributeView: null,
-  });
+  const state = writable<DocumentSettings>(new Map());
 
   return {
     ...state,
-    getDocumentId: () => get(state).documentId,
-    isAnyTabActive: () => get(state).lastSelectedAttributeView !== null,
-    getActiveTab: () => get(state).lastSelectedAttributeView,
-    setFromDTO: (dto: SettingsDTO) => {
-      state.update((state) => {
-        if (state.documentId && state.documentId !== dto.documentId) {
-          logger.error(
-            "Trying to change documentId. Abort.",
-            dto.documentId,
-            state.documentId,
-          );
-          return state;
+    getDocumentSettings: (documentId: string) => {
+      return (
+        get(state).get(documentId) ?? {
+          isCollapsed: false,
+          lastSelectedAttributeView: null,
         }
-        return {
-          documentId: dto.documentId,
+      );
+    },
+    isAnyTabActive: (documentId: string) => {
+      const settings = get(state).get(documentId);
+      return settings?.lastSelectedAttributeView !== null;
+    },
+    getActiveTab: (documentId: string) => {
+      return get(state).get(documentId)?.lastSelectedAttributeView ?? null;
+    },
+    setFromDTO: (dto: SettingsDTO) => {
+      state.update((currentState) => {
+        const newState = new Map(currentState);
+        newState.set(dto.documentId, {
           isCollapsed: dto.isCollapsed,
           lastSelectedAttributeView: dto.lastSelectedAttributeView,
-        };
+        });
+
+        return newState;
       });
     },
-    activateTab: (avID: string) => {
-      state.update((s) => ({
-        ...s,
-        isCollapsed: false,
-        lastSelectedAttributeView: avID,
-      }));
+    activateTab: (documentId: string, avID: string) => {
+      state.update((currentState) => {
+        const newState = new Map(currentState);
+        const docSettings = newState.get(documentId) ?? {
+          isCollapsed: false,
+          lastSelectedAttributeView: null,
+        };
+        newState.set(documentId, {
+          ...docSettings,
+          isCollapsed: false,
+          lastSelectedAttributeView: avID,
+        });
+        return newState;
+      });
     },
-    toggleCollapsed: () => {
-      state.update((s) => ({
-        ...s,
-        isCollapsed: !s.isCollapsed,
-      }));
+    toggleCollapsed: (documentId: string) => {
+      state.update((currentState) => {
+        const newState = new Map(currentState);
+        const docSettings = newState.get(documentId) ?? {
+          isCollapsed: false,
+          lastSelectedAttributeView: null,
+        };
+        newState.set(documentId, {
+          ...docSettings,
+          isCollapsed: !docSettings.isCollapsed,
+        });
+        return newState;
+      });
     },
   };
 }
 
-const debouncedSaveSettings = debounce(async (settings: SettingsDTO) => {
-  try {
-    await storageService.saveSettings(settings);
-    logger.info("savedSettings", settings);
-  } catch (e) {
-    logger.error("error on saving settings", e, settings);
-  }
-}, 500);
+const debouncedSaveSettings = debounce(
+  async (documentId: string, settings: SettingsState) => {
+    try {
+      const dto = new SettingsDTO(
+        documentId,
+        settings.isCollapsed,
+        settings.lastSelectedAttributeView,
+      );
+      await storageService.saveSettings(dto);
+      logger.info("savedSettings", dto);
+    } catch (e) {
+      logger.error("error on saving settings", e, settings);
+    }
+  },
+  500,
+);
 
 export const settingsStore = createSettingsStore();
 
-// Single subscription for all changes
 settingsStore.subscribe(async (state) => {
-  const settings = new SettingsDTO(
-    state.documentId,
-    state.isCollapsed,
-    state.lastSelectedAttributeView,
-  );
-  await debouncedSaveSettings(settings);
+  state.forEach((settings, documentId) => {
+    debouncedSaveSettings(documentId, settings);
+  });
 });

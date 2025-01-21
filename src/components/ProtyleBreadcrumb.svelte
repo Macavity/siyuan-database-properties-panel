@@ -6,29 +6,28 @@
     import {LoggerService} from "@/services/LoggerService";
 
     const i18n = getContext(Context.I18N);
+    const documentId = getContext(Context.BlockID);
     const logger = new LoggerService('ProtyleBreadcrumb');
 
     const toggleCollapseTab = async () => {
-        logger.debug('toggleCollapseTab');
+        logger.debug('toggleCollapseTab', { isCollapsed, documentId});
 
-        settingsStore.toggleCollapsed();
+        settingsStore.toggleCollapsed(documentId);
     }
+    $: isCollapsed = $settingsStore.get(documentId).isCollapsed;
 </script>
 
 <div class="protyle-breadcrumb" id="top-navigation-bar">
     <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
-        {#if $settingsStore.isCollapsed}
+        {#if isCollapsed}
             <slot/>
         {/if}
     </div>
 
     <span class="protyle-breadcrumb__space"></span>
 
-    <Button icon={$settingsStore.isCollapsed ? "iconExpand" : "iconContract"}
+    <Button icon={isCollapsed ? "iconExpand" : "iconContract"}
             on:click={toggleCollapseTab}
-            tooltip={$settingsStore.isCollapsed ? i18n.expand : i18n.collapse}/>
-    {#if false}
-        <Button icon="iconSettings"/>
-    {/if}
+            tooltip={isCollapsed ? i18n.expand : i18n.collapse}/>
 </div>
 
