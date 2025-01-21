@@ -26,6 +26,12 @@
     const openAvPanel = (avId: string) => {
         settingsStore.activateTab(avId);
     }
+    // function onError(error: Error) {
+    //     Sentry.withScope(scope => {
+    //         scope.setTag('errorSource', PLUGIN_NAME);
+    //         Sentry.captureException(error);
+    //     });
+    // }
 </script>
 
 <div class="plugin-panel">

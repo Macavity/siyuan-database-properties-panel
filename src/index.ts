@@ -1,9 +1,7 @@
 import { Plugin, IEventBusMap, Model, getBackend, getFrontend } from "siyuan";
 import * as Sentry from "@sentry/browser";
 import "@/index.scss";
-
 import PluginPanel from "@/PluginPanel.svelte";
-
 import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
@@ -15,6 +13,7 @@ import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
 import { settingsStore } from "@/stores/localSettingStore";
+import { PLUGIN_NAME } from "./constants";
 
 const STORAGE_NAME = "menu-config";
 
@@ -293,12 +292,10 @@ export default class DatabasePropertiesPanel extends Plugin {
     settingsStore.setFromDTO(settings);
 
     let avData = [] as AttributeView[];
-    let allowEditing = false;
+    let supportsEditing = false;
 
     if (typeof editor?.renderAVAttribute !== "undefined") {
-      allowEditing = this.settingUtils.get<boolean>(
-        DatabasePropertiesPanelConfig.AllowEditing,
-      );
+      supportsEditing = true;
     }
 
     if (showDatabaseAttributes) {
@@ -310,7 +307,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       panelWrapper.remove();
     }
 
-    this.initErrorReporting(avData);
+    this.initErrorReporting(avData, supportsEditing);
 
     const tabDiv = document.createElement(`div`);
     tabDiv.className = PANEL_PARENT_CLASS;
@@ -328,7 +325,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         showEmptyAttributes: this.settingUtils.get<boolean>(
           DatabasePropertiesPanelConfig.ShowEmptyAttributes,
         ),
-        allowEditing,
+        allowEditing: supportsEditing,
         i18n: this.i18n as I18N,
         avData,
       },
@@ -337,7 +334,10 @@ export default class DatabasePropertiesPanel extends Plugin {
     topNode.after(tabDiv);
   }
 
-  private initErrorReporting(avData: AttributeView[]) {
+  private initErrorReporting(
+    avData: AttributeView[],
+    supportsEditing: boolean,
+  ) {
     const allowErrorReporting = this.settingUtils.get<boolean>(
       DatabasePropertiesPanelConfig.AllowErrorReporting,
     );
@@ -349,9 +349,21 @@ export default class DatabasePropertiesPanel extends Plugin {
         maxBreadcrumbs: 50,
         debug: false,
         release: process.env.PLUGIN_VERSION,
+        ignoreErrors: [],
         beforeSend(event) {
+          // Requires Svelte 5 boundary.
+          // if (event.tags?.errorSource !== PLUGIN_NAME) {
+          //   return null;
+          // }
+
           if (event.exception) {
             const exception = event.exception.values[0];
+
+            event.extra = {
+              ...event.extra,
+              recentLogs: LoggerService.getLogs(),
+            };
+
             if (exception.stacktrace) {
               const frames = exception.stacktrace.frames;
               if (frames) {
@@ -361,25 +373,33 @@ export default class DatabasePropertiesPanel extends Plugin {
                     frame.filename.includes("siyuan-database-properties-panel"),
                 );
 
+                if (!isPluginError) {
+                  return null;
+                }
+
                 const firstFrame = frames[0];
                 if (firstFrame && firstFrame.filename) {
-                  const pluginsWithKnownIssues = ["plugin:custom-block"];
-                  if (pluginsWithKnownIssues.includes(firstFrame.filename)) {
-                    this.logger.info(
-                      "Silenced Error because of other plugins",
-                      event,
-                    );
-                    return null;
+                  const pluginsWithKnownIssues = [
+                    "plugin:custom-block",
+                    "quickRefactor",
+                  ];
+
+                  for (const plugin of pluginsWithKnownIssues) {
+                    if (firstFrame.filename.includes(plugin)) {
+                      this.logger.info(
+                        "Silenced Error because of other plugins",
+                        event,
+                      );
+                      return null;
+                    }
                   }
                 }
 
-                if (isPluginError) {
-                  return event;
-                }
+                return event;
               }
             }
           }
-          this.logger.error("Silenced Error", event);
+          this.logger.info("Silenced Error", event.exception);
 
           return null;
         },
@@ -406,15 +426,21 @@ export default class DatabasePropertiesPanel extends Plugin {
       const frontend = getFrontend();
       const backend = getBackend();
 
+      Sentry.setTag(
+        "kernelVersion",
+        window.siyuan.config?.system?.kernelVersion,
+      );
+
+      Sentry.setTag("supportsEditing", supportsEditing);
+
       Sentry.setContext("SiYuan", {
         frontend,
         backend,
-        kernelVersion: window.siyuan.config?.system?.kernelVersion,
       });
     }
   }
 
   uninstall() {
-    this.logger.log("uninstall");
+    this.logger.info("uninstall");
   }
 }
