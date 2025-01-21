@@ -3,7 +3,7 @@
     import {Context} from "@/types/context";
     import Button from "@/components/ui/Button.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
-    import {LoggerService} from "@/libs/logger";
+    import {LoggerService} from "@/services/LoggerService";
 
     const i18n = getContext(Context.I18N);
     const logger = new LoggerService('ProtyleBreadcrumb');

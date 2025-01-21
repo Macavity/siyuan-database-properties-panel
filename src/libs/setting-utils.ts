@@ -9,7 +9,9 @@
  */
 
 import { Plugin, Setting } from "siyuan";
-import { Logger } from "./logger";
+import { LoggerService } from "../services/LoggerService";
+
+const logger = new LoggerService("SettingUtils");
 
 /**
  * The default function to get the value of the element
@@ -28,7 +30,9 @@ const createDefaultGetter = (type: TSettingItemType) => {
     case "slider":
     case "textinput":
     case "textarea":
-      getter = (ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) => {
+      getter = (
+        ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+      ) => {
         return ele.value;
       };
       break;
@@ -62,7 +66,10 @@ const createDefaultSetter = (type: TSettingItemType) => {
     case "textinput":
     case "textarea":
     case "number":
-      setter = (ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, value: string) => {
+      setter = (
+        ele: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+        value: string,
+      ) => {
         ele.value = value;
       };
       break;
@@ -116,7 +123,7 @@ export class SettingUtils {
 
   async load() {
     const data = await this.plugin.loadData(this.file);
-    // Logger.debug("Load config:", data);
+    // logger.debug("Load config:", data);
     if (data) {
       for (const [key, item] of this.settings) {
         item.value = data?.[key] ?? item.value;
@@ -129,7 +136,7 @@ export class SettingUtils {
   async save(data?: unknown) {
     data = data ?? this.dump();
     await this.plugin.saveData(this.file, this.dump());
-    // Logger.debug("Save config:", data);
+    // logger.debug("Save config:", data);
     return data;
   }
 
@@ -246,8 +253,8 @@ export class SettingUtils {
         item.getEleVal === undefined ||
         item.setEleVal === undefined);
     if (error) {
-      Logger.error(
-        "The custom setting item must have createElement, getEleVal and setEleVal methods"
+      logger.error(
+        "The custom setting item must have createElement, getEleVal and setEleVal methods",
       );
       return;
     }
@@ -268,8 +275,7 @@ export class SettingUtils {
         direction: item?.direction,
         createActionElement: () => {
           this.updateElementFromValue(item.key);
-          const element = this.getElement(item.key);
-          return element;
+          return this.getElement(item.key);
         },
       });
     } else {
@@ -306,7 +312,8 @@ export class SettingUtils {
         element.onchange = item.action?.callback ?? (() => {});
         break;
       case "select":
-        const selectElement: HTMLSelectElement = document.createElement("select");
+        const selectElement: HTMLSelectElement =
+          document.createElement("select");
         selectElement.className = "b3-select fn__flex-center fn__size200";
         const options = item?.options ?? {};
         for (const val in options) {
@@ -323,7 +330,8 @@ export class SettingUtils {
       case "slider":
         const sliderElement: HTMLInputElement = document.createElement("input");
         sliderElement.type = "range";
-        sliderElement.className = "b3-slider fn__size200 b3-tooltips b3-tooltips__n";
+        sliderElement.className =
+          "b3-slider fn__size200 b3-tooltips b3-tooltips__n";
         sliderElement.ariaLabel = item.value;
         sliderElement.min = item.slider?.min.toString() ?? "0";
         sliderElement.max = item.slider?.max.toString() ?? "100";
@@ -336,15 +344,18 @@ export class SettingUtils {
         itemElement = sliderElement;
         break;
       case "textinput":
-        const textInputElement: HTMLInputElement = document.createElement("input");
-        textInputElement.className = "b3-text-field fn__flex-center fn__size200";
+        const textInputElement: HTMLInputElement =
+          document.createElement("input");
+        textInputElement.className =
+          "b3-text-field fn__flex-center fn__size200";
         textInputElement.value = item.value;
         textInputElement.onchange = item.action?.callback ?? (() => {});
         itemElement = textInputElement;
         textInputElement.addEventListener("keydown", preventEnterConfirm);
         break;
       case "textarea":
-        const textareaElement: HTMLTextAreaElement = document.createElement("textarea");
+        const textareaElement: HTMLTextAreaElement =
+          document.createElement("textarea");
         textareaElement.className = "b3-text-field fn__block";
         textareaElement.value = item.value;
         textareaElement.onchange = item.action?.callback ?? (() => {});
@@ -359,8 +370,10 @@ export class SettingUtils {
         numberElement.addEventListener("keydown", preventEnterConfirm);
         break;
       case "button":
-        const buttonElement: HTMLButtonElement = document.createElement("button");
-        buttonElement.className = "b3-button b3-button--outline fn__flex-center fn__size200";
+        const buttonElement: HTMLButtonElement =
+          document.createElement("button");
+        buttonElement.className =
+          "b3-button b3-button--outline fn__flex-center fn__size200";
         buttonElement.innerText = item.button?.label ?? "Button";
         buttonElement.onclick = item.button?.callback ?? (() => {});
         itemElement = buttonElement;

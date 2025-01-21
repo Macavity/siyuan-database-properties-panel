@@ -9,7 +9,7 @@ export enum LogLevel {
 
 const PLUGIN = "plugin:database-properties-panel";
 export const DEFAULT_LOGLEVEL =
-  process.env.NODE_ENV === "production" ? LogLevel.OFF : LogLevel.DEBUG;
+  process.env.NODE_ENV === "production" ? LogLevel.ERROR : LogLevel.ERROR;
 
 export class LoggerService {
   constructor(

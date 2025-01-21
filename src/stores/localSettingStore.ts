@@ -1,7 +1,7 @@
 import { get, writable } from "svelte/store";
 import debounce from "lodash/debounce";
 import { storageService } from "@/services/StorageService";
-import { LoggerService } from "@/libs/logger";
+import { LoggerService } from "@/services/LoggerService";
 import { SettingsDTO } from "@/types/dto/SettingsDTO";
 
 const logger = new LoggerService("Store");

@@ -1,5 +1,5 @@
 import { ApiError, getFile, putFile } from "@/api";
-import { LoggerService, LogLevel } from "@/libs/logger";
+import { LoggerService } from "@/services/LoggerService";
 import { createDefaultSettingsDTO, SettingsDTO } from "@/types/dto/SettingsDTO";
 
 export const PLUGIN = "siyuan-database-properties-panel";
@@ -16,9 +16,7 @@ function isApiError(data: SettingsDTO | ApiError): data is ApiError {
 }
 
 export class StorageService {
-  constructor(
-    private logger = new LoggerService("StorageService", LogLevel.DEBUG),
-  ) {}
+  constructor(private logger = new LoggerService("StorageService")) {}
 
   public async fetchSettings(documentId: string) {
     this.logger.debug("fetchSettings", documentId);

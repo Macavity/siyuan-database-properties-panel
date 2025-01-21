@@ -8,7 +8,7 @@ import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
-import { LoggerService } from "./libs/logger";
+import { LoggerService } from "./services/LoggerService";
 import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";

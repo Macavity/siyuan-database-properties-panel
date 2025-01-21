@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {LoggerService} from "@/libs/logger";
+    import {LoggerService} from "@/services/LoggerService";
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import {onMount} from "svelte";
