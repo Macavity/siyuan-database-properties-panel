@@ -1,8 +1,8 @@
 export class SettingsDTO {
   constructor(
     public readonly documentId: string,
-    public isCollapsed: boolean,
-    public lastSelectedAttributeView: string | null = null,
+    public readonly isCollapsed: boolean,
+    public readonly lastSelectedAttributeView: string | null = null,
   ) {}
 }
 

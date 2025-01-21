@@ -6,6 +6,7 @@
     import {type AttributeView} from "@/types/AttributeView";
     import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
+    import {lastSelectedAttributeView} from "@/stores/localSettingStore";
 
     export let avData: AttributeView[];
     export let showPrimaryKey: boolean = false;
@@ -17,11 +18,8 @@
     const blockId = getContext(Context.BlockID);
     const protyle = getContext(Context.Protyle);
     const logger = new LoggerService("AttributeViewPanelNative");
-    logger.debug("- blockId", blockId);
-    logger.debug("- avData", avData);
 
     const tabs = [];
-    let tabFocus = avData[0]?.avID;
 
     avData.forEach((attributeView) => {
         tabs.push({
@@ -32,6 +30,38 @@
     });
 
     onMount(() => {
+        renderProtyleAv();
+    });
+
+    const showContent = (event: CustomEvent) => {
+        const tabFocus = event.detail.key;
+
+        if(!tabFocus){
+            return;
+        }
+
+        activateTab(tabFocus);
+    }
+
+    const activateTab = (tabFocus: string) => {
+        logger.debug("activateTab", tabFocus);
+        const targetTab = element.querySelectorAll(`[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`);
+        const remainingTabs = element.querySelectorAll(`[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`);
+        if(!targetTab.length){
+            logger.info("showContent: No target tab found");
+            return;
+        }
+        lastSelectedAttributeView.set(tabFocus);
+
+        targetTab.forEach((item: HTMLElement) => {
+            item.classList.remove("dpp-av-panel--hidden");
+        });
+        remainingTabs.forEach((item: HTMLElement) => {
+            item.classList.add("dpp-av-panel--hidden");
+        });
+    }
+
+    const renderProtyleAv = () => {
         protyle.renderAVAttribute(element, blockId, (element) => {
             logger.debug("renderAVAttribute", element, blockId)
             if (!showPrimaryKey) {
@@ -81,34 +111,19 @@
                 item.classList.add("dpp-av-panel--hidden");
             });
 
-            element.querySelectorAll(`[data-type="NodeAttributeView"]`).forEach((item, index) => {
-                if (index !== 0) {
-                    item.classList.add("dpp-av-panel--hidden");
-                }
-            });
-
-            // element.querySelectorAll(".fn__hr").forEach((item) => {
-            //   item.classList.add("dpp-av-panel--hidden");
-            // });
-        });
-    });
-
-    const showContent = (event: CustomEvent) => {
-        logger.debug("showContent", event.detail.key);
-        tabFocus = event.detail.key;
-        element.querySelectorAll(`[data-type="NodeAttributeView"]`).forEach((item: HTMLElement) => {
-            const avId = item.dataset.avId;
-            if (avId === event.detail.key) {
-                item.classList.remove("dpp-av-panel--hidden");
+            if($lastSelectedAttributeView === null){
+                const first = element.querySelector(`[data-type="NodeAttributeView"]`);
+                activateTab(first.getAttribute("data-av-id"));
             } else {
-                item.classList.add("dpp-av-panel--hidden");
+                activateTab($lastSelectedAttributeView);
             }
         });
     }
+
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={tabFocus} on:click={showContent}/>
+    <LayoutTabBar {tabs} focus={$lastSelectedAttributeView} on:click={showContent}/>
     <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
 

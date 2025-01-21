@@ -2,19 +2,16 @@
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import Button from "@/components/ui/Button.svelte";
-    import {isCollapsed, lastSelectedAttributeView} from "@/stores/localSettingStore";
-    import { LoggerService} from "@/libs/logger";
-    import {storageService} from "@/services/StorageService";
+    import {isCollapsed} from "@/stores/localSettingStore";
+    import {LoggerService} from "@/libs/logger";
 
     const i18n = getContext(Context.I18N);
-    const documentId = getContext(Context.BlockID);
     const logger = new LoggerService('ProtyleBreadcrumb');
 
     const toggleCollapseTab = async () => {
         logger.debug('toggleCollapseTab');
 
         isCollapsed.update(value => !value);
-        await storageService.saveSettings(documentId, $isCollapsed, $lastSelectedAttributeView);
     }
 </script>
 
@@ -31,7 +28,7 @@
             on:click={toggleCollapseTab}
             tooltip={$isCollapsed ? i18n.expand : i18n.collapse}/>
     {#if false}
-        <Button icon="iconSettings" />
+        <Button icon="iconSettings"/>
     {/if}
 </div>
 

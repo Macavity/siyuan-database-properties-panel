@@ -1,9 +1,5 @@
 import { ApiError, getFile, putFile } from "@/api";
 import { LoggerService, LogLevel } from "@/libs/logger";
-import {
-  isCollapsed,
-  lastSelectedAttributeView,
-} from "@/stores/localSettingStore";
 import { createDefaultSettingsDTO, SettingsDTO } from "@/types/dto/SettingsDTO";
 
 export const PLUGIN = "siyuan-database-properties-panel";
@@ -34,31 +30,28 @@ export class StorageService {
           return createDefaultSettingsDTO(documentId);
         }
 
-        isCollapsed.set(data.isCollapsed);
-        lastSelectedAttributeView.set(data.lastSelectedAttributeView);
+        if (data.documentId !== documentId) {
+          this.logger.error(
+            `Invalid documentId ${data.documentId}, expected ${documentId}.`,
+          );
+          return createDefaultSettingsDTO(documentId);
+        }
+
+        return new SettingsDTO(
+          documentId,
+          data.isCollapsed,
+          data.lastSelectedAttributeView,
+        );
       })
-      .catch(() => {
+      .catch((e) => {
+        this.logger.error("Error retrieving settings", e);
         this.logger.debug("create default for document", documentId);
         return createDefaultSettingsDTO(documentId);
       });
   }
 
-  public async saveSettings(
-    documentId: string,
-    isCollapsed: boolean,
-    lastSelectedAttributeView: string,
-  ) {
-    this.logger.debug("saveSettings", {
-      documentId,
-      isCollapsed,
-      lastSelectedAttributeView,
-    });
-
-    const settings = new SettingsDTO(
-      documentId,
-      isCollapsed,
-      lastSelectedAttributeView,
-    );
+  public async saveSettings(settings: SettingsDTO) {
+    this.logger.debug("saveSettings", settings);
 
     const file = new File(
       [
@@ -66,9 +59,9 @@ export class StorageService {
           type: "application/json",
         }),
       ],
-      `${documentId}.json`,
+      `${settings.documentId}.json`,
     );
-    return putFile(getStoragePath(documentId), false, file);
+    return putFile(getStoragePath(settings.documentId), false, file);
   }
 }
 
