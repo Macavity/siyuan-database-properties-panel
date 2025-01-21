@@ -1,6 +1,6 @@
 <script lang="ts">
   /* eslint-disable svelte/no-at-html-tags */
-  import type { IAVCellValue } from "siyuan";
+  import { type IAVCellValue } from "@/types/siyuan.types";
   export let value: IAVCellValue;
 </script>
 

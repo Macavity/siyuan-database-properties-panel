@@ -10,6 +10,12 @@
 
 ## 最近更改
 
+## [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
+
+- 添加切换按钮，允许隐藏文档的数据库属性面板。该设置存储在每个文档中。
+- 添加标签式布局，以减少面板的使用空间
+
+## 旧的变化
 - [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - 添加编辑功能
 - [0.5.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.2) - 修复 #20： 移除文本缩进
 - [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - 添加对列图标的支持

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-  import type { IAVCellValue } from "siyuan";
+  import { type IAVCellValue } from "@/types/siyuan.types";
   export let value: IAVCellValue;
 </script>
 

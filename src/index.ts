@@ -1,26 +1,31 @@
 import { Plugin, IEventBusMap, Model, getBackend, getFrontend } from "siyuan";
 import * as Sentry from "@sentry/browser";
 import "@/index.scss";
-
 import PluginPanel from "@/PluginPanel.svelte";
-
 import { SettingUtils } from "./libs/setting-utils";
 import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
-import { Logger } from "./libs/logger";
+import { LoggerService } from "./services/LoggerService";
 import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
+import { storageService } from "@/services/StorageService";
+import { settingsStore } from "@/stores/localSettingStore";
+import { PLUGIN_NAME } from "./constants";
 
 const STORAGE_NAME = "menu-config";
 
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper";
 const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
 
-type TEventLoadedProtyle = CustomEvent<IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]>;
-type TEventSwitchProtyle = CustomEvent<IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]>;
+type TEventLoadedProtyle = CustomEvent<
+  IEventBusMap[SiyuanEvents.LOADED_PROTYLE_STATIC]
+>;
+type TEventSwitchProtyle = CustomEvent<
+  IEventBusMap[SiyuanEvents.SWITCH_PROTYLE]
+>;
 
 enum DatabasePropertiesPanelConfig {
   ShowPrimaryKey = "showPrimaryKey",
@@ -33,10 +38,12 @@ enum DatabasePropertiesPanelConfig {
 export default class DatabasePropertiesPanel extends Plugin {
   customTab: () => Model;
   private settingUtils: SettingUtils;
+  private logger: LoggerService;
   boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
   boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
 
   async onload() {
+    this.logger = new LoggerService();
     this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
 
     this.initSettings();
@@ -64,7 +71,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowDatabasePropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowDatabaseAttributes);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
+          );
         },
       },
     });
@@ -77,7 +86,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowPrimaryKeyDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowPrimaryKey);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowPrimaryKey,
+          );
         },
       },
     });
@@ -90,20 +101,24 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configShowEmptyPropertiesDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.ShowEmptyAttributes);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+          );
         },
       },
     });
 
     this.settingUtils.addItem({
       key: DatabasePropertiesPanelConfig.AllowEditing,
-      value: false,
+      value: true,
       type: "checkbox",
       title: this.i18n.configAllowEditingTitle,
       description: this.i18n.configAllowEditingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowEditing);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.AllowEditing,
+          );
         },
       },
     });
@@ -116,7 +131,9 @@ export default class DatabasePropertiesPanel extends Plugin {
       description: this.i18n.configAllowErrorReportingDesc,
       action: {
         callback: () => {
-          this.changeCheckboxSetting(DatabasePropertiesPanelConfig.AllowErrorReporting);
+          this.changeCheckboxSetting(
+            DatabasePropertiesPanelConfig.AllowErrorReporting,
+          );
         },
       },
     });
@@ -124,7 +141,10 @@ export default class DatabasePropertiesPanel extends Plugin {
     try {
       this.settingUtils.load();
     } catch (error) {
-      console.error("Error loading settings storage, probably empty config json:", error);
+      console.error(
+        "Error loading settings storage, probably empty config json:",
+        error,
+      );
     }
   }
 
@@ -177,24 +197,36 @@ export default class DatabasePropertiesPanel extends Plugin {
   async onLayoutReady() {
     await this.loadData(STORAGE_NAME);
     await this.settingUtils.load();
-    Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
+    // Logger.debug(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-    Logger.info(
+    this.logger.debug(
       `Database Properties Panel Config:
 - Version: ${process.env.PLUGIN_VERSION}
 - Show DB: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowDatabaseAttributes)}
 - Show Primary: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey)}
 - Allow Error Reporting: ${this.settingUtils.get(DatabasePropertiesPanelConfig.AllowErrorReporting)}
-- Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`
+- Show Empty Attributes: ${this.settingUtils.get(DatabasePropertiesPanelConfig.ShowEmptyAttributes)}`,
     );
 
-    this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
-    this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
+    this.eventBus.on(
+      SiyuanEvents.LOADED_PROTYLE_STATIC,
+      this.boundProtyleLoadedListener,
+    );
+    this.eventBus.on(
+      SiyuanEvents.SWITCH_PROTYLE,
+      this.boundProtyleSwitchListener,
+    );
   }
 
   async onunload() {
-    this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
-    this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
+    this.eventBus.off(
+      SiyuanEvents.LOADED_PROTYLE_STATIC,
+      this.boundProtyleLoadedListener,
+    );
+    this.eventBus.off(
+      SiyuanEvents.SWITCH_PROTYLE,
+      this.boundProtyleSwitchListener,
+    );
     document.querySelector(PANEL_PARENT_CLASS_SELECTOR)?.remove();
   }
 
@@ -210,16 +242,18 @@ export default class DatabasePropertiesPanel extends Plugin {
   }
 
   private getProtyleTopNode(nodeId) {
-    const titleNode = document.querySelector(`div[data-node-id="${nodeId}"].protyle-title`);
+    const titleNode = document.querySelector(
+      `div[data-node-id="${nodeId}"].protyle-title`,
+    );
 
     if (!titleNode) {
-      Logger.debug("No title node found", { nodeId });
+      this.logger.debug("No title node found", { nodeId });
       return false;
     }
 
     const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
     if (!protyleAttrElement || !protyleAttrElement.firstChild) {
-      Logger.debug("No protyle-attr element found", { nodeId });
+      this.logger.debug("No protyle-attr element found", { nodeId });
       return false;
     }
 
@@ -235,28 +269,33 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const blockId = openProtyle.block.rootID;
     const showDatabaseAttributes = this.settingUtils.get<boolean>(
-      DatabasePropertiesPanelConfig.ShowDatabaseAttributes
+      DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
     );
 
     // Logger.debug({ openProtyle });
 
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
-      Logger.debug("=> database panel hidden");
+      this.logger.debug("=> database panel hidden");
       return;
     }
 
-    const editor = getAllEditor().find((editor) => editor.protyle.id === openProtyle.id);
+    const editor = getAllEditor().find(
+      (editor) => editor.protyle.id === openProtyle.id,
+    );
     if (!editor) {
-      Logger.error("=> editor not found");
+      this.logger.error("=> editor not found");
       return;
     }
+
+    const settings = await storageService.fetchSettings(blockId);
+    settingsStore.setFromDTO(settings);
 
     let avData = [] as AttributeView[];
-    let allowEditing = false;
+    let supportsEditing = false;
 
     if (typeof editor?.renderAVAttribute !== "undefined") {
-      allowEditing = this.settingUtils.get<boolean>(DatabasePropertiesPanelConfig.AllowEditing);
+      supportsEditing = true;
     }
 
     if (showDatabaseAttributes) {
@@ -268,7 +307,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       panelWrapper.remove();
     }
 
-    this.initErrorReporting(avData);
+    this.initErrorReporting(avData, supportsEditing);
 
     const tabDiv = document.createElement(`div`);
     tabDiv.className = PANEL_PARENT_CLASS;
@@ -281,12 +320,12 @@ export default class DatabasePropertiesPanel extends Plugin {
         blockId,
         protyle: editor,
         showPrimaryKey: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowPrimaryKey
+          DatabasePropertiesPanelConfig.ShowPrimaryKey,
         ),
         showEmptyAttributes: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowEmptyAttributes
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes,
         ),
-        allowEditing,
+        allowEditing: supportsEditing,
         i18n: this.i18n as I18N,
         avData,
       },
@@ -295,9 +334,12 @@ export default class DatabasePropertiesPanel extends Plugin {
     topNode.after(tabDiv);
   }
 
-  private initErrorReporting(avData: AttributeView[]) {
+  private initErrorReporting(
+    avData: AttributeView[],
+    supportsEditing: boolean,
+  ) {
     const allowErrorReporting = this.settingUtils.get<boolean>(
-      DatabasePropertiesPanelConfig.AllowErrorReporting
+      DatabasePropertiesPanelConfig.AllowErrorReporting,
     );
 
     if (allowErrorReporting && process.env.SENTRY_DSN) {
@@ -307,24 +349,59 @@ export default class DatabasePropertiesPanel extends Plugin {
         maxBreadcrumbs: 50,
         debug: false,
         release: process.env.PLUGIN_VERSION,
+        ignoreErrors: [],
         beforeSend(event) {
+          // Requires Svelte 5 boundary.
+          // if (event.tags?.errorSource !== PLUGIN_NAME) {
+          //   return null;
+          // }
+
           if (event.exception) {
             const exception = event.exception.values[0];
+
+            event.extra = {
+              ...event.extra,
+              recentLogs: LoggerService.getLogs(),
+            };
+
             if (exception.stacktrace) {
               const frames = exception.stacktrace.frames;
               if (frames) {
                 const isPluginError = frames.some(
                   (frame) =>
-                    frame.filename && frame.filename.includes("siyuan-database-properties-panel")
+                    frame.filename &&
+                    frame.filename.includes("siyuan-database-properties-panel"),
                 );
 
                 if (!isPluginError) {
                   return null;
                 }
+
+                const firstFrame = frames[0];
+                if (firstFrame && firstFrame.filename) {
+                  const pluginsWithKnownIssues = [
+                    "plugin:custom-block",
+                    "quickRefactor",
+                  ];
+
+                  for (const plugin of pluginsWithKnownIssues) {
+                    if (firstFrame.filename.includes(plugin)) {
+                      this.logger.info(
+                        "Silenced Error because of other plugins",
+                        event,
+                      );
+                      return null;
+                    }
+                  }
+                }
+
+                return event;
               }
             }
           }
-          return event;
+          this.logger.info("Silenced Error", event.exception);
+
+          return null;
         },
       });
       if (window.siyuan.user?.userId) {
@@ -335,28 +412,35 @@ export default class DatabasePropertiesPanel extends Plugin {
 
       Sentry.setContext("Config", {
         showDatabaseAttributes: this.settingUtils.get(
-          DatabasePropertiesPanelConfig.ShowDatabaseAttributes
+          DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
         ),
-        showPrimaryKey: this.settingUtils.get(DatabasePropertiesPanelConfig.ShowPrimaryKey),
+        showPrimaryKey: this.settingUtils.get(
+          DatabasePropertiesPanelConfig.ShowPrimaryKey,
+        ),
         showEmptyAttributes: this.settingUtils.get(
-          DatabasePropertiesPanelConfig.ShowEmptyAttributes
+          DatabasePropertiesPanelConfig.ShowEmptyAttributes,
         ),
       });
 
-      Sentry.setContext("AttributeView", avData);
-
+      Sentry.setContext("AttributeView", { avData });
       const frontend = getFrontend();
       const backend = getBackend();
+
+      Sentry.setTag(
+        "kernelVersion",
+        window.siyuan.config?.system?.kernelVersion,
+      );
+
+      Sentry.setTag("supportsEditing", supportsEditing);
 
       Sentry.setContext("SiYuan", {
         frontend,
         backend,
-        kernelVersion: window.siyuan.config?.system?.kernelVersion,
       });
     }
   }
 
   uninstall() {
-    Logger.log("uninstall");
+    this.logger.info("uninstall");
   }
 }
