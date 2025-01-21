@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { IAVCellValue } from "siyuan";
+    import { type IAVCellValue } from "@/types/siyuan.types";
     import dayjs from "dayjs";
 
     export let value: IAVCellValue;

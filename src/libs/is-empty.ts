@@ -1,4 +1,4 @@
-import { IAVCellValue } from "siyuan";
+import { IAVCellValue } from "@/types/siyuan.types";
 
 export function isEmpty(value: IAVCellValue): boolean {
   if (value === undefined || value === null) {
@@ -23,7 +23,7 @@ export function isEmpty(value: IAVCellValue): boolean {
   }
 
   if (value.type === "rollup") {
-    return content.length === 0;
+    return (content as IAVCellValue[]).length === 0;
   }
 
   return false;

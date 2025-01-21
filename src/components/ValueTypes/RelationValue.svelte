@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAVCellValue } from "siyuan";
+  import { type IAVCellValue } from "@/types/siyuan.types";
   import AttributeViewRollup from "./AttributeViewRollup.svelte";
 
   export let value: IAVCellValue;
