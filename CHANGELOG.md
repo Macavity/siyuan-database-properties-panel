@@ -7,7 +7,8 @@
 ### Features
 
 - Adds toggle which allows to hide the database properties panel for a document. This setting is stored per document.
-- Adds a tabbed layout to reduce used space for the panel
+- Adds a tabbed layout to reduce used space for the panel (requires SiYuan >=3.0.17)
+- Removed setting to disable editing as it works well.
 
 ## [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0)
 
