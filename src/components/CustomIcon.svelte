@@ -10,7 +10,7 @@
     unicode,
     className = "",
     needSpan = false,
-    lazy = false
+    lazy = false,
   }: Props = $props();
 
   let emoji = $derived(() => {
@@ -41,7 +41,7 @@
     data-src={lazy ? `/emojis/${unicode}` : undefined}
   />
 {:else if needSpan}
-  <span class={className}>{emoji}</span>
+  <span class={className}>{emoji()}</span>
 {:else}
-  {emoji}
+  {emoji()}
 {/if}
