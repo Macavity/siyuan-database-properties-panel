@@ -8,11 +8,15 @@
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
 
-    export let avData: AttributeView[];
-    export let showPrimaryKey: boolean = false;
-    export let showEmptyAttributes: boolean = false;
+    interface Props {
+        avData: AttributeView[];
+        showPrimaryKey?: boolean;
+        showEmptyAttributes?: boolean;
+    }
 
-    let element: HTMLDivElement | null = null;
+    let { avData, showPrimaryKey = false, showEmptyAttributes = false }: Props = $props();
+
+    let element: HTMLDivElement | null = $state(null);
 
     // State
     const blockId = getContext(Context.BlockID);
@@ -120,7 +124,7 @@
         });
     }
 
-    $: currentSettings = $settingsStore.get(blockId);
+    let currentSettings = $derived($settingsStore.get(blockId));
 </script>
 
 <div>

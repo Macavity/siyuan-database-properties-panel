@@ -1,34 +1,36 @@
 <script lang="ts">
-  export let unicode: string;
-  export let className: string = "";
-  export let needSpan: boolean = false;
-  export let lazy: boolean = false;
-
-  let emoji: string = "";
-
-  /**
-   * @see siyuan/app/src/emoji/index.ts
-   */
-  function unicode2Emoji() {
-    if (!unicode) {
-      emoji = "";
-      return;
-    }
-    try {
-      emoji = "";
-      unicode.split("-").forEach((item) => {
-        if (item.length < 5) {
-          emoji += String.fromCodePoint(parseInt("0" + item, 16));
-        } else {
-          emoji += String.fromCodePoint(parseInt(item, 16));
-        }
-      });
-    } catch (e) {
-      // Ignore errors
-    }
+  interface Props {
+    unicode: string;
+    className?: string;
+    needSpan?: boolean;
+    lazy?: boolean;
   }
 
-  $: unicode2Emoji();
+  let {
+    unicode,
+    className = "",
+    needSpan = false,
+    lazy = false
+  }: Props = $props();
+
+  let emoji = $derived(() => {
+    if (!unicode) {
+      return "";
+    }
+    try {
+      let result = "";
+      unicode.split("-").forEach((item) => {
+        if (item.length < 5) {
+          result += String.fromCodePoint(parseInt("0" + item, 16));
+        } else {
+          result += String.fromCodePoint(parseInt(item, 16));
+        }
+      });
+      return result;
+    } catch (e) {
+      return "";
+    }
+  });
 </script>
 
 {#if unicode.indexOf(".") > -1}

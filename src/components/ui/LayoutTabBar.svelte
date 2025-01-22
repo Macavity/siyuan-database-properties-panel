@@ -3,14 +3,20 @@
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
     import {createEventDispatcher} from "svelte";
 
-    export let tabs: {
+    interface Tab {
         key: string;
         name: string;
         dataType?: string;
         icon?: SiYuanIcon;
         focus?: boolean;
-    }[];
-    export let focus: string;
+    }
+
+    interface Props {
+        tabs: Tab[];
+        focus: string;
+    }
+
+    let { tabs, focus }: Props = $props();
     const dispatch = createEventDispatcher();
 
     function activateTab(key: string) {
@@ -25,8 +31,8 @@
                  class:item--focus={tab.key === focus}
                  data-type={tab.dataType}
                  role="button"
-                 on:click={() => activateTab(tab.key)}
-                 on:keydown={() => activateTab(tab.key)}
+                 onclick={() => activateTab(tab.key)}
+                 onkeydown={() => activateTab(tab.key)}
                  tabindex={index}
             >
                 <span class="fn__flex-1"></span>

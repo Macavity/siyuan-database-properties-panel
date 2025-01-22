@@ -10,14 +10,26 @@
     import Icon from "@/components/ui/Icon.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
 
-    export let i18n: I18N;
-    export let showPrimaryKey: boolean = false;
-    export let allowEditing: boolean = false;
-    export let showEmptyAttributes: boolean = false;
 
-    export let avData: AttributeView[] = [];
-    export let protyle: Protyle;
-    export let blockId: string;
+    interface Props {
+        i18n: I18N;
+        showPrimaryKey?: boolean;
+        allowEditing?: boolean;
+        showEmptyAttributes?: boolean;
+        avData?: AttributeView[];
+        protyle: Protyle;
+        blockId: string;
+    }
+
+    let {
+        i18n,
+        showPrimaryKey = false,
+        allowEditing = false,
+        showEmptyAttributes = false,
+        avData = [],
+        protyle,
+        blockId
+    }: Props = $props();
 
     setContext(Context.I18N, i18n);
     setContext(Context.Protyle, protyle);
@@ -27,7 +39,7 @@
         settingsStore.activateTab(blockId, avId);
     }
 
-    $: isCollapsed = $settingsStore.get(blockId).isCollapsed;
+    let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
 
     // function onError(error: Error) {
     //     Sentry.withScope(scope => {
@@ -43,8 +55,8 @@
             <span class="protyle-breadcrumb__item"
                   role="button"
                   tabindex={i}
-                  on:click={() => { openAvPanel(av.avID) }}
-                  on:keydown={() => { openAvPanel(av.avID) }}>
+                  onclick={() => { openAvPanel(av.avID) }}
+                  onkeydown={() => { openAvPanel(av.avID) }}>
                 <Icon icon="iconDatabase"/>
                 <span class="protyle-breadcrumb__text">{av.avName}</span>
             </span>
