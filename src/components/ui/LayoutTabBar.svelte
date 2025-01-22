@@ -1,7 +1,6 @@
 <script lang="ts">
     import Icon from "@/components/ui/Icon.svelte";
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
-    import {createEventDispatcher} from "svelte";
 
     interface Tab {
         key: string;
@@ -14,13 +13,13 @@
     interface Props {
         tabs: Tab[];
         focus: string;
+        onclick: (key: string) => void;
     }
 
-    let { tabs, focus }: Props = $props();
-    const dispatch = createEventDispatcher();
+    let { tabs, focus, onclick }: Props = $props();
 
     function activateTab(key: string) {
-        dispatch("click", { key });
+        onclick(key);
     }
 </script>
 

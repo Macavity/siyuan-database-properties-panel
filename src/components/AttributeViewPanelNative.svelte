@@ -37,9 +37,7 @@
         renderProtyleAv();
     });
 
-    const showContent = (event: CustomEvent) => {
-        const tabFocus = event.detail.key;
-
+    const showContent = (tabFocus:string) => {
         if(!tabFocus){
             return;
         }
@@ -128,7 +126,7 @@
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} on:click={showContent}/>
+    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} onclick={showContent}/>
     <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
 
