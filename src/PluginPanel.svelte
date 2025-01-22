@@ -33,12 +33,20 @@
   setContext(Context.I18N, i18n);
   setContext(Context.Protyle, protyle);
   setContext(Context.BlockID, blockId);
+  setContext(Context.ShowEmptyAttributes, showEmptyAttributes);
 
   const openAvPanel = (avId: string) => {
     settingsStore.activateTab(blockId, avId);
   };
 
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
+
+  let documentSettings = $derived($settingsStore.get(blockId));
+  let effectiveShowEmptyAttributes = $derived(
+    documentSettings.overrideShowEmptyAttributes === null
+      ? showEmptyAttributes
+      : documentSettings.overrideShowEmptyAttributes
+  );
 
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
@@ -72,13 +80,13 @@
       <AttributeViewPanelNative
         {avData}
         {showPrimaryKey}
-        {showEmptyAttributes}
+        showEmptyAttributes={effectiveShowEmptyAttributes}
       />
     {:else}
       <AttributeViewPanel
         {avData}
         {showPrimaryKey}
-        {showEmptyAttributes}
+        showEmptyAttributes={effectiveShowEmptyAttributes}
         {allowEditing}
       />
     {/if}

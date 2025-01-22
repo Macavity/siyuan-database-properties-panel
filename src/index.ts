@@ -255,6 +255,9 @@ export default class DatabasePropertiesPanel extends Plugin {
     const showDatabaseAttributes = this.settingUtils.get<boolean>(
       DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
     );
+    const showEmptyAttributes = this.settingUtils.get<boolean>(
+      DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+    );
 
     // Logger.debug({ openProtyle });
 
@@ -299,21 +302,19 @@ export default class DatabasePropertiesPanel extends Plugin {
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
     mount(PluginPanel, {
-            target: tabDiv,
-            props: {
-              blockId,
-              protyle: editor,
-              showPrimaryKey: this.settingUtils.get<boolean>(
-                DatabasePropertiesPanelConfig.ShowPrimaryKey,
-              ),
-              showEmptyAttributes: this.settingUtils.get<boolean>(
-                DatabasePropertiesPanelConfig.ShowEmptyAttributes,
-              ),
-              allowEditing: supportsEditing,
-              i18n: this.i18n as I18N,
-              avData,
-            },
-          });
+      target: tabDiv,
+      props: {
+        blockId,
+        protyle: editor,
+        showPrimaryKey: this.settingUtils.get<boolean>(
+          DatabasePropertiesPanelConfig.ShowPrimaryKey,
+        ),
+        showEmptyAttributes,
+        allowEditing: supportsEditing,
+        i18n: this.i18n as I18N,
+        avData,
+      },
+    });
 
     topNode.after(tabDiv);
   }
