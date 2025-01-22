@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AttributeViewValue from './AttributeViewValue.svelte';
   import dayjs from "dayjs";
 
   import MAssetValue from "./ValueTypes/MAssetValue.svelte";
@@ -9,9 +10,14 @@
   import TemplateValue from "./ValueTypes/TemplateValue.svelte";
   import { type IAVCellValue } from "@/types/siyuan.types";
 
-  // Props
-  export let value: IAVCellValue;
-  // export let avKey: AVKey;
+  
+  interface Props {
+    // Props
+    value: IAVCellValue; // export let avKey: AVKey;
+  }
+
+  let { value }: Props = $props();
+  
   // export let avID: string;
 </script>
 
@@ -108,7 +114,7 @@
 {:else if value.type === "rollup"}
   {#each value.rollup.contents as item}
     {#if ["select", "mSelect", "mAsset", "checkbox", "relation"].includes(item.type)}
-      <svelte:self value={item} />
+      <AttributeViewValue value={item} />
     {:else}
       <AttributeViewRollup value={item} />
     {/if}

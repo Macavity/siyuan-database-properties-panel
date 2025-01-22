@@ -1,7 +1,11 @@
 <script lang="ts">
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
   import { type IAVCellValue } from "@/types/siyuan.types";
-  export let value: IAVCellValue;
+  interface Props {
+    value: IAVCellValue;
+  }
+
+  let { value }: Props = $props();
 </script>
 
 {#if value.mAsset}

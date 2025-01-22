@@ -2,7 +2,11 @@
   import { type IAVCellValue } from "@/types/siyuan.types";
   import AttributeViewRollup from "./AttributeViewRollup.svelte";
 
-  export let value: IAVCellValue;
+  interface Props {
+    value: IAVCellValue;
+  }
+
+  let { value }: Props = $props();
   const lastId = value.relation?.contents ? value.relation.contents[value.relation.contents?.length - 1].id : null;
 </script>
 

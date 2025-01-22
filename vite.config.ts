@@ -65,6 +65,11 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
     },
+    // ...(process.env.VITEST
+    //   ? {
+    //       conditions: ["browser"],
+    //     }
+    //   : {}),
   },
 
   plugins: [

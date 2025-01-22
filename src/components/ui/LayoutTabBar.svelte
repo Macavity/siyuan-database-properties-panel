@@ -1,20 +1,25 @@
 <script lang="ts">
     import Icon from "@/components/ui/Icon.svelte";
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
-    import {createEventDispatcher} from "svelte";
 
-    export let tabs: {
+    interface Tab {
         key: string;
         name: string;
         dataType?: string;
         icon?: SiYuanIcon;
         focus?: boolean;
-    }[];
-    export let focus: string;
-    const dispatch = createEventDispatcher();
+    }
+
+    interface Props {
+        tabs: Tab[];
+        focus: string;
+        onclick: (key: string) => void;
+    }
+
+    let { tabs, focus, onclick }: Props = $props();
 
     function activateTab(key: string) {
-        dispatch("click", { key });
+        onclick(key);
     }
 </script>
 
@@ -25,8 +30,8 @@
                  class:item--focus={tab.key === focus}
                  data-type={tab.dataType}
                  role="button"
-                 on:click={() => activateTab(tab.key)}
-                 on:keydown={() => activateTab(tab.key)}
+                 onclick={() => activateTab(tab.key)}
+                 onkeydown={() => activateTab(tab.key)}
                  tabindex={index}
             >
                 <span class="fn__flex-1"></span>
