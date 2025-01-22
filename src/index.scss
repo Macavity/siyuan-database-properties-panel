@@ -1,10 +1,14 @@
 
 .dpp-av-panel {
-    &--hidden {
-        display: none;
-    }
+  &--hidden {
+    display: none;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+  }
 }
 
 .dpp-av-col--empty {
-    display: none;
-  }
+  display: none;
+}

@@ -71,6 +71,9 @@ importers:
       sass:
         specifier: ^1.63.3
         version: 1.79.5
+      semver:
+        specifier: ^7.6.3
+        version: 7.6.3
       siyuan:
         specifier: ^1.0.8
         version: 1.0.8

@@ -7,6 +7,7 @@
     import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
+    import semver from "semver";
 
     interface Props {
         avData: AttributeView[];
@@ -112,6 +113,16 @@
             element.querySelectorAll(".custom-attr__avheader").forEach((item) => {
                 item.classList.add("dpp-av-panel--hidden");
             });
+
+            // Disable template clicks, as they cause interface freezes
+            if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
+                logger.debug("Kernel version is below 3.1.21, disabling clicks on templates");
+                const templates = element.querySelectorAll("[data-type='template']");
+                templates.forEach((template) => {
+                    template.setAttribute("data-type", "text");
+                    template.classList.add("dpp-av-panel--disabled");
+                });
+            }
 
             if(!settingsStore.isAnyTabActive(blockId)){
                 const first = element.querySelector(`[data-type="NodeAttributeView"]`);
