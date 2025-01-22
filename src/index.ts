@@ -13,6 +13,7 @@ import { I18N } from "./types/i18n";
 import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
 import { settingsStore } from "@/stores/localSettingStore";
+import { mount } from "svelte";
 
 const STORAGE_NAME = "menu-config";
 
@@ -297,22 +298,22 @@ export default class DatabasePropertiesPanel extends Plugin {
     const padding = getPadding(openProtyle);
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
-    new PluginPanel({
-      target: tabDiv,
-      props: {
-        blockId,
-        protyle: editor,
-        showPrimaryKey: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowPrimaryKey,
-        ),
-        showEmptyAttributes: this.settingUtils.get<boolean>(
-          DatabasePropertiesPanelConfig.ShowEmptyAttributes,
-        ),
-        allowEditing: supportsEditing,
-        i18n: this.i18n as I18N,
-        avData,
-      },
-    });
+    mount(PluginPanel, {
+            target: tabDiv,
+            props: {
+              blockId,
+              protyle: editor,
+              showPrimaryKey: this.settingUtils.get<boolean>(
+                DatabasePropertiesPanelConfig.ShowPrimaryKey,
+              ),
+              showEmptyAttributes: this.settingUtils.get<boolean>(
+                DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+              ),
+              allowEditing: supportsEditing,
+              i18n: this.i18n as I18N,
+              avData,
+            },
+          });
 
     topNode.after(tabDiv);
   }

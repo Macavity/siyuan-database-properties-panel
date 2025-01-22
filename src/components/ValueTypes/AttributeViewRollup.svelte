@@ -2,7 +2,11 @@
     import { type IAVCellValue } from "@/types/siyuan.types";
     import dayjs from "dayjs";
 
-    export let value: IAVCellValue;
+    interface Props {
+        value: IAVCellValue;
+    }
+
+    let { value }: Props = $props();
 </script>
 
 {#if value.type === 'block'}

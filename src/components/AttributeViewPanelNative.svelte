@@ -7,12 +7,17 @@
     import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
+    import semver from "semver";
 
-    export let avData: AttributeView[];
-    export let showPrimaryKey: boolean = false;
-    export let showEmptyAttributes: boolean = false;
+    interface Props {
+        avData: AttributeView[];
+        showPrimaryKey?: boolean;
+        showEmptyAttributes?: boolean;
+    }
 
-    let element: HTMLDivElement | null = null;
+    let { avData, showPrimaryKey = false, showEmptyAttributes = false }: Props = $props();
+
+    let element: HTMLDivElement | null = $state(null);
 
     // State
     const blockId = getContext(Context.BlockID);
@@ -33,9 +38,7 @@
         renderProtyleAv();
     });
 
-    const showContent = (event: CustomEvent) => {
-        const tabFocus = event.detail.key;
-
+    const showContent = (tabFocus:string) => {
         if(!tabFocus){
             return;
         }
@@ -111,6 +114,16 @@
                 item.classList.add("dpp-av-panel--hidden");
             });
 
+            // Disable template clicks, as they cause interface freezes
+            if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
+                logger.debug("Kernel version is below 3.1.21, disabling clicks on templates");
+                const templates = element.querySelectorAll("[data-type='template']");
+                templates.forEach((template) => {
+                    template.setAttribute("data-type", "text");
+                    template.classList.add("dpp-av-panel--disabled");
+                });
+            }
+
             if(!settingsStore.isAnyTabActive(blockId)){
                 const first = element.querySelector(`[data-type="NodeAttributeView"]`);
                 activateTab(first.getAttribute("data-av-id"));
@@ -120,11 +133,11 @@
         });
     }
 
-    $: currentSettings = $settingsStore.get(blockId);
+    let currentSettings = $derived($settingsStore.get(blockId));
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} on:click={showContent}/>
+    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} onclick={showContent}/>
     <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
 

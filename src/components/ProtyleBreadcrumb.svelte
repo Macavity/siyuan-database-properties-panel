@@ -4,6 +4,11 @@
     import Button from "@/components/ui/Button.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
     import {LoggerService} from "@/services/LoggerService";
+    interface Props {
+        children?: import('svelte').Snippet;
+    }
+
+    let { children }: Props = $props();
 
     const i18n = getContext(Context.I18N);
     const documentId = getContext(Context.BlockID);
@@ -14,20 +19,20 @@
 
         settingsStore.toggleCollapsed(documentId);
     }
-    $: isCollapsed = $settingsStore.get(documentId).isCollapsed;
+    let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
 </script>
 
 <div class="protyle-breadcrumb" id="top-navigation-bar">
     <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
         {#if isCollapsed}
-            <slot/>
+            {@render children?.()}
         {/if}
     </div>
 
     <span class="protyle-breadcrumb__space"></span>
 
     <Button icon={isCollapsed ? "iconExpand" : "iconContract"}
-            on:click={toggleCollapseTab}
+            onclick={toggleCollapseTab}
             tooltip={isCollapsed ? i18n.expand : i18n.collapse}/>
 </div>
 

@@ -14,9 +14,10 @@ describe("CustomIcon", () => {
     });
 
     const img = container.querySelector("img");
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveClass("test-class");
-    expect(img).toHaveAttribute("src", "/emojis/emoji.svg");
+    expect(img).toBeTruthy();
+    expect(img?.className).toBe("test-class");
+    expect(img?.getAttribute("src")).toBe("/emojis/emoji.svg");
+    expect(img?.getAttribute("alt")).toBe("Emoji");
   });
 
   it("renders a span with emoji when needSpan is true", () => {
@@ -29,13 +30,16 @@ describe("CustomIcon", () => {
       },
     });
 
-    const span = container.querySelector("span");
-    expect(span).toBeInTheDocument();
-    expect(span).toHaveClass("test-class");
-    expect(span).toHaveTextContent("😀"); // Unicode for 😀 is 1f600
+    // Wait for next tick to allow derived state to update
+    return new Promise((resolve) => setTimeout(resolve, 0)).then(() => {
+      const span = container.querySelector("span");
+      expect(span).toBeTruthy();
+      expect(span?.className).toBe("test-class");
+      expect(span?.textContent).toBe("😀");
+    });
   });
 
-  it("renders emoji without span when needSpan is false", () => {
+  it("renders emoji without span when needSpan is false", async () => {
     const { container } = render(CustomIcon, {
       props: {
         unicode: "1f600",
@@ -45,7 +49,10 @@ describe("CustomIcon", () => {
       },
     });
 
-    expect(container).toHaveTextContent("😀"); // Unicode for 😀 is 1f600
+    // Wait for next tick to allow derived state to update
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const textContent = container.textContent?.trim();
+    expect(textContent).toBe("😀");
   });
 
   it("renders lazy-loaded image when lazy is true", () => {
@@ -59,9 +66,54 @@ describe("CustomIcon", () => {
     });
 
     const img = container.querySelector("img");
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveClass("test-class");
-    expect(img).toHaveAttribute("data-src", "/emojis/emoji.svg");
-    expect(img).not.toHaveAttribute("src");
+    expect(img).toBeTruthy();
+    expect(img?.className).toBe("test-class");
+    expect(img?.getAttribute("data-src")).toBe("/emojis/emoji.svg");
+    expect(img?.getAttribute("src")).toBeNull();
+  });
+
+  it("handles compound unicode emojis", async () => {
+    const { container } = render(CustomIcon, {
+      props: {
+        unicode: "1f468-1f3fb-200d-1f4bb",
+        className: "test-class",
+        needSpan: true,
+      },
+    });
+
+    // Wait for next tick to allow derived state to update
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const span = container.querySelector("span");
+    expect(span?.textContent).toBe("👨🏻‍💻");
+  });
+
+  it("handles empty unicode gracefully", async () => {
+    const { container } = render(CustomIcon, {
+      props: {
+        unicode: "",
+        className: "test-class",
+        needSpan: true,
+      },
+    });
+
+    // Wait for next tick to allow derived state to update
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const span = container.querySelector("span");
+    expect(span?.textContent).toBe("");
+  });
+
+  it("handles invalid unicode gracefully", async () => {
+    const { container } = render(CustomIcon, {
+      props: {
+        unicode: "invalid",
+        className: "test-class",
+        needSpan: true,
+      },
+    });
+
+    // Wait for next tick to allow derived state to update
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const span = container.querySelector("span");
+    expect(span?.textContent).toBe("");
   });
 });

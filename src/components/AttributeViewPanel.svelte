@@ -7,22 +7,33 @@
   import { Context } from "@/types/context";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
 
-  export let avData: AttributeView[];
 
-  // Configuration
-  export let showPrimaryKey: boolean = false;
-  export let showEmptyAttributes: boolean = false;
-  export let enableDragAndDrop: boolean = false;
-  export let allowEditing: boolean = false;
+  
+  interface Props {
+    avData: AttributeView[];
+    // Configuration
+    showPrimaryKey?: boolean;
+    showEmptyAttributes?: boolean;
+    enableDragAndDrop?: boolean;
+    allowEditing?: boolean;
+  }
 
-  let element: HTMLDivElement | null = null;
+  let {
+    avData,
+    showPrimaryKey = false,
+    showEmptyAttributes = false,
+    enableDragAndDrop = false,
+    allowEditing = false
+  }: Props = $props();
+
+  let element: HTMLDivElement | null = $state(null);
   // State
   const blockId = getContext(Context.BlockID);
 
   // @see siyuan/app/src/protyle/render/av/blockAttr.ts -> renderAVAttribute
 
-  $: filteredKeyValues = (keyValues: AttributeView["keyValues"]) =>
-    filterAVKeyAndValues(keyValues, showPrimaryKey, showEmptyAttributes);
+  let filteredKeyValues = $derived((keyValues: AttributeView["keyValues"]) =>
+    filterAVKeyAndValues(keyValues, showPrimaryKey, showEmptyAttributes));
 </script>
 
 <div class="custom-attr">

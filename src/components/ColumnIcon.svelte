@@ -3,7 +3,11 @@
   import CustomIcon from "./CustomIcon.svelte";
   import { getColIconByType } from "@/libs/siyuan/protyle/render/av/col";
   import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-  export let key: AVKey;
+  interface Props {
+    key: AVKey;
+  }
+
+  let { key }: Props = $props();
 </script>
 
 <div

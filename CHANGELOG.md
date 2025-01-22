@@ -2,6 +2,10 @@
 
 [Changelog](./CHANGELOG.md)
 
+## v1.1.2 - Patch to fix an issue with template fields freezing SiYuan
+
+## v1.1.1 - Hotfix to patch a document bug
+
 ## [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
 
 ### Features
