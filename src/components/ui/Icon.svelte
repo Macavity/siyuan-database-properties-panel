@@ -1,14 +1,15 @@
+<svelte:options namespace="svg" />
+
 <script lang="ts">
-    import {type SiYuanIcon} from "@/types/SiyuanIcon";
-    interface Props {
-        icon: SiYuanIcon;
-        [key: string]: any
-    }
+  import { type SiYuanIcon } from "@/types/SiyuanIcon";
+  interface Props {
+    icon: SiYuanIcon;
+    class?: string;
+  }
 
-    let { ...props }: Props = $props();
-
+  let { class: klass, icon }: Props = $props();
 </script>
 
-<svg {...props}>
-    <use xlink:href={`#${props.icon}`}></use>
+<svg class={klass}>
+  <use xlink:href={`#${icon}`}></use>
 </svg>
