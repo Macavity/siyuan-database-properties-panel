@@ -4,10 +4,9 @@
     import {Context} from "@/types/context";
     import {onMount} from "svelte";
     import {type AttributeView} from "@/types/AttributeView";
-    import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
     import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
-    import semver from "semver";
+    import {AttributeViewService} from "@/services/AttributeViewService";
 
     interface Props {
         avData: AttributeView[];
@@ -66,64 +65,7 @@
 
     const renderProtyleAv = () => {
         protyle.renderAVAttribute(element, blockId, (element) => {
-            logger.debug("renderAVAttribute", element, blockId)
-            if (!showPrimaryKey) {
-                logger.debug("hide primary key");
-                const primaryKeyValueField = element.querySelectorAll(
-                    `[data-node-id='${blockId}'] [data-type='block']`
-                );
-                logger.debug("identify primary key", primaryKeyValueField);
-                primaryKeyValueField.forEach((field) => {
-                    const fieldElement = field as HTMLElement;
-                    const colId = fieldElement.dataset?.colId;
-                    const row = field.closest(`[data-col-id='${colId}'].av__row`);
-                    row?.classList.add("dpp-av-panel--hidden");
-                });
-            }
-
-            if (!showEmptyAttributes) {
-                logger.debug("hide empty attributes");
-                avData.forEach((table) => {
-                    const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
-                    emptyKeyAndValues.forEach((item) => {
-                        element
-                            .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`)
-                            .forEach((field) => {
-                                field.classList.add("dpp-av-col--empty");
-                            });
-                    });
-                });
-            }
-
-            // Hide "add" buttons
-            // element.querySelectorAll("[data-type='addColumn']").forEach((button) => {
-            //     button.classList.add("dpp-av-panel--hidden");
-            //
-            //     // Remove the two following dividers
-            //     const firstDivider = button.nextElementSibling;
-            //     const secondDivider = firstDivider?.nextElementSibling;
-            //
-            //     if (firstDivider?.classList.contains("fn__hr--b")) {
-            //         firstDivider.classList.add("dpp-av-panel--hidden");
-            //     }
-            //     if (secondDivider?.classList.contains("fn__hr--b")) {
-            //         secondDivider.classList.add("dpp-av-panel--hidden");
-            //     }
-            // });
-
-            element.querySelectorAll(".custom-attr__avheader").forEach((item) => {
-                item.classList.add("dpp-av-panel--hidden");
-            });
-
-            // Disable template clicks, as they cause interface freezes
-            if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
-                logger.debug("Kernel version is below 3.1.21, disabling clicks on templates");
-                const templates = element.querySelectorAll("[data-type='template']");
-                templates.forEach((template) => {
-                    template.setAttribute("data-type", "text");
-                    template.classList.add("dpp-av-panel--disabled");
-                });
-            }
+            AttributeViewService.adjustDOM(element, blockId, avData, showPrimaryKey, showEmptyAttributes);
 
             if(!settingsStore.isAnyTabActive(blockId)){
                 const first = element.querySelector(`[data-type="NodeAttributeView"]`);

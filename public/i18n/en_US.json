@@ -14,8 +14,8 @@
     "configShowDatabasePropertiesDesc": "Show database properties <b>always</b> in the attribute panel",
     "configUseMultipleTableLayout": "Layout for multiple databases",
     "configUseMultipleTableLayoutDesc": "Decide how multiple databases are displayed in the panel.",
-    "showEmptyAttributes": "Show Empty (Document Override)",
-    "hideEmptyAttributes": "Hide Empty (Document Override)",
+    "showEmptyAttributesToggle": "Show Empty Attributes",
+    "hideEmptyAttributesToggle": "Hide Empty Attributes",
     "overrideSettings": "Override default settings",
     "collapse": "Collapse",
     "expand": "Expand"
