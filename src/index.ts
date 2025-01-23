@@ -1,4 +1,12 @@
-import { Plugin, IEventBusMap, Model, getBackend, getFrontend } from "siyuan";
+import {
+  getAllEditor,
+  getBackend,
+  getFrontend,
+  IEventBusMap,
+  IProtyle,
+  Model,
+  Plugin,
+} from "siyuan";
 import * as Sentry from "@sentry/browser";
 import "@/index.scss";
 import PluginPanel from "@/PluginPanel.svelte";
@@ -7,10 +15,8 @@ import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
 import { LoggerService } from "./services/LoggerService";
-import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
-import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
 import { settingsStore } from "@/stores/localSettingStore";
 import { mount } from "svelte";
@@ -38,6 +44,12 @@ export default class DatabasePropertiesPanel extends Plugin {
   customTab: () => Model;
   private settingUtils: SettingUtils;
   private logger: LoggerService;
+
+  /**
+   * Used to disable error reporting on documents when the panel isn't rendered.
+   */
+  private enableErrorReporting = true;
+
   boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
   boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
 
@@ -255,9 +267,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       return false;
     }
 
-    const topNode = titleNode.closest(".protyle-top");
-
-    return topNode;
+    return titleNode.closest(".protyle-top");
   }
 
   private async renderPanel(openProtyle: IProtyle) {
@@ -277,6 +287,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
+      this.enableErrorReporting = false;
       this.logger.debug("=> database panel hidden");
       return;
     }
@@ -285,6 +296,7 @@ export default class DatabasePropertiesPanel extends Plugin {
       (editor) => editor.protyle.id === openProtyle.id,
     );
     if (!editor) {
+      this.enableErrorReporting = false;
       this.logger.error("=> editor not found");
       return;
     }
@@ -342,6 +354,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     if (allowErrorReporting && process.env.SENTRY_DSN) {
+      this.enableErrorReporting = true;
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         environment: process.env.NODE_ENV || "development",
@@ -354,6 +367,9 @@ export default class DatabasePropertiesPanel extends Plugin {
           // if (event.tags?.errorSource !== PLUGIN_NAME) {
           //   return null;
           // }
+          if (!this.enableErrorReporting) {
+            return null;
+          }
 
           if (event.exception) {
             const exception = event.exception.values[0];
