@@ -1,5 +1,5 @@
 import { render } from "@testing-library/svelte";
-import ColumnIcon from "./ColumnIcon.svelte";
+import ColumnIcon from "../src/components/ColumnIcon.svelte";
 import { describe, it, expect } from "vitest";
 import "@testing-library/jest-dom";
 import { TAVCol } from "siyuan";

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { settingsStore } from "./localSettingStore";
+import { settingsStore } from "../../src/stores/localSettingStore";
 import { get } from "svelte/store";
 
 describe("settingsStore", () => {
