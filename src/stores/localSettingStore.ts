@@ -2,14 +2,13 @@ import { get, writable } from "svelte/store";
 import debounce from "lodash/debounce";
 import { storageService } from "@/services/StorageService";
 import { LoggerService } from "@/services/LoggerService";
-import { createDefaultSettingsDTO, SettingsDTO } from "@/types/dto/SettingsDTO";
+import { createFromSettingsStore, SettingsDTO } from "@/types/dto/SettingsDTO";
 
 const logger = new LoggerService("Store");
 
-interface SettingsState {
+export interface SettingsState {
   isCollapsed: boolean;
   lastSelectedAttributeView: string | null;
-  overrideShowEmptyAttributes: boolean | null;
 }
 
 type DocumentSettings = Map<string, SettingsState>;
@@ -20,7 +19,13 @@ function createSettingsStore() {
   return {
     ...state,
     getDocumentSettings: (documentId: string) => {
-      return get(state).get(documentId) ?? createDefaultSettingsDTO(documentId);
+      return (
+        get(state).get(documentId) ?? {
+          documentId,
+          isCollapsed: false,
+          lastSelectedAttributeView: null,
+        }
+      );
     },
     isAnyTabActive: (documentId: string) => {
       const settings = get(state).get(documentId);
@@ -35,7 +40,6 @@ function createSettingsStore() {
         newState.set(dto.documentId, {
           isCollapsed: dto.isCollapsed,
           lastSelectedAttributeView: dto.lastSelectedAttributeView,
-          overrideShowEmptyAttributes: dto.overrideShowEmptyAttributes ?? null,
         });
 
         return newState;
@@ -53,32 +57,6 @@ function createSettingsStore() {
           isCollapsed: false,
           lastSelectedAttributeView: avID,
         });
-        return newState;
-      });
-    },
-    toggleShowEmptyAttributes: (
-      documentId: string,
-      globalShowEmptyAttributes: boolean
-    ) => {
-      state.update((currentState) => {
-        const newState = new Map(currentState);
-        const docSettings =
-          newState.get(documentId) ?? createDefaultSettingsDTO(documentId);
-        const currentValue = docSettings.overrideShowEmptyAttributes;
-
-        // If null, start with the opposite of the global setting
-        const newValue =
-          currentValue === null ? !globalShowEmptyAttributes : !currentValue;
-
-        newState.set(documentId, {
-          ...docSettings,
-          overrideShowEmptyAttributes: newValue,
-        });
-        logger.debug("toggleShowEmptyAttributes", {
-          globalShowEmptyAttributes,
-          newState,
-        });
-
         return newState;
       });
     },
@@ -102,18 +80,15 @@ function createSettingsStore() {
 const debouncedSaveSettings = debounce(
   async (documentId: string, settings: SettingsState) => {
     try {
-      const dto = new SettingsDTO(
-        documentId,
-        settings.isCollapsed,
-        settings.lastSelectedAttributeView
-      );
+      const dto = createFromSettingsStore(documentId, settings);
+
       await storageService.saveSettings(dto);
       logger.info("savedSettings", dto);
     } catch (e) {
       logger.error("error on saving settings", e, settings);
     }
   },
-  500
+  500,
 );
 
 export const settingsStore = createSettingsStore();

@@ -48,7 +48,7 @@ export default class DatabasePropertiesPanel extends Plugin {
   /**
    * Used to disable error reporting on documents when the panel isn't rendered.
    */
-  private enableErrorReporting = true;
+  enableErrorReporting = true;
 
   boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
   boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
@@ -363,11 +363,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         release: process.env.PLUGIN_VERSION,
         ignoreErrors: [],
         beforeSend(event) {
-          // Requires Svelte 5 boundary.
-          // if (event.tags?.errorSource !== PLUGIN_NAME) {
-          //   return null;
-          // }
-          if (!this.enableErrorReporting) {
+          if (this.enableErrorReporting === false) {
             return null;
           }
 

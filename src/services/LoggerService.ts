@@ -27,11 +27,14 @@ export class LoggerService {
   }
 
   private addLog(level: LogLevel, args: unknown[]) {
+    const formattedArgs = args.map((arg) =>
+      typeof arg === "object" ? JSON.stringify(arg) : arg,
+    );
     LoggerService.logs.push({
       timestamp: Date.now(),
       level,
       service: this.serviceName,
-      args: [this.prefix, ...args],
+      args: [...formattedArgs],
     });
     if (LoggerService.logs.length > LoggerService.MAX_LOGS) {
       LoggerService.logs.shift();
@@ -70,8 +73,18 @@ export class LoggerService {
     this.addLog(LogLevel.ERROR, args);
   }
 
-  static getLogs(): LogEntry[] {
-    return LoggerService.logs;
+  static clearLogs() {
+    LoggerService.logs = [];
+  }
+
+  static getLogs(): string[] {
+    return LoggerService.logs.map((log) => {
+      const timestamp = new Date(log.timestamp).toISOString();
+      const level = LogLevel[log.level];
+      const service = log.service ? `${log.service} |` : "";
+      const message = log.args.join(" ");
+      return `${timestamp} [${level}] ${service} ${message}`;
+    });
   }
 }
 
