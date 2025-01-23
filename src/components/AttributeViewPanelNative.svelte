@@ -94,21 +94,22 @@
                     });
                 });
             }
+
             // Hide "add" buttons
-            element.querySelectorAll("[data-type='addColumn']").forEach((button) => {
-                button.classList.add("dpp-av-panel--hidden");
-
-                // Remove the two following dividers
-                const firstDivider = button.nextElementSibling;
-                const secondDivider = firstDivider?.nextElementSibling;
-
-                if (firstDivider?.classList.contains("fn__hr--b")) {
-                    firstDivider.classList.add("dpp-av-panel--hidden");
-                }
-                if (secondDivider?.classList.contains("fn__hr--b")) {
-                    secondDivider.classList.add("dpp-av-panel--hidden");
-                }
-            });
+            // element.querySelectorAll("[data-type='addColumn']").forEach((button) => {
+            //     button.classList.add("dpp-av-panel--hidden");
+            //
+            //     // Remove the two following dividers
+            //     const firstDivider = button.nextElementSibling;
+            //     const secondDivider = firstDivider?.nextElementSibling;
+            //
+            //     if (firstDivider?.classList.contains("fn__hr--b")) {
+            //         firstDivider.classList.add("dpp-av-panel--hidden");
+            //     }
+            //     if (secondDivider?.classList.contains("fn__hr--b")) {
+            //         secondDivider.classList.add("dpp-av-panel--hidden");
+            //     }
+            // });
 
             element.querySelectorAll(".custom-attr__avheader").forEach((item) => {
                 item.classList.add("dpp-av-panel--hidden");

@@ -21,7 +21,6 @@
   logger.debug("overrideShowEmptyAttributes", {
     documentId,
     showEmptyAttributes,
-    overrideShowEmptyAttributes,
   });
 
   // Compute the effective show empty attributes value
@@ -63,7 +62,6 @@
   {#if !isCollapsed}
     <Button
       icon="iconSettings"
-      onclick={}
       tooltip={i18n.overrideSettings}
     />
   {/if}

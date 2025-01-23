@@ -47,6 +47,20 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     this.initSettings();
     this.initSlashCommand();
+
+    if (process.env.NODE_ENV === "development") {
+      this.addTopBar({
+        icon: "iconRefresh",
+        title: "Refresh",
+        position: "right",
+        callback: () => window.location.reload(),
+      });
+      this.addCommand({
+        langKey: "Refresh",
+        hotkey: "⇧⌘R",
+        callback: () => window.location.reload(),
+      });
+    }
   }
 
   private changeCheckboxSetting(key: string): () => void {
