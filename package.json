@@ -50,13 +50,13 @@
     "typescript-eslint": "^8.8.1",
     "vite": "^5.4.12",
     "vite-plugin-static-copy": "^1.0.2",
-    "vite-plugin-zip-pack": "^1.0.5"
+    "vite-plugin-zip-pack": "^1.0.5",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
+    "@types/lodash": "^4.17.14"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.6",
-    "@types/lodash": "^4.17.14",
     "@vitest/ui": "^3.0.3",
     "happy-dom": "^16.7.2",
     "jsdom": "^25.0.1",

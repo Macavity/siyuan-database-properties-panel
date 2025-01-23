@@ -14,12 +14,18 @@ importers:
       '@sentry/browser':
         specifier: ^8.34.0
         version: 8.34.0
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^4.0.4
+        version: 4.0.4(svelte@5.19.1)(vite@5.4.14(@types/node@20.16.11)(sass@1.79.5))
       '@tsconfig/svelte':
         specifier: ^4.0.1
         version: 4.0.1
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
+      '@types/lodash':
+        specifier: ^4.17.14
+        version: 4.17.14
       '@types/node':
         specifier: ^20.16.11
         version: 20.16.11
@@ -105,18 +111,12 @@ importers:
         specifier: ^1.0.5
         version: 1.2.4(vite@5.4.14(@types/node@20.16.11)(sass@1.79.5))
     devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^4.0.4
-        version: 4.0.4(svelte@5.19.1)(vite@5.4.14(@types/node@20.16.11)(sass@1.79.5))
       '@testing-library/jest-dom':
         specifier: ^6.6.3
         version: 6.6.3
       '@testing-library/svelte':
         specifier: ^5.2.6
         version: 5.2.6(svelte@5.19.1)(vite@5.4.14(@types/node@20.16.11)(sass@1.79.5))(vitest@3.0.3)
-      '@types/lodash':
-        specifier: ^4.17.14
-        version: 4.17.14
       '@vitest/ui':
         specifier: ^3.0.3
         version: 3.0.3(vitest@3.0.3)
