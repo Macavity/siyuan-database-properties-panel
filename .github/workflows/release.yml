@@ -81,5 +81,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           artifacts: "package.zip"
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false

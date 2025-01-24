@@ -1,5 +1,5 @@
 import path, { resolve } from "path";
-import { defineConfig } from "vitest/config";
+import { defineConfig /*, loadEnv */ } from "vite";
 import minimist from "minimist";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import livereload from "rollup-plugin-livereload";
@@ -65,11 +65,6 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
     },
-    // ...(process.env.VITEST
-    //   ? {
-    //       conditions: ["browser"],
-    //     }
-    //   : {}),
   },
 
   plugins: [
