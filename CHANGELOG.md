@@ -2,6 +2,13 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
+
+- 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.
+- 🇺🇸 Add a button to add new attributes to the database
+- 🇨🇳 添加切换功能，可按文档显示/隐藏空属性。
+- 🇨🇳 添加按钮，用于向数据库添加新属性
+
 ## v1.1.2 - Patch to fix an issue with template fields freezing SiYuan
 
 ## v1.1.1 - Hotfix to patch a document bug

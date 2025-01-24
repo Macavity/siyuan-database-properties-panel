@@ -11,11 +11,13 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-## [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
+### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
 
-- Adds toggle which allows to hide the database properties panel for a document. This setting is stored per document.
-- Adds a tabbed layout to reduce used space for the panel (requires SiYuan >=3.0.17)
-- Removed setting to disable editing as it works well.
+- 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.
+- 🇺🇸 Add a button to add new attributes to the database
+- 🇨🇳 添加切换功能，可按文档显示/隐藏空属性。
+- 🇨🇳 添加按钮，用于向数据库添加新属性
+
 
 ## Features
 
@@ -23,12 +25,6 @@ This plugin allows users to view database row attributes directly on the dedicat
 - Familiar Interface: Provides a user experience similar to popular note-taking applications like Notion and Anytype while keeping the design of SiYuan
 - Allow optionally to hide the primary key
 - Allow optionally to hide empty fields
-
-## Limitations
-
-Editing attributes on the page is now supported.
-~~Currently, the plugin only supports the display of attributes on the page created from the database row.
-Adjusting the attributes directly from the page is not yet supported.~~
 
 ## Data Security Statement
 

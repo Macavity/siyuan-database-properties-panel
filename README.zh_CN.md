@@ -12,11 +12,12 @@
 
 ## 上一版本中的更改
 
-## [1.1.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.1.0)
+### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
 
-- 添加切换按钮，允许隐藏文档的数据库属性面板。该设置存储在每个文档中。
-- 添加标签式布局，以减少面板的使用空间（思源 >=3.0.17）
-- 删除了效果良好的禁用编辑设置。
+- 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.
+- 🇺🇸 Add a button to add new attributes to the database
+- 🇨🇳 添加切换功能，可按文档显示/隐藏空属性。
+- 🇨🇳 添加按钮，用于向数据库添加新属性
 
 ## 旧的变化
 - [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - 添加编辑功能
@@ -31,12 +32,6 @@
 
 - 属性显示： 在相应页面上自动显示数据库行属性
 - 熟悉的界面： 提供类似于 Notion 和 Anytype 等流行笔记应用程序的用户体验，同时保持思源的设计风格
-
-## 限制
-
-现在支持在页面上编辑属性。
-~~目前，该插件仅支持在数据库行创建的页面上显示属性。
-尚不支持直接从页面调整属性。~~
 
 ### 数据安全声明
 
