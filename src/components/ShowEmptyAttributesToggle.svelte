@@ -1,24 +1,45 @@
 <script lang="ts">
+  import Icon from "@/components/ui/Icon.svelte";
+  import { i18nStore } from "@/stores/i18nStore";
+  import { configStore } from "@/stores/configStore";
+  import { documentSettingsStore } from "@/stores/documentSettingsStore";
 
-    import {getContext, onMount} from "svelte";
-import {Context} from "@/types/context";
-    import {LoggerService} from "@/services/LoggerService";
-    import Icon from "@/components/ui/Icon.svelte";
+  interface Props {
+    documentId: string;
+  }
 
-const i18n = getContext(Context.I18N);
-const configShowEmptyAttributes = getContext(Context.ShowEmptyAttributes);
-const logger = new LoggerService("ShowEmptyAttributesToggle");
-const showEmptyAttributes = $derived(configShowEmptyAttributes);
+  const { documentId }: Props = $props();
+  const i18n = $derived($i18nStore);
 
+  // Global setting from plugin config
+  const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
 
-onMount(() => {
-    logger.debug("ShowEmptyAttributesToggle mounted", { configShowEmptyAttributes});
-});
+  // Per-document override
+  const effectiveShowEmptyAttributesStore = $derived(
+    documentSettingsStore.getEffectiveShowEmptyAttributes(
+      documentId,
+      globalShowEmptyAttributes
+    )
+  );
+  const effectiveShowEmptyAttributes = $derived(
+    $effectiveShowEmptyAttributesStore
+  );
+
+  function toggleShowEmptyAttributes(event: MouseEvent) {
+    documentSettingsStore.toggleShowEmptyAttributes(
+      documentId,
+      globalShowEmptyAttributes
+    );
+    (event.currentTarget as HTMLButtonElement).blur();
+  }
 </script>
 
-{#if !configShowEmptyAttributes}
-    <button class="b3-button b3-button--cancel">
-        <Icon icon={showEmptyAttributes ? "iconEyeoff" : "iconEye"}/>
-        {showEmptyAttributes ? i18n.hideEmptyAttributesToggle : i18n.showEmptyAttributesToggle}
-    </button>
-{/if}
+<button
+  class="b3-button b3-button--cancel dpp-empty-attributes-toggle"
+  onclick={toggleShowEmptyAttributes}
+>
+  <Icon icon={effectiveShowEmptyAttributes ? "iconEyeoff" : "iconEye"} />
+  {effectiveShowEmptyAttributes
+    ? i18n.hideEmptyAttributesToggle
+    : i18n.showEmptyAttributesToggle}
+</button>

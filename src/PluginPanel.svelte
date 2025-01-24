@@ -22,9 +22,7 @@
 
   let {
     i18n,
-    showPrimaryKey = false,
     allowEditing = false,
-    showEmptyAttributes = false,
     avData = [],
     protyle,
     blockId,
@@ -33,7 +31,6 @@
   setContext(Context.I18N, i18n);
   setContext(Context.Protyle, protyle);
   setContext(Context.BlockID, blockId);
-  setContext(Context.ShowEmptyAttributes, showEmptyAttributes);
 
   const openAvPanel = (avId: string) => {
     settingsStore.activateTab(blockId, avId);
@@ -42,11 +39,6 @@
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
 
   let documentSettings = $derived($settingsStore.get(blockId));
-  let effectiveShowEmptyAttributes = $derived(
-    documentSettings.overrideShowEmptyAttributes === null
-      ? showEmptyAttributes
-      : documentSettings.overrideShowEmptyAttributes
-  );
 
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
@@ -77,18 +69,9 @@
   </ProtyleBreadcrumb>
   {#if !isCollapsed}
     {#if allowEditing}
-      <AttributeViewPanelNative
-        {avData}
-        {showPrimaryKey}
-        showEmptyAttributes={effectiveShowEmptyAttributes}
-      />
+      <AttributeViewPanelNative {avData} />
     {:else}
-      <AttributeViewPanel
-        {avData}
-        {showPrimaryKey}
-        showEmptyAttributes={effectiveShowEmptyAttributes}
-        {allowEditing}
-      />
+      <AttributeViewPanel {avData} {allowEditing} />
     {/if}
   {/if}
 </div>

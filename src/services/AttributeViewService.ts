@@ -8,16 +8,24 @@ import { mount } from "svelte";
 const logger = new LoggerService("AttributeViewService");
 
 export class AttributeViewService {
-  static hidePrimaryKey(element: HTMLElement, blockId: string) {
-    logger.debug("hidePrimaryKey");
+  static handlePrimaryKey(
+    element: HTMLElement,
+    blockId: string,
+    showPrimaryKey: boolean
+  ) {
+    // logger.debug("handlePrimaryKey");
     const primaryKeyValueField = element.querySelectorAll(
-      `[data-node-id='${blockId}'] [data-type='block']`,
+      `[data-node-id='${blockId}'] [data-type='block']`
     );
     primaryKeyValueField.forEach((field) => {
       const fieldElement = field as HTMLElement;
       const colId = fieldElement.dataset?.colId;
       const row = field.closest(`[data-col-id='${colId}'].av__row`);
-      row?.classList.add("dpp-av-panel--hidden");
+      if (showPrimaryKey) {
+        row?.classList.remove("dpp-av-panel--hidden");
+      } else {
+        row?.classList.add("dpp-av-panel--hidden");
+      }
     });
   }
 
@@ -26,36 +34,44 @@ export class AttributeViewService {
     blockId: string,
     avData: AttributeView[],
     showPrimaryKey: boolean,
-    showEmptyAttributes: boolean,
+    showEmptyAttributes: boolean
   ) {
-    if (!showPrimaryKey) {
-      AttributeViewService.hidePrimaryKey(element, blockId);
-    }
+    logger.addBreadcrumb(blockId, "adjustDOM");
+    // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
+    AttributeViewService.handlePrimaryKey(element, blockId, showPrimaryKey);
 
-    if (!showEmptyAttributes) {
-      AttributeViewService.hideEmptyAttributes(element, blockId, avData);
-    }
+    AttributeViewService.handleEmptyAttributes(
+      element,
+      blockId,
+      avData,
+      showEmptyAttributes
+    );
 
-    AttributeViewService.addToggleShowEmptyAttributes(element);
+    AttributeViewService.addToggleShowEmptyAttributes(element, blockId);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
   }
 
-  static hideEmptyAttributes(
+  static handleEmptyAttributes(
     element: HTMLElement,
     blockId: string,
     avData: AttributeView[],
+    showEmptyAttributes: boolean
   ) {
-    logger.debug("hideEmptyAttributes");
+    // logger.debug("handleEmptyAttributes");
     avData.forEach((table) => {
       const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
       emptyKeyAndValues.forEach((item) => {
         element
           .querySelectorAll(
-            `[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`,
+            `[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`
           )
           .forEach((field) => {
-            field.classList.add("dpp-av-col--empty");
+            if (showEmptyAttributes) {
+              field.classList.remove("dpp-av-col--empty");
+            } else {
+              field.classList.add("dpp-av-col--empty");
+            }
           });
       });
     });
@@ -69,9 +85,9 @@ export class AttributeViewService {
 
   static disableTemplateClicks(element: HTMLElement) {
     if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
-      logger.debug(
-        "Kernel version is below 3.1.21, disabling clicks on templates",
-      );
+      //     logger.debug(
+      //     "Kernel version is below 3.1.21, disabling clicks on templates"
+      //   );
       const templates = element.querySelectorAll("[data-type='template']");
       templates.forEach((template) => {
         template.setAttribute("data-type", "text");
@@ -80,17 +96,31 @@ export class AttributeViewService {
     }
   }
 
-  static addToggleShowEmptyAttributes(container: HTMLElement) {
-    const addColumnButton = container.querySelectorAll(
-      "[data-type='addColumn']",
-    );
-    if (addColumnButton.length > 0) {
-      const container = document.createElement("div");
-      addColumnButton[0].after(container);
+  /**
+   * TODO only triggered once maybe?
+   */
+  static addToggleShowEmptyAttributes(
+    container: HTMLElement,
+    documentId: string
+  ) {
+    // First remove any existing toggle buttons
+    container
+      .querySelectorAll(".dpp-empty-attributes-toggle")
+      .forEach((button) => {
+        button.remove();
+      });
 
+    const addColumnButton = container.querySelectorAll(
+      "[data-type='addColumn']"
+    );
+    addColumnButton.forEach((element) => {
       mount(ShowEmptyAttributesToggle, {
         target: container,
+        anchor: element.nextSibling,
+        props: {
+          documentId,
+        },
       });
-    }
+    });
   }
 }
