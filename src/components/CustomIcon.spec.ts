@@ -1,5 +1,5 @@
 import { render } from "@testing-library/svelte";
-import CustomIcon from "../src/components/CustomIcon.svelte";
+import CustomIcon from "./CustomIcon.svelte";
 import { describe, it, expect } from "vitest";
 
 describe("CustomIcon", () => {
