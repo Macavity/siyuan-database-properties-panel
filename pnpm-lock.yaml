@@ -117,6 +117,9 @@ importers:
       '@testing-library/svelte':
         specifier: ^5.2.6
         version: 5.2.6(svelte@5.19.1)(vite@5.4.14(@types/node@20.16.11)(sass@1.79.5))(vitest@3.0.3)
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
       '@vitest/ui':
         specifier: ^3.0.3
         version: 3.0.3(vitest@3.0.3)
@@ -667,6 +670,9 @@ packages:
 
   '@types/node@20.16.11':
     resolution: {integrity: sha512-y+cTCACu92FyA5fgQSAI8A1H429g7aSK2HsO7K4XYUWc4dY5IUz55JSDIYT6/VsOLfGy8vmvQYC2hfb0iF16Uw==}
+
+  '@types/semver@7.5.8':
+    resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -2510,6 +2516,8 @@ snapshots:
   '@types/node@20.16.11':
     dependencies:
       undici-types: 6.19.8
+
+  '@types/semver@7.5.8': {}
 
   '@types/stack-utils@2.0.3': {}
 
