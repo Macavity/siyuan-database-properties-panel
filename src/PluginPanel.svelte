@@ -22,9 +22,7 @@
 
   let {
     i18n,
-    showPrimaryKey = false,
     allowEditing = false,
-    showEmptyAttributes = false,
     avData = [],
     protyle,
     blockId,
@@ -39,6 +37,8 @@
   };
 
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
+
+  let documentSettings = $derived($settingsStore.get(blockId));
 
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
@@ -69,18 +69,9 @@
   </ProtyleBreadcrumb>
   {#if !isCollapsed}
     {#if allowEditing}
-      <AttributeViewPanelNative
-        {avData}
-        {showPrimaryKey}
-        {showEmptyAttributes}
-      />
+      <AttributeViewPanelNative {avData} />
     {:else}
-      <AttributeViewPanel
-        {avData}
-        {showPrimaryKey}
-        {showEmptyAttributes}
-        {allowEditing}
-      />
+      <AttributeViewPanel {avData} {allowEditing} />
     {/if}
   {/if}
 </div>

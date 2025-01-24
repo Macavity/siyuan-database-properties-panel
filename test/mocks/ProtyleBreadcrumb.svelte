@@ -3,5 +3,5 @@
 </script>
 
 <div class="protyle-breadcrumb">
-  <slot />
+  {@render children?.()}
 </div>

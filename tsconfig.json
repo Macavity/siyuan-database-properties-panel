@@ -55,8 +55,7 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/**/*.svelte",
-    "node_modules/siyuan/**/*.d.ts",
+    "src/**/*.svelte"
   ],
   "references": [
     {

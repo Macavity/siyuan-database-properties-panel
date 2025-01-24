@@ -1,143 +1,131 @@
 <script lang="ts">
-    import {LoggerService} from "@/services/LoggerService";
-    import {getContext} from "svelte";
-    import {Context} from "@/types/context";
-    import {onMount} from "svelte";
-    import {type AttributeView} from "@/types/AttributeView";
-    import {getEmptyAVKeyAndValues} from "@/libs/getAVKeyAndValues";
-    import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
-    import {settingsStore} from "@/stores/localSettingStore";
-    import semver from "semver";
+  import { LoggerService } from "@/services/LoggerService";
+  import { getContext } from "svelte";
+  import { Context } from "@/types/context";
+  import { onMount } from "svelte";
+  import { type AttributeView } from "@/types/AttributeView";
+  import LayoutTabBar from "@/components/ui/LayoutTabBar.svelte";
+  import { settingsStore } from "@/stores/localSettingStore";
+  import { AttributeViewService } from "@/services/AttributeViewService";
+  import { configStore } from "@/stores/configStore";
+  import { documentSettingsStore } from "@/stores/documentSettingsStore";
 
-    interface Props {
-        avData: AttributeView[];
-        showPrimaryKey?: boolean;
-        showEmptyAttributes?: boolean;
-    }
+  interface Props {
+    avData: AttributeView[];
+  }
 
-    let { avData, showPrimaryKey = false, showEmptyAttributes = false }: Props = $props();
+  let { avData }: Props = $props();
 
-    let element: HTMLDivElement | null = $state(null);
+  let element: HTMLDivElement | null = $state(null);
 
-    // State
-    const blockId = getContext(Context.BlockID);
-    const protyle = getContext(Context.Protyle);
-    const logger = new LoggerService("AttributeViewPanelNative");
+  // State
+  const blockId = getContext(Context.BlockID);
+  const protyle = getContext(Context.Protyle);
+  const logger = new LoggerService("AttributeViewPanelNative");
 
-    const tabs = [];
+  const tabs = [];
 
-    avData.forEach((attributeView) => {
-        tabs.push({
-            key: attributeView.avID,
-            name: attributeView.avName,
-            icon: "iconDatabase",
-        });
+  avData.forEach((attributeView) => {
+    tabs.push({
+      key: attributeView.avID,
+      name: attributeView.avName,
+      icon: "iconDatabase",
     });
+  });
 
-    onMount(() => {
-        renderProtyleAv();
+  // Get settings from stores
+  const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
+  const globalShowPrimaryKey = $derived($configStore.showPrimaryKey);
+  const effectiveShowEmptyAttributesStore = $derived(
+    documentSettingsStore.getEffectiveShowEmptyAttributes(
+      blockId,
+      globalShowEmptyAttributes
+    )
+  );
+  const effectiveShowEmptyAttributes = $derived(
+    $effectiveShowEmptyAttributesStore
+  );
+
+  // Effect to handle store changes
+  $effect(() => {
+    if (element) {
+      //   logger.debug("Adjusting DOM due to store changes", {
+      //     globalShowPrimaryKey,
+      //     effectiveShowEmptyAttributes,
+      //   });
+
+      AttributeViewService.adjustDOM(
+        element,
+        blockId,
+        avData,
+        globalShowPrimaryKey,
+        effectiveShowEmptyAttributes
+      );
+    }
+  });
+
+  onMount(() => {
+    logger.addBreadcrumb(blockId, "onMount");
+    renderProtyleAv();
+  });
+
+  const showContent = (tabFocus: string) => {
+    if (!tabFocus) {
+      return;
+    }
+
+    activateTab(tabFocus);
+  };
+
+  const activateTab = (tabFocus: string) => {
+    logger.addBreadcrumb(blockId, "activateTab: " + LoggerService.getReadableName(tabFocus));
+    const targetTab = element.querySelectorAll(
+      `[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`
+    );
+    const remainingTabs = element.querySelectorAll(
+      `[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`
+    );
+    if (!targetTab.length) {
+      logger.info("showContent: No target tab found");
+      return;
+    }
+    settingsStore.activateTab(blockId, tabFocus);
+
+    targetTab.forEach((item: HTMLElement) => {
+      item.classList.remove("dpp-av-panel--hidden");
     });
+    remainingTabs.forEach((item: HTMLElement) => {
+      item.classList.add("dpp-av-panel--hidden");
+    });
+  };
 
-    const showContent = (tabFocus:string) => {
-        if(!tabFocus){
-            return;
-        }
+  const renderProtyleAv = () => {
+    protyle.renderAVAttribute(element, blockId, (element) => {
+      AttributeViewService.adjustDOM(
+        element,
+        blockId,
+        avData,
+        globalShowPrimaryKey,
+        effectiveShowEmptyAttributes
+      );
 
-        activateTab(tabFocus);
-    }
+      if (!settingsStore.isAnyTabActive(blockId)) {
+        const first = element.querySelector(`[data-type="NodeAttributeView"]`);
+        activateTab(first.getAttribute("data-av-id"));
+      } else {
+        activateTab(settingsStore.getActiveTab(blockId));
+      }
+    });
+  };
 
-    const activateTab = (tabFocus: string) => {
-        logger.debug("activateTab", tabFocus);
-        const targetTab = element.querySelectorAll(`[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`);
-        const remainingTabs = element.querySelectorAll(`[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`);
-        if(!targetTab.length){
-            logger.info("showContent: No target tab found");
-            return;
-        }
-        settingsStore.activateTab(blockId, tabFocus);
-
-        targetTab.forEach((item: HTMLElement) => {
-            item.classList.remove("dpp-av-panel--hidden");
-        });
-        remainingTabs.forEach((item: HTMLElement) => {
-            item.classList.add("dpp-av-panel--hidden");
-        });
-    }
-
-    const renderProtyleAv = () => {
-        protyle.renderAVAttribute(element, blockId, (element) => {
-            logger.debug("renderAVAttribute", element, blockId)
-            if (!showPrimaryKey) {
-                logger.debug("hide primary key");
-                const primaryKeyValueField = element.querySelectorAll(
-                    `[data-node-id='${blockId}'] [data-type='block']`
-                );
-                logger.debug("identify primary key", primaryKeyValueField);
-                primaryKeyValueField.forEach((field) => {
-                    const fieldElement = field as HTMLElement;
-                    const colId = fieldElement.dataset?.colId;
-                    const row = field.closest(`[data-col-id='${colId}'].av__row`);
-                    row?.classList.add("dpp-av-panel--hidden");
-                });
-            }
-
-            if (!showEmptyAttributes) {
-                logger.debug("hide empty attributes");
-                avData.forEach((table) => {
-                    const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
-                    emptyKeyAndValues.forEach((item) => {
-                        element
-                            .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`)
-                            .forEach((field) => {
-                                field.classList.add("dpp-av-col--empty");
-                            });
-                    });
-                });
-            }
-            // Hide "add" buttons
-            element.querySelectorAll("[data-type='addColumn']").forEach((button) => {
-                button.classList.add("dpp-av-panel--hidden");
-
-                // Remove the two following dividers
-                const firstDivider = button.nextElementSibling;
-                const secondDivider = firstDivider?.nextElementSibling;
-
-                if (firstDivider?.classList.contains("fn__hr--b")) {
-                    firstDivider.classList.add("dpp-av-panel--hidden");
-                }
-                if (secondDivider?.classList.contains("fn__hr--b")) {
-                    secondDivider.classList.add("dpp-av-panel--hidden");
-                }
-            });
-
-            element.querySelectorAll(".custom-attr__avheader").forEach((item) => {
-                item.classList.add("dpp-av-panel--hidden");
-            });
-
-            // Disable template clicks, as they cause interface freezes
-            if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
-                logger.debug("Kernel version is below 3.1.21, disabling clicks on templates");
-                const templates = element.querySelectorAll("[data-type='template']");
-                templates.forEach((template) => {
-                    template.setAttribute("data-type", "text");
-                    template.classList.add("dpp-av-panel--disabled");
-                });
-            }
-
-            if(!settingsStore.isAnyTabActive(blockId)){
-                const first = element.querySelector(`[data-type="NodeAttributeView"]`);
-                activateTab(first.getAttribute("data-av-id"));
-            } else {
-                activateTab(settingsStore.getActiveTab(blockId));
-            }
-        });
-    }
-
-    let currentSettings = $derived($settingsStore.get(blockId));
+  let currentSettings = $derived($settingsStore.get(blockId));
 </script>
 
 <div>
-    <LayoutTabBar {tabs} focus={currentSettings.lastSelectedAttributeView} onclick={showContent}/>
-    <div class="dpp-av-panel custom-attr" bind:this={element}></div>
+  <LayoutTabBar
+    {tabs}
+    focus={currentSettings.lastSelectedAttributeView}
+    onclick={showContent}
+  />
+  <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>
-

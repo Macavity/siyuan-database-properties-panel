@@ -5,6 +5,7 @@ export enum Context {
   BlockID = "blockId",
   Protyle = "protyle",
   I18N = "i18n",
+  ShowEmptyAttributes = "showEmptyAttributes",
 }
 
 declare module "svelte" {
@@ -12,4 +13,5 @@ declare module "svelte" {
   export function getContext(context: Context.BlockID): string;
   export function getContext(context: Context.Protyle): Protyle;
   export function getContext(context: Context.I18N): I18N;
+  export function getContext(context: Context.ShowEmptyAttributes): boolean;
 }

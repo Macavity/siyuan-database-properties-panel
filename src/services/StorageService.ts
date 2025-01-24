@@ -19,18 +19,18 @@ export class StorageService {
   constructor(private logger = new LoggerService("StorageService")) {}
 
   public async fetchSettings(documentId: string) {
-    this.logger.debug("fetchSettings", documentId);
+    this.logger.addBreadcrumb(documentId, "fetchSettings");
 
     return getFile<SettingsDTO>(getStoragePath(documentId))
       .then((data) => {
         if (isApiError(data)) {
-          this.logger.debug("create default for document", documentId);
+          // this.logger.debug("create default for document", documentId);
           return createDefaultSettingsDTO(documentId);
         }
 
         if (data.documentId !== documentId) {
           this.logger.error(
-            `Invalid documentId ${data.documentId}, expected ${documentId}.`,
+            `Invalid documentId ${data.documentId}, expected ${documentId}.`
           );
           return createDefaultSettingsDTO(documentId);
         }
@@ -39,6 +39,7 @@ export class StorageService {
           documentId,
           data.isCollapsed,
           data.lastSelectedAttributeView,
+          data.overrideShowEmptyAttributes
         );
       })
       .catch((e) => {
@@ -49,7 +50,7 @@ export class StorageService {
   }
 
   public async saveSettings(settings: SettingsDTO) {
-    this.logger.debug("saveSettings", settings);
+    this.logger.addBreadcrumb(settings.documentId, "saveSettings");
 
     const file = new File(
       [
@@ -57,7 +58,7 @@ export class StorageService {
           type: "application/json",
         }),
       ],
-      `${settings.documentId}.json`,
+      `${settings.documentId}.json`
     );
     return putFile(getStoragePath(settings.documentId), false, file);
   }

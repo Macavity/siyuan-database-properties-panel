@@ -1,4 +1,12 @@
-import { Plugin, IEventBusMap, Model, getBackend, getFrontend } from "siyuan";
+import {
+  getAllEditor,
+  getBackend,
+  getFrontend,
+  IEventBusMap,
+  IProtyle,
+  Model,
+  Plugin,
+} from "siyuan";
 import * as Sentry from "@sentry/browser";
 import "@/index.scss";
 import PluginPanel from "@/PluginPanel.svelte";
@@ -7,13 +15,13 @@ import { SiyuanEvents } from "@/types/events";
 import { getAttributeViewKeys } from "@/api";
 import { AttributeView } from "./types/AttributeView";
 import { LoggerService } from "./services/LoggerService";
-import { IProtyle } from "siyuan";
 import { getPadding } from "@/libs/siyuan/protyle/ui/initUI";
 import { I18N } from "./types/i18n";
-import { getAllEditor } from "siyuan";
 import { storageService } from "@/services/StorageService";
 import { settingsStore } from "@/stores/localSettingStore";
 import { mount } from "svelte";
+import { i18nStore } from "@/stores/i18nStore";
+import { configStore } from "@/stores/configStore";
 
 const STORAGE_NAME = "menu-config";
 
@@ -38,21 +46,62 @@ export default class DatabasePropertiesPanel extends Plugin {
   customTab: () => Model;
   private settingUtils: SettingUtils;
   private logger: LoggerService;
+
+  /**
+   * Used to disable error reporting on documents when the panel isn't rendered.
+   */
+  enableErrorReporting = true;
+
   boundProtyleLoadedListener = this.protyleLoadedListener.bind(this);
   boundProtyleSwitchListener = this.protyleSwitchListener.bind(this);
 
   async onload() {
-    this.logger = new LoggerService();
+    this.logger = new LoggerService("DatabasePropertiesPanel");
     this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
 
+    i18nStore.set(this.i18n as I18N);
     this.initSettings();
+    this.updateStoreFromSettingUtils();
     this.initSlashCommand();
+
+    if (process.env.NODE_ENV === "development") {
+      //   this.addTopBar({
+      //     icon: "iconRefresh",
+      //     title: "Refresh",
+      //     position: "right",
+      //     callback: () => window.location.reload(),
+      //   });
+      this.addCommand({
+        langKey: "Refresh",
+        hotkey: "⇧⌘R",
+        callback: () => window.location.reload(),
+      });
+    }
+  }
+
+  private updateStoreFromSettingUtils() {
+    configStore.set({
+      showPrimaryKey: this.settingUtils.get(
+        DatabasePropertiesPanelConfig.ShowPrimaryKey,
+      ),
+      showEmptyAttributes: this.settingUtils.get(
+        DatabasePropertiesPanelConfig.ShowEmptyAttributes,
+      ),
+      showDatabaseAttributes: this.settingUtils.get(
+        DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
+      ),
+      allowErrorReporting: this.settingUtils.get(
+        DatabasePropertiesPanelConfig.AllowErrorReporting,
+      ),
+    });
   }
 
   private changeCheckboxSetting(key: string): () => void {
     return () => {
       const value = !this.settingUtils.get(key);
       this.settingUtils.set(key, value);
+
+      this.updateStoreFromSettingUtils();
     };
   }
 
@@ -60,6 +109,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     this.settingUtils = new SettingUtils({
       plugin: this,
       name: STORAGE_NAME,
+      callback: this.updateStoreFromSettingUtils.bind(this),
     });
 
     this.settingUtils.addItem({
@@ -241,9 +291,12 @@ export default class DatabasePropertiesPanel extends Plugin {
       return false;
     }
 
-    const topNode = titleNode.closest(".protyle-top");
+    const titleInput = titleNode.querySelector(".protyle-title__input");
+    if (titleInput && titleInput?.textContent) {
+      LoggerService.registerDocumentId(nodeId, titleInput?.textContent);
+    }
 
-    return topNode;
+    return titleNode.closest(".protyle-top");
   }
 
   private async renderPanel(openProtyle: IProtyle) {
@@ -252,6 +305,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     const blockId = openProtyle.block.rootID;
+
     const showDatabaseAttributes = this.settingUtils.get<boolean>(
       DatabasePropertiesPanelConfig.ShowDatabaseAttributes,
     );
@@ -260,6 +314,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
+      this.enableErrorReporting = false;
       this.logger.debug("=> database panel hidden");
       return;
     }
@@ -268,12 +323,14 @@ export default class DatabasePropertiesPanel extends Plugin {
       (editor) => editor.protyle.id === openProtyle.id,
     );
     if (!editor) {
+      this.enableErrorReporting = false;
       this.logger.error("=> editor not found");
       return;
     }
 
     const settings = await storageService.fetchSettings(blockId);
     settingsStore.setFromDTO(settings);
+    this.updateStoreFromSettingUtils();
 
     let avData = [] as AttributeView[];
     let supportsEditing = false;
@@ -282,9 +339,16 @@ export default class DatabasePropertiesPanel extends Plugin {
       supportsEditing = true;
     }
 
-    if (showDatabaseAttributes) {
-      avData = await getAttributeViewKeys(blockId);
+    if (!showDatabaseAttributes) {
+      this.enableErrorReporting = false;
+      return;
     }
+
+    avData = await getAttributeViewKeys(blockId);
+
+    avData.forEach((av) => {
+      LoggerService.registerDocumentId(av.avID, av.avName);
+    });
 
     const panelWrapper = document.querySelector(PANEL_PARENT_CLASS_SELECTOR);
     if (panelWrapper) {
@@ -299,21 +363,15 @@ export default class DatabasePropertiesPanel extends Plugin {
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
     mount(PluginPanel, {
-            target: tabDiv,
-            props: {
-              blockId,
-              protyle: editor,
-              showPrimaryKey: this.settingUtils.get<boolean>(
-                DatabasePropertiesPanelConfig.ShowPrimaryKey,
-              ),
-              showEmptyAttributes: this.settingUtils.get<boolean>(
-                DatabasePropertiesPanelConfig.ShowEmptyAttributes,
-              ),
-              allowEditing: supportsEditing,
-              i18n: this.i18n as I18N,
-              avData,
-            },
-          });
+      target: tabDiv,
+      props: {
+        blockId,
+        protyle: editor,
+        allowEditing: supportsEditing,
+        i18n: this.i18n as I18N,
+        avData,
+      },
+    });
 
     topNode.after(tabDiv);
   }
@@ -327,6 +385,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     if (allowErrorReporting && process.env.SENTRY_DSN) {
+      this.enableErrorReporting = true;
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         environment: process.env.NODE_ENV || "development",
@@ -335,10 +394,9 @@ export default class DatabasePropertiesPanel extends Plugin {
         release: process.env.PLUGIN_VERSION,
         ignoreErrors: [],
         beforeSend(event) {
-          // Requires Svelte 5 boundary.
-          // if (event.tags?.errorSource !== PLUGIN_NAME) {
-          //   return null;
-          // }
+          if (this.enableErrorReporting === false) {
+            return null;
+          }
 
           if (event.exception) {
             const exception = event.exception.values[0];

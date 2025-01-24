@@ -28,23 +28,22 @@ vi.mock("@/components/ui/Icon.svelte", () => ({
 }));
 
 vi.mock("./components/AttributeViewPanel.svelte", async () => ({
-  default: (await import("./test/mocks/AttributeViewPanel.svelte")).default,
+  default: (await import("../test/mocks/AttributeViewPanel.svelte")).default,
 }));
 
 vi.mock("./components/AttributeViewPanelNative.svelte", async () => ({
-  default: (await import("./test/mocks/AttributeViewPanelNative.svelte"))
+  default: (await import("../test/mocks/AttributeViewPanelNative.svelte"))
     .default,
 }));
 
 vi.mock("@/components/ProtyleBreadcrumb.svelte", async () => ({
-  default: (await import("./test/mocks/ProtyleBreadcrumb.svelte")).default,
+  default: (await import("../test/mocks/ProtyleBreadcrumb.svelte")).default,
 }));
 
 // Regular imports after all mocks
 import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, fireEvent } from "@testing-library/svelte";
 import PluginPanel from "./PluginPanel.svelte";
-import { writable } from "svelte/store";
 
 describe("PluginPanel", () => {
   const mockProtyle = {
@@ -58,8 +57,8 @@ describe("PluginPanel", () => {
     protyle: mockProtyle,
     blockId: "test-block-id",
     avData: [
-      { avID: "av1", avName: "Database 1" },
-      { avID: "av2", avName: "Database 2" },
+      { avID: "av1", avName: "Database 1", keyValues: [] },
+      { avID: "av2", avName: "Database 2", keyValues: [] },
     ],
   };
 
@@ -74,7 +73,7 @@ describe("PluginPanel", () => {
 
   it("renders all database items in breadcrumb", async () => {
     const { settingsStore } = vi.mocked(
-      await import("@/stores/localSettingStore")
+      await import("@/stores/localSettingStore.ts"),
     );
     settingsStore.get.mockReturnValue({
       isCollapsed: false,
@@ -90,7 +89,7 @@ describe("PluginPanel", () => {
 
   it("calls activateTab when clicking a database item", async () => {
     const { settingsStore } = vi.mocked(
-      await import("@/stores/localSettingStore")
+      await import("@/stores/localSettingStore.ts"),
     );
     settingsStore.get.mockReturnValue({
       isCollapsed: false,
@@ -99,17 +98,17 @@ describe("PluginPanel", () => {
 
     const { container } = render(PluginPanel, mockProps);
     const firstItem = container.querySelector(".protyle-breadcrumb__item");
-    await fireEvent.click(firstItem!);
+    await fireEvent.click(firstItem);
 
     expect(settingsStore.activateTab).toHaveBeenCalledWith(
       "test-block-id",
-      "av1"
+      "av1",
     );
   });
 
   it("does not render AttributeViewPanel when collapsed", async () => {
     const { settingsStore } = vi.mocked(
-      await import("@/stores/localSettingStore")
+      await import("@/stores/localSettingStore.ts"),
     );
     settingsStore.get.mockReturnValue({
       isCollapsed: true,
