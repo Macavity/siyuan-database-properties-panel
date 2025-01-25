@@ -50,7 +50,10 @@ jobs:
         run: pnpm install
 
       - name: Lint
-        run: pnpm eslint
+        run: pnpm lint
+
+      - name: Check Translations
+        run: pnpm check-i18n
 
       - name: Test
         run: pnpm vitest run

@@ -14,6 +14,9 @@
   "configShowDatabasePropertiesDesc": "在属性面板中<b>始终</b>显示数据库属性",
   "configUseMultipleTableLayout": "多个数据库的布局",
   "configUseMultipleTableLayoutDesc": "决定如何在面板中显示多个数据库。",
+  "showEmptyAttributesToggle": "显示空属性",
+  "hideEmptyAttributesToggle": "隐藏空属性",
+  "overrideSettings": "覆盖默认设置",
   "collapse": "折叠",
   "expand": "展开"
 }

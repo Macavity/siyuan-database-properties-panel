@@ -14,6 +14,7 @@
     "dev-watch": "NODE_ENV=development vite build --watch",
     "update-version": "node --no-warnings ./scripts/update_version.js",
     "build": "vite build",
+    "check-i18n": "node ./scripts/check_i18n.js",
     "lint": "eslint",
     "test": "vitest",
     "make-install": "vite build && node --no-warnings ./scripts/make_install.js"
