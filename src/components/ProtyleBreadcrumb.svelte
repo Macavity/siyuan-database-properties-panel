@@ -1,45 +1,41 @@
 <script lang="ts">
-  import { getContext } from "svelte";
-  import { Context } from "@/types/context";
-  import Button from "@/components/ui/Button.svelte";
-  import { settingsStore } from "@/stores/localSettingStore";
-  import { LoggerService } from "@/services/LoggerService";
-  interface Props {
-    children?: import("svelte").Snippet;
-  }
+    import {getContext} from "svelte";
+    import {Context} from "@/types/context";
+    import {settingsStore} from "@/stores/localSettingStore";
+    import CollapseButton from "@/components/ui/CollapseButton.svelte";
 
-  let { children }: Props = $props();
+    interface Props {
+        children?: import("svelte").Snippet;
+        singleTab: boolean;
+    }
 
-  const i18n = getContext(Context.I18N);
-  const documentId = getContext(Context.BlockID);
-  const logger = new LoggerService("ProtyleBreadcrumb");
+    let {children, singleTab}: Props = $props();
 
-  let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
+    const documentId = getContext(Context.BlockID);
 
-  const toggleCollapseTab = async () => {
-    settingsStore.toggleCollapsed(documentId);
-  };
+    let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
+
 </script>
 
-<div class="protyle-breadcrumb" id="top-navigation-bar">
-  <Button
-          icon={isCollapsed ? "iconExpand" : "iconContract"}
-          onclick={toggleCollapseTab}
-          tooltip={isCollapsed ? i18n.expand : i18n.collapse}
-  />
-  <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
-    {#if isCollapsed}
-      {@render children?.()}
-    {/if}
-  </div>
-
-
-</div>
+{#if isCollapsed || singleTab}
+    <div class="protyle-breadcrumb"
+         class:protyle-breadcrumb--single-tab={singleTab}
+         id="top-navigation-bar">
+        <CollapseButton/>
+        {#if isCollapsed}
+            <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
+                {@render children?.()}
+            </div>
+        {/if}
+    </div>
+{/if}
 
 <style lang="scss">
   .protyle-breadcrumb {
-    &:first-child {
-      margin-left: 12px;
-    }
+    margin-left: 0;
+    padding: 4px 0;
+  }
+  .protyle-breadcrumb.protyle-breadcrumb--single-tab:first-child {
+      margin-left: 15px;
   }
 </style>

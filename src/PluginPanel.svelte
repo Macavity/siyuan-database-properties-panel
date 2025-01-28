@@ -38,8 +38,6 @@
 
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
 
-  let documentSettings = $derived($settingsStore.get(blockId));
-
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
   //         scope.setTag('errorSource', PLUGIN_NAME);
@@ -49,7 +47,7 @@
 </script>
 
 <div class="plugin-panel">
-  <ProtyleBreadcrumb>
+  <ProtyleBreadcrumb singleTab={avData.length === 1}>
     {#each avData as av, i}
       <span
         class="protyle-breadcrumb__item"
