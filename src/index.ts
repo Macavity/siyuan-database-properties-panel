@@ -281,13 +281,15 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     if (!titleNode) {
-      this.logger.debug("No title node found", { nodeId });
+      this.logger.debug("No title node found, hide panel", { nodeId });
       return false;
     }
 
     const protyleAttrElement = titleNode.querySelector("div.protyle-attr");
     if (!protyleAttrElement || !protyleAttrElement.firstChild) {
-      this.logger.debug("No protyle-attr element found", { nodeId });
+      this.logger.debug("No protyle-attr element found, hide panel", {
+        nodeId,
+      });
       return false;
     }
 
@@ -315,7 +317,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     const topNode = this.getProtyleTopNode(blockId);
     if (!topNode) {
       this.enableErrorReporting = false;
-      this.logger.debug("=> database panel hidden");
+      this.logger.debug("=> no top node, hide panel");
       return;
     }
 
@@ -341,6 +343,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     if (!showDatabaseAttributes) {
       this.enableErrorReporting = false;
+      this.logger.debug("=> showDatabaseAttributes is false, hide panel");
       return;
     }
 
@@ -349,6 +352,12 @@ export default class DatabasePropertiesPanel extends Plugin {
     avData.forEach((av) => {
       LoggerService.registerDocumentId(av.avID, av.avName);
     });
+
+    if (avData.length === 0) {
+      this.enableErrorReporting = false;
+      this.logger.debug("=> no database attributes found, hide panel");
+      return;
+    }
 
     const panelWrapper = document.querySelector(PANEL_PARENT_CLASS_SELECTOR);
     if (panelWrapper) {
