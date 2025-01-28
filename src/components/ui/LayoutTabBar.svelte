@@ -1,6 +1,7 @@
 <script lang="ts">
     import Icon from "@/components/ui/Icon.svelte";
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
+    import CollapseButton from "@/components/ui/CollapseButton.svelte";
 
     interface Tab {
         key: string;
@@ -16,15 +17,19 @@
         onclick: (key: string) => void;
     }
 
-    let { tabs, focus, onclick }: Props = $props();
+    let {tabs, focus, onclick}: Props = $props();
 
     function activateTab(key: string) {
         onclick(key);
     }
 </script>
 
-<div class="fn__flex-column">
-    <div class="layout-tab-bar fn__flex">
+<div class="fn__flex layout-tab-bar-wrapper">
+    <div class="fn__flex">
+        <CollapseButton/>
+    </div>
+    <div class="layout-tab-bar fn__flex fn__flex-1">
+
         {#each tabs as tab, index (tab.key)}
             <div class="item item--full"
                  class:item--focus={tab.key === focus}
@@ -48,3 +53,9 @@
         {/each}
     </div>
 </div>
+
+<style>
+    .layout-tab-bar-wrapper{
+        padding: 0 8px;
+    }
+</style>
