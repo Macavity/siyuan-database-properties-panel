@@ -22,17 +22,24 @@
 </script>
 
 <div class="protyle-breadcrumb" id="top-navigation-bar">
+  <Button
+          icon={isCollapsed ? "iconExpand" : "iconContract"}
+          onclick={toggleCollapseTab}
+          tooltip={isCollapsed ? i18n.expand : i18n.collapse}
+  />
   <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
     {#if isCollapsed}
       {@render children?.()}
     {/if}
   </div>
 
-  <span class="protyle-breadcrumb__space"></span>
 
-  <Button
-    icon={isCollapsed ? "iconExpand" : "iconContract"}
-    onclick={toggleCollapseTab}
-    tooltip={isCollapsed ? i18n.expand : i18n.collapse}
-  />
 </div>
+
+<style lang="scss">
+  .protyle-breadcrumb {
+    &:first-child {
+      margin-left: 12px;
+    }
+  }
+</style>
