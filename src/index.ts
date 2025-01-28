@@ -393,7 +393,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         debug: false,
         release: process.env.PLUGIN_VERSION,
         ignoreErrors: [],
-        beforeSend(event) {
+        beforeSend: (event) => {
           if (this.enableErrorReporting === false) {
             return null;
           }
