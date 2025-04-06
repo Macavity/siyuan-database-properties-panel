@@ -12,12 +12,11 @@
 
 ## 上一版本中的更改
 
-### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
+### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
-- 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.
-- 🇺🇸 Add a button to add new attributes to the database
-- 🇨🇳 添加切换功能，可按文档显示/隐藏空属性。
-- 🇨🇳 添加按钮，用于向数据库添加新属性
+- 🇨🇳 在只有一个数据库时隐藏数据库名称
+- 🇨🇳 调整整体布局以减少使用空间
+- 🇨🇳 修复了在未显示数据库的情况下可能显示面板的错误
 
 ## 旧的变化
 - [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - 添加编辑功能

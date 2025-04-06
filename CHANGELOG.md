@@ -2,6 +2,15 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
+
+- 🇺🇸 Hide database name when there is only one database
+- 🇺🇸 Overall layout adjustments to reduce used space
+- 🇺🇸 Fix bug which might have shown the panel although no databases are visible
+- 🇨🇳 在只有一个数据库时隐藏数据库名称
+- 🇨🇳 调整整体布局以减少使用空间
+- 🇨🇳 修复了在未显示数据库的情况下可能显示面板的错误
+
 ### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
 
 - 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.

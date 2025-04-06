@@ -122,10 +122,12 @@
 </script>
 
 <div>
-  <LayoutTabBar
-    {tabs}
-    focus={currentSettings.lastSelectedAttributeView}
-    onclick={showContent}
-  />
+  {#if tabs.length > 1}
+    <LayoutTabBar
+            {tabs}
+            focus={currentSettings.lastSelectedAttributeView}
+            onclick={showContent}
+    />
+  {/if}
   <div class="dpp-av-panel custom-attr" bind:this={element}></div>
 </div>

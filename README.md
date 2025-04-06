@@ -11,13 +11,11 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.2.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.2.0)
+### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
-- 🇺🇸 Add a toggle to show/hide empty attributes on a per-document basis.
-- 🇺🇸 Add a button to add new attributes to the database
-- 🇨🇳 添加切换功能，可按文档显示/隐藏空属性。
-- 🇨🇳 添加按钮，用于向数据库添加新属性
-
+- 🇺🇸 Hide database name when there is only one database
+- 🇺🇸 Overall layout adjustments to reduce used space
+- 🇺🇸 Fix bug which might have shown the panel although no databases are visible
 
 ## Features
 
