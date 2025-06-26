@@ -12,6 +12,10 @@
 
 ## 上一版本中的更改
 
+### [1.3.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.1)
+
+- 🇨🇳  修复本地文件的日期时间戳
+
 ### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
 - 🇨🇳 在只有一个数据库时隐藏数据库名称

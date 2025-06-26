@@ -11,6 +11,10 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
+### [1.3.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.1)
+
+- 🇺🇸 fix the datetime stamp of the local files
+
 ### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
 - 🇺🇸 Hide database name when there is only one database
