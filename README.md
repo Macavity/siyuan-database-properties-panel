@@ -11,6 +11,12 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
+### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
+
+- 🇺🇸 Fix bug where properties panel would hide when hovering over relation fields
+- 🇺🇸 Improve panel management to support multiple document panels simultaneously
+- 🇺🇸 Add block-specific panel identification to prevent interference between documents
+
 ### [1.3.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.1)
 
 - 🇺🇸 fix the datetime stamp of the local files
