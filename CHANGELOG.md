@@ -2,6 +2,15 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
+
+- 🇺🇸 Fix bug where properties panel would hide when hovering over relation fields
+- 🇺🇸 Improve panel management to support multiple document panels simultaneously
+- 🇺🇸 Add block-specific panel identification to prevent interference between documents
+- 🇨🇳 修复悬停在关系字段上时属性面板隐藏的错误
+- 🇨🇳 改进面板管理以支持多个文档面板同时存在
+- 🇨🇳 添加块特定面板标识以防止文档之间的干扰
+
 ### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
 - 🇺🇸 Hide database name when there is only one database

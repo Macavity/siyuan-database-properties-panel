@@ -10,11 +10,17 @@
 
 ## 最近更改
 
+### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
+
+- 🇨🇳 修复悬停在关系字段上时属性面板隐藏的错误
+- 🇨🇳 改进面板管理以支持多个文档面板同时存在
+- 🇨🇳 添加块特定面板标识以防止文档之间的干扰
+
 ## 上一版本中的更改
 
 ### [1.3.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.1)
 
-- 🇨🇳  修复本地文件的日期时间戳
+- 🇨🇳 修复本地文件的日期时间戳
 
 ### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
@@ -23,6 +29,7 @@
 - 🇨🇳 修复了在未显示数据库的情况下可能显示面板的错误
 
 ## 旧的变化
+
 - [1.0.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.0.0) - 添加编辑功能
 - [0.5.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.2) - 修复 #20： 移除文本缩进
 - [0.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v0.5.0) - 添加对列图标的支持
