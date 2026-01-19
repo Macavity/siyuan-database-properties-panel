@@ -252,7 +252,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     // Listen for transactions to detect AV updates and trigger panel refresh
-    this.eventBus.on(SiyuanEvents.WS_MAIN, (event: any) => {
+    this.eventBus.on(SiyuanEvents.WS_MAIN, (event: CustomEvent<{ cmd?: string; data?: { doOperations?: { action?: string; rowID?: string; avID?: string; keyID?: string }[] }[] }>) => {
       const data = event.detail;
       if (data?.cmd === "transactions" && data?.data) {
         // Check if any transaction contains an AV cell update

@@ -86,12 +86,12 @@
 
   onMount(() => {
     // Listen for AV data change events from the plugin
-    window.addEventListener("dpp-av-data-changed", handleAvDataChanged as EventListener);
+    window.addEventListener("dpp-av-data-changed", handleAvDataChanged as (event: Event) => void);
   });
 
   onDestroy(() => {
     // Clean up event listener
-    window.removeEventListener("dpp-av-data-changed", handleAvDataChanged as EventListener);
+    window.removeEventListener("dpp-av-data-changed", handleAvDataChanged as (event: Event) => void);
     // Clear any pending refresh timer
     if (refreshTimer) {
       clearTimeout(refreshTimer);
@@ -128,65 +128,10 @@
     {/each}
   </ProtyleBreadcrumb>
   {#if !isCollapsed}
-    {#if useNativeOnly}
-      <!-- Native-only mode: use SiYuan's native rendering directly -->
+    {#if allowEditing}
       <AttributeViewPanelNative {avData} />
     {:else}
-      <!-- Custom panel with hidden native for edit popup delegation -->
-      <AttributeViewPanel {avData} {allowEditing} />
-      <div class="dpp-native-debug" class:dpp-native-debug--visible={debugNativeEnabled}>
-        <AttributeViewPanelNative {avData} />
-      </div>
+      <AttributeViewPanel {avData} />
     {/if}
   {/if}
 </div>
-
-<style lang="css">
-  .plugin-panel {
-    /* Contain the absolutely positioned hidden native panel */
-    position: relative;
-    overflow: hidden;
-  }
-
-  .dpp-native-debug {
-    /*
-     * Visually hidden but still rendered for edit popup delegation.
-     * This pattern ensures:
-     * - No visual space taken
-     * - No scrollbar effects
-     * - Element is still in DOM so click events work
-     */
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    clip-path: inset(100%) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-  }
-
-  .dpp-native-debug--visible {
-    /* When debug mode is enabled, show the panel normally */
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    padding: 8px !important;
-    margin: 8px 0 0 0 !important;
-    overflow: visible !important;
-    clip: auto !important;
-    clip-path: none !important;
-    white-space: normal !important;
-    border: 2px dashed var(--b3-theme-error) !important;
-
-    &::before {
-      content: "Native Panel (Debug)";
-      display: block;
-      color: var(--b3-theme-error);
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-  }
-</style>
