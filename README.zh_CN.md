@@ -10,17 +10,16 @@
 
 ## 最近更改
 
+### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
+
+- 🇨🇳 修复弹出字段（选择、日期、资产）在更改值后无响应的问题
+- 🇨🇳 面板现在会在通过编辑弹出窗口更新数据库值时自动刷新
+
 ### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
 
 - 🇨🇳 修复悬停在关系字段上时属性面板隐藏的错误
 - 🇨🇳 改进面板管理以支持多个文档面板同时存在
 - 🇨🇳 添加块特定面板标识以防止文档之间的干扰
-
-## 上一版本中的更改
-
-### [1.3.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.1)
-
-- 🇨🇳 修复本地文件的日期时间戳
 
 ### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
 
