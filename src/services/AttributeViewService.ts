@@ -83,6 +83,16 @@ export class AttributeViewService {
     });
   }
 
+  /**
+   * Remove av__row classes from the native panel to prevent CSS conflicts.
+   * The native panel is used only for triggering edit functionality.
+   */
+  static removeAvRowClasses(element: HTMLElement) {
+    element.querySelectorAll(".av__row").forEach((row) => {
+      row.classList.remove("av__row");
+    });
+  }
+
   static disableTemplateClicks(element: HTMLElement) {
     if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
       //     logger.debug(

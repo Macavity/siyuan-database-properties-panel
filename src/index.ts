@@ -250,6 +250,27 @@ export default class DatabasePropertiesPanel extends Plugin {
       SiyuanEvents.SWITCH_PROTYLE,
       this.boundProtyleSwitchListener
     );
+
+    // Listen for transactions to detect AV updates and trigger panel refresh
+    this.eventBus.on(SiyuanEvents.WS_MAIN, (event: any) => {
+      const data = event.detail;
+      if (data?.cmd === "transactions" && data?.data) {
+        // Check if any transaction contains an AV cell update
+        for (const tx of data.data) {
+          if (tx.doOperations) {
+            for (const op of tx.doOperations) {
+              if (op.action === "updateAttrViewCell" && op.rowID) {
+                this.logger.debug("AV cell updated, dispatching refresh for rowID:", op.rowID);
+                // Dispatch custom event that panels can listen to
+                window.dispatchEvent(new CustomEvent("dpp-av-data-changed", {
+                  detail: { rowID: op.rowID, avID: op.avID, keyID: op.keyID }
+                }));
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   async onunload() {

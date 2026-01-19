@@ -326,6 +326,38 @@ export async function getAttributeViewKeys(
   return request(url, data);
 }
 
+export interface SetAttributeViewBlockAttrPayload {
+  avID: string;
+  keyID: string;
+  rowID: string;
+  value: {
+    [key: string]: any;
+  };
+}
+
+/**
+ * Set an attribute value for a block in an attribute view (database).
+ * @param avID - The attribute view ID
+ * @param keyID - The column/key ID
+ * @param rowID - The block/row ID
+ * @param value - The value object (type-specific, e.g., {number: {content: 5, isNotEmpty: true}})
+ */
+export async function setAttributeViewBlockAttr(
+  avID: string,
+  keyID: string,
+  rowID: string,
+  value: { [key: string]: any },
+) {
+  const data: SetAttributeViewBlockAttrPayload = {
+    avID,
+    keyID,
+    rowID,
+    value,
+  };
+  const url = "/api/av/setAttributeViewBlockAttr";
+  return request(url, data);
+}
+
 export async function getBlockAttrs(
   id: BlockId,
 ): Promise<{ [key: string]: string }> {

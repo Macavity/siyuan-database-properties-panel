@@ -1,4 +1,4 @@
-import { writable, get, derived } from "svelte/store";
+import { writable, derived } from "svelte/store";
 import { LoggerService } from "@/services/LoggerService";
 
 const logger = new LoggerService("DocumentSettingsStore");

@@ -43,3 +43,9 @@
     ? i18n.hideEmptyAttributesToggle
     : i18n.showEmptyAttributesToggle}
 </button>
+
+<style lang="css">
+    .dpp-empty-attributes-toggle {
+        margin-left: 5px;
+    }
+</style>

@@ -3,15 +3,106 @@
  * @source app/src/protyle/render/av/blockAttr.ts
  */
 import dayjs from "dayjs";
-import {
-  hasClosestBlock,
-  hasClosestByClassName,
-} from "siyuan-app/app/src/protyle/util/hasClosest";
-import { IProtyle } from "siyuan";
+import {IProtyle, TAVCol} from "siyuan";
 import { IAVCellValue } from "@/types/siyuan.types";
-import { popTextCell } from "siyuan-app/app/src/protyle/render/av/cell";
-import { TAVCol } from "siyuan";
+// import { TAVCol } from "siyuan";
 import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
+import {Logger} from "@/services/LoggerService";
+
+/**
+ * Find the closest ancestor with data-node-id attribute (a SiYuan block).
+ */
+const hasClosestBlock = (element: HTMLElement): HTMLElement | false => {
+  if (!element) return false;
+  let target = element;
+  while (target && !target.classList?.contains("protyle-wysiwyg")) {
+    if (target.dataset?.nodeId) return target;
+    target = target.parentElement as HTMLElement;
+  }
+  return false;
+};
+
+/**
+ * Reposition a menu element to appear near the target element.
+ */
+const repositionMenu = (targetRect: DOMRect): void => {
+  // Find the menu that was just opened
+  const avPanel = document.querySelector(".av__panel") as HTMLElement;
+  const b3Menu = document.querySelector(".b3-menu:not(.fn__none)") as HTMLElement;
+
+  const menuElement = avPanel || b3Menu;
+  if (!menuElement) return;
+
+  // Position the menu below the clicked element
+  menuElement.style.left = `${targetRect.left}px`;
+  menuElement.style.top = `${targetRect.bottom}px`;
+
+  // Make sure the menu doesn't go off-screen
+  const menuRect = menuElement.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Adjust horizontal position if menu goes off-screen
+  if (menuRect.right > viewportWidth) {
+    menuElement.style.left = `${viewportWidth - menuRect.width - 10}px`;
+  }
+
+  // Adjust vertical position if menu goes off-screen
+  if (menuRect.bottom > viewportHeight) {
+    // Position above the element instead
+    menuElement.style.top = `${targetRect.top - menuRect.height}px`;
+  }
+};
+
+/**
+ * Trigger edit by clicking on the corresponding element in the hidden native panel.
+ * This works because the native panel has SiYuan's event handlers attached.
+ * After the menu opens, reposition it to appear near the clicked element.
+ */
+const triggerNativeEdit = (target: HTMLElement): boolean => {
+  const avId = target.getAttribute("data-av-id");
+  const colId = target.getAttribute("data-col-id");
+
+  if (!avId || !colId) return false;
+
+  // Find the hidden native panel
+  const nativePanel = document.querySelector(".dpp-native-debug .custom-attr");
+  if (!nativePanel) return false;
+
+  // Find the corresponding element in the native panel
+  const nativeCell = nativePanel.querySelector(
+    `[data-av-id="${avId}"][data-col-id="${colId}"]`
+  ) as HTMLElement;
+
+  if (nativeCell) {
+    // Get the position of the clicked element before triggering the native click
+    const targetRect = target.getBoundingClientRect();
+
+    // Trigger a click on the native element to open the edit popup
+    nativeCell.click();
+
+    // Reposition the menu after it opens
+    // Use multiple attempts with increasing delays since the menu may take time to render
+    const attemptReposition = (attempt: number) => {
+      if (attempt > 10) return; // Give up after 10 attempts (500ms)
+
+      setTimeout(() => {
+        const menuElement = document.querySelector(".av__panel") || document.querySelector(".b3-menu:not(.fn__none)");
+        if (menuElement) {
+          repositionMenu(targetRect);
+        } else if (attempt < 10) {
+          // Menu not found yet, try again
+          attemptReposition(attempt + 1);
+        }
+      }, attempt * 50); // 0ms, 50ms, 100ms, 150ms...
+    };
+
+    attemptReposition(0);
+    return true;
+  }
+
+  return false;
+};
 
 /**
  * This function is here for comparison to better see changes in the original source code and reflect them on the plugin.
@@ -191,131 +282,35 @@ export const openEdit = (
   element: HTMLElement,
   event: MouseEvent
 ) => {
+  Logger.debug("openEdit called");
   let target = event.target as HTMLElement;
   const blockElement = hasClosestBlock(target);
   if (!blockElement) {
+    Logger.debug('no block element => skip')
     return;
   }
+
+  // Find the element with data-type attribute (the cell container)
   while (target && !element.isSameNode(target)) {
-    const type = target.getAttribute("data-type");
-    if (
-      target.classList.contains("av__celltext--url") ||
-      target.classList.contains("av__cellassetimg")
-    ) {
-      if (
-        event.type === "contextmenu" ||
-        (!target.dataset.url && target.tagName !== "IMG")
-      ) {
-        // let index = 0;
-        // Array.from(target.parentElement.children).find((item, i) => {
-        //   if (item.isSameNode(target)) {
-        //     index = i;
-        //     return true;
-        //   }
-        // });
-        // editAssetItem({
-        //   protyle,
-        //   cellElements: [target.parentElement],
-        //   blockElement: hasClosestBlock(target) as HTMLElement,
-        //   content:
-        //     target.tagName === "IMG"
-        //       ? target.getAttribute("src")
-        //       : target.getAttribute("data-url"),
-        //   type: target.tagName === "IMG" ? "image" : "file",
-        //   name:
-        //     target.tagName === "IMG" ? "" : target.getAttribute("data-name"),
-        //   index,
-        //   rect: target.getBoundingClientRect(),
-        // });
-      } else {
-        // if (target.tagName === "IMG") {
-        //   previewImage(target.getAttribute("src"));
-        // } else {
-        //   openLink(
-        //     protyle,
-        //     target.dataset.url,
-        //     event,
-        //     event.ctrlKey || event.metaKey
-        //   );
-        // }
-      }
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "date") {
-      popTextCell(protyle, [target], "date");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "select" || type === "mSelect") {
-      popTextCell(
-        protyle,
-        [target],
-        target.getAttribute("data-type") as TAVCol
-      );
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "mAsset") {
-      element
-        .querySelectorAll('.custom-attr__avvalue[data-type="mAsset"]')
-        .forEach((item) => {
-          item.removeAttribute("data-active");
-        });
-      target.setAttribute("data-active", "true");
-      target.focus();
-      popTextCell(protyle, [target], "mAsset");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "checkbox") {
-      popTextCell(protyle, [target], "checkbox");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "relation") {
-      popTextCell(protyle, [target], "relation");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "template") {
-      popTextCell(protyle, [target], "template");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "rollup") {
-      popTextCell(protyle, [target], "rollup");
-      event.stopPropagation();
-      event.preventDefault();
-      break;
-    } else if (type === "addColumn") {
-      // const rowElements = blockElement.querySelectorAll(".av__row");
-      // const addMenu = addCol(
-      //   protyle,
-      //   blockElement,
-      //   rowElements[rowElements.length - 1].getAttribute("data-col-id")
-      // );
-      // const addRect = target.getBoundingClientRect();
-      // addMenu.open({
-      //   x: addRect.left,
-      //   y: addRect.bottom,
-      //   h: addRect.height,
-      // });
-      // event.stopPropagation();
-      // event.preventDefault();
-      // break;
-    } else if (type === "editCol") {
-      // openMenuPanel({
-      //   protyle,
-      //   blockElement,
-      //   type: "edit",
-      //   colId: target.parentElement.dataset.colId,
-      // });
-      // event.stopPropagation();
-      // event.preventDefault();
-      // break;
+    const type = target.getAttribute("data-type") as TAVCol;
+
+    // Skip non-editable types or types without data-type
+    if (!type) {
+      target = target.parentElement as HTMLElement;
+      continue;
     }
-    target = target.parentElement;
+
+    // For editable types, trigger edit via the hidden native panel
+    if (["date", "select", "mSelect", "mAsset", "checkbox", "relation", "template", "rollup"].includes(type)) {
+      const triggered = triggerNativeEdit(target);
+      if (triggered) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      break;
+    }
+
+    target = target.parentElement as HTMLElement;
   }
 };
 

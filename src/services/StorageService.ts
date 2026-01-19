@@ -39,7 +39,6 @@ export class StorageService {
           documentId,
           data.isCollapsed,
           data.lastSelectedAttributeView,
-          data.overrideShowEmptyAttributes
         );
       })
       .catch((e) => {

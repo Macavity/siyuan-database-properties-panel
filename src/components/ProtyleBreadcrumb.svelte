@@ -36,6 +36,6 @@
     padding: 4px 0;
   }
   .protyle-breadcrumb.protyle-breadcrumb--single-tab:first-child {
-      margin-left: 15px;
+      margin-left: 0;
   }
 </style>

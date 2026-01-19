@@ -23,15 +23,13 @@
   const protyle = getContext(Context.Protyle);
   const logger = new LoggerService("AttributeViewPanelNative");
 
-  const tabs = [];
-
-  avData.forEach((attributeView) => {
-    tabs.push({
+  const tabs = $derived(
+    avData.map((attributeView) => ({
       key: attributeView.avID,
       name: attributeView.avName,
       icon: "iconDatabase",
-    });
-  });
+    }))
+  );
 
   // Get settings from stores
   const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
@@ -54,19 +52,44 @@
       //     effectiveShowEmptyAttributes,
       //   });
 
-      AttributeViewService.adjustDOM(
-        element,
-        blockId,
-        avData,
-        globalShowPrimaryKey,
-        effectiveShowEmptyAttributes
-      );
+      // AttributeViewService.adjustDOM(
+      //   element,
+      //   blockId,
+      //   avData,
+      //   globalShowPrimaryKey,
+      //   effectiveShowEmptyAttributes
+      // );
     }
   });
+
+  // Track if initial render is complete
+  let isInitialized = false;
 
   onMount(() => {
     logger.addBreadcrumb(blockId, "onMount");
     renderProtyleAv();
+    // Mark as initialized after a tick to avoid immediate re-render
+    setTimeout(() => {
+      isInitialized = true;
+    }, 100);
+  });
+
+  // Re-render native panel when avData changes (after transaction updates)
+  // Stringify avData to detect deep changes
+  const avDataHash = $derived(JSON.stringify(avData));
+
+  $effect(() => {
+    // Access derived value to create dependency
+    const _hash = avDataHash;
+
+    // Only re-render after initial mount is complete
+    if (isInitialized && element) {
+      logger.debug("avData changed, re-rendering native panel");
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        renderProtyleAv();
+      }, 50);
+    }
   });
 
   const showContent = (tabFocus: string) => {
@@ -100,14 +123,22 @@
   };
 
   const renderProtyleAv = () => {
+    // Close any open popups before re-rendering to avoid state corruption
+    const avPanel = document.querySelector(".av__panel");
+    const b3Menu = document.querySelector(".b3-menu:not(.fn__none)");
+    if (avPanel) avPanel.remove();
+    if (b3Menu) b3Menu.remove();
     protyle.renderAVAttribute(element, blockId, (element) => {
-      AttributeViewService.adjustDOM(
-        element,
-        blockId,
-        avData,
-        globalShowPrimaryKey,
-        effectiveShowEmptyAttributes
-      );
+      console.log('post renderAVAttribute callback', {element, blockId});
+      // AttributeViewService.adjustDOM(
+      //   element,
+      //   blockId,
+      //   avData,
+      //   globalShowPrimaryKey,
+      //   effectiveShowEmptyAttributes
+      // );
+
+      AttributeViewService.removeAvRowClasses(element);
 
       if (!settingsStore.isAnyTabActive(blockId)) {
         const first = element.querySelector(`[data-type="NodeAttributeView"]`);
@@ -129,5 +160,5 @@
             onclick={showContent}
     />
   {/if}
-  <div class="dpp-av-panel custom-attr" bind:this={element}></div>
+  <div class="dpp-av-panel custom-attr dpp-av-panel--native" bind:this={element}></div>
 </div>
