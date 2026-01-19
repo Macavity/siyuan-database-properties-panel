@@ -38,19 +38,6 @@
   // Debounce timer for data refresh
   let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Feature flags controlled by localStorage
-  // dpp-debug-native: Show the hidden native panel for debugging
-  // dpp-use-native: Use only the native panel instead of custom panel
-  const debugNativeEnabled = (typeof localStorage !== 'undefined' && localStorage.getItem('dpp-debug-native') === 'true');
-  const useNativeOnly = (typeof localStorage !== 'undefined' && localStorage.getItem('dpp-use-native') === 'true');
-
-  if (debugNativeEnabled) {
-    Logger.debug('⚠️ Debug: Showing native panel');
-  }
-  if (useNativeOnly) {
-    Logger.debug('⚠️ Using native-only rendering mode');
-  }
-
   // Use untrack to explicitly capture initial values for context (these don't change after mount)
   untrack(() => {
     setContext(Context.I18N, i18n);

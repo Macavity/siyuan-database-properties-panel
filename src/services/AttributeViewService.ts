@@ -93,6 +93,84 @@ export class AttributeViewService {
     });
   }
 
+  /**
+   * Remove data-rendering attribute from all NodeAttributeView elements
+   * within .dpp-av-panel containers.
+   */
+  static removeDataRenderingFromNodeAttributeViews(element: Element) {
+    element
+      .querySelectorAll("[data-type='NodeAttributeView']")
+      .forEach((node) => {
+        (node as HTMLElement).removeAttribute("data-rendering");
+      });
+  }
+
+  /**
+   * Watch for data-rendering attribute being added to NodeAttributeView elements
+   * and automatically remove it. Returns a cleanup function to disconnect the observer.
+   */
+  static watchAndRemoveDataRendering(element: Element): () => void {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-rendering"
+        ) {
+          const target = mutation.target as HTMLElement;
+          if (target.hasAttribute("data-rendering")) {
+            logger.debug("Removing data-rendering attribute via MutationObserver");
+            target.removeAttribute("data-rendering");
+          }
+        }
+      }
+    });
+
+    // Observe all NodeAttributeView elements within the container
+    element.querySelectorAll("[data-type='NodeAttributeView']").forEach((node) => {
+      observer.observe(node, {
+        attributes: true,
+        attributeFilter: ["data-rendering"],
+      });
+    });
+
+    // Also observe the container for new NodeAttributeView elements being added
+    const childObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            // Check if the added node is a NodeAttributeView
+            if (node.getAttribute("data-type") === "NodeAttributeView") {
+              node.removeAttribute("data-rendering");
+              observer.observe(node, {
+                attributes: true,
+                attributeFilter: ["data-rendering"],
+              });
+            }
+            // Also check descendants
+            node.querySelectorAll("[data-type='NodeAttributeView']").forEach((av) => {
+              (av as HTMLElement).removeAttribute("data-rendering");
+              observer.observe(av, {
+                attributes: true,
+                attributeFilter: ["data-rendering"],
+              });
+            });
+          }
+        });
+      }
+    });
+
+    childObserver.observe(element, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Return cleanup function
+    return () => {
+      observer.disconnect();
+      childObserver.disconnect();
+    };
+  }
+
   static disableTemplateClicks(element: HTMLElement) {
     if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
       //     logger.debug(
