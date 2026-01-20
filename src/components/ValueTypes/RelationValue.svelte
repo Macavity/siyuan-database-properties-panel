@@ -7,7 +7,11 @@
   }
 
   let { value }: Props = $props();
-  const lastId = value.relation?.contents ? value.relation.contents[value.relation.contents?.length - 1].id : null;
+  const lastId = $derived(
+    value.relation?.contents?.length
+      ? value.relation.contents[value.relation.contents.length - 1]?.id
+      : null
+  );
 </script>
 
 {#if value?.relation?.contents}

@@ -83,6 +83,64 @@ export class AttributeViewService {
     });
   }
 
+  /**
+   * Remove av__row classes from the native panel to prevent CSS conflicts.
+   * The native panel is used only for triggering edit functionality.
+   */
+  static removeAvRowClasses(element: HTMLElement) {
+    element.querySelectorAll(".av__row").forEach((row) => {
+      row.classList.remove("av__row");
+    });
+  }
+
+  /**
+   * Remove data-rendering attribute from all NodeAttributeView elements
+   * within .dpp-av-panel containers.
+   */
+  static removeDataRenderingFromNodeAttributeViews(element: Element) {
+    element
+      .querySelectorAll("[data-type='NodeAttributeView']")
+      .forEach((node) => {
+        (node as HTMLElement).removeAttribute("data-rendering");
+      });
+  }
+
+  /**
+   * Watch for data-rendering attribute being added to NodeAttributeView elements
+   * and automatically remove it. Returns a cleanup function to disconnect the observer.
+   */
+  static watchAndRemoveDataRendering(element: Element): () => void {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-rendering"
+        ) {
+          const target = mutation.target as HTMLElement;
+          // Only process NodeAttributeView elements
+          if (
+            target.getAttribute("data-type") === "NodeAttributeView" &&
+            target.hasAttribute("data-rendering")
+          ) {
+            logger.debug("Removing data-rendering attribute via MutationObserver");
+            target.removeAttribute("data-rendering");
+          }
+        }
+      }
+    });
+
+    // Single observer on the container with subtree covers all current and future NodeAttributeView elements
+    observer.observe(element, {
+      attributes: true,
+      attributeFilter: ["data-rendering"],
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }
+
   static disableTemplateClicks(element: HTMLElement) {
     if (semver.lt(window.siyuan.config.system.kernelVersion, "3.1.21")) {
       //     logger.debug(

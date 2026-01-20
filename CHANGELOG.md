@@ -2,6 +2,13 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
+
+- 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value
+- 🇺🇸 Panel now automatically refreshes when database values are updated via edit popups
+- 🇨🇳 修复弹出字段（选择、日期、资产）在更改值后无响应的问题
+- 🇨🇳 面板现在会在通过编辑弹出窗口更新数据库值时自动刷新
+
 ### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
 
 - 🇺🇸 Fix bug where properties panel would hide when hovering over relation fields

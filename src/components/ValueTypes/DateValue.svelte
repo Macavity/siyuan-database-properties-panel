@@ -8,7 +8,11 @@
 
     let { value }: Props = $props();
 
-    const content = dayjs(value[value.type].content).format(value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm");
+    const content = $derived(
+        value[value.type]?.content
+            ? dayjs(value[value.type].content).format(value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm")
+            : ""
+    );
 </script>
 
 <span class="av__celltext" data-value="{JSON.stringify(value[value.type])}">

@@ -24,7 +24,6 @@ export class StorageService {
     return getFile<SettingsDTO>(getStoragePath(documentId))
       .then((data) => {
         if (isApiError(data)) {
-          // this.logger.debug("create default for document", documentId);
           return createDefaultSettingsDTO(documentId);
         }
 
@@ -39,7 +38,6 @@ export class StorageService {
           documentId,
           data.isCollapsed,
           data.lastSelectedAttributeView,
-          data.overrideShowEmptyAttributes
         );
       })
       .catch((e) => {
