@@ -67,9 +67,14 @@ jobs:
 
       - name: Create release on Sentry
         run: |
-          npx @sentry/cli releases new ${{ env.VERSION }} --project ${{ env.SENTRY_PROJECT }} --org ${{ env.SENTRY_ORG }}
-          npx @sentry/cli releases files ${{ env.VERSION }} upload-sourcemaps ./dist --rewrite --project ${{ env.SENTRY_PROJECT }} --org ${{ env.SENTRY_ORG }}
-          npx @sentry/cli releases finalize ${{ env.VERSION }}
+          # Pin sentry-cli for reproducibility.
+          # Note: In sentry-cli v3, sourcemap uploads live under the top-level `sourcemaps` command.
+          npx @sentry/cli@3 releases new "${{ env.VERSION }}" --project "${{ env.SENTRY_PROJECT }}" --org "${{ env.SENTRY_ORG }}"
+
+          # v3: rewrite is enabled by default; use --no-rewrite to disable.
+          npx @sentry/cli@3 sourcemaps upload "./dist" --project "${{ env.SENTRY_PROJECT }}" --org "${{ env.SENTRY_ORG }}" --release "${{ env.VERSION }}"
+
+          npx @sentry/cli@3 releases finalize "${{ env.VERSION }}" --project "${{ env.SENTRY_PROJECT }}" --org "${{ env.SENTRY_ORG }}"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: paneon
