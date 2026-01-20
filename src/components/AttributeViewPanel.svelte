@@ -128,8 +128,4 @@
   {/if}
 </div>
 
-<style lang="css">
-  /*.av-panel-row--editable:hover {*/
-  /*  background-color: var(--b3-theme-primary-lightest);*/
-  /*}*/
-</style>
+

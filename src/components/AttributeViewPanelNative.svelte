@@ -85,14 +85,7 @@
         }
     });
 
-    // Re-render native panel when avData changes (after transaction updates)
-    // Stringify avData to detect deep changes
-    const avDataHash = $derived(JSON.stringify(avData));
-
     $effect(() => {
-        // Access derived value to create dependency
-        const _hash = avDataHash;
-
         // Only re-render after initial mount is complete
         if (isInitialized && element) {
             logger.debug("avData changed, re-rendering native panel");

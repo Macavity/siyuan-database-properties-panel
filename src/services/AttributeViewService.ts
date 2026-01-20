@@ -117,7 +117,11 @@ export class AttributeViewService {
           mutation.attributeName === "data-rendering"
         ) {
           const target = mutation.target as HTMLElement;
-          if (target.hasAttribute("data-rendering")) {
+          // Only process NodeAttributeView elements
+          if (
+            target.getAttribute("data-type") === "NodeAttributeView" &&
+            target.hasAttribute("data-rendering")
+          ) {
             logger.debug("Removing data-rendering attribute via MutationObserver");
             target.removeAttribute("data-rendering");
           }
@@ -125,49 +129,15 @@ export class AttributeViewService {
       }
     });
 
-    // Observe all NodeAttributeView elements within the container
-    element.querySelectorAll("[data-type='NodeAttributeView']").forEach((node) => {
-      observer.observe(node, {
-        attributes: true,
-        attributeFilter: ["data-rendering"],
-      });
-    });
-
-    // Also observe the container for new NodeAttributeView elements being added
-    const childObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) {
-            // Check if the added node is a NodeAttributeView
-            if (node.getAttribute("data-type") === "NodeAttributeView") {
-              node.removeAttribute("data-rendering");
-              observer.observe(node, {
-                attributes: true,
-                attributeFilter: ["data-rendering"],
-              });
-            }
-            // Also check descendants
-            node.querySelectorAll("[data-type='NodeAttributeView']").forEach((av) => {
-              (av as HTMLElement).removeAttribute("data-rendering");
-              observer.observe(av, {
-                attributes: true,
-                attributeFilter: ["data-rendering"],
-              });
-            });
-          }
-        });
-      }
-    });
-
-    childObserver.observe(element, {
-      childList: true,
+    // Single observer on the container with subtree covers all current and future NodeAttributeView elements
+    observer.observe(element, {
+      attributes: true,
+      attributeFilter: ["data-rendering"],
       subtree: true,
     });
 
-    // Return cleanup function
     return () => {
       observer.disconnect();
-      childObserver.disconnect();
     };
   }
 
