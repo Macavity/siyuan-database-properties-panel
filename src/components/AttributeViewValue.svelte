@@ -143,14 +143,12 @@
         </svg>
     </a>
 {:else if value.type === "checkbox"}
-    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <svg
-            class="av__checkbox"
-            class:fn__pointer={allowEditing}
-            onclick={() => allowEditing && toggleCheckbox()}
-            onkeydown={(e) => (e.key === 'Enter'  || e.key === ' ') && allowEditing && toggleCheckbox()}
-            tabindex={allowEditing ? 0 : -1}
-            role={allowEditing ? "button" : "img"}
+            class="av__checkbox fn__pointer"
+            onclick={() => toggleCheckbox()}
+            onkeydown={(e) => (e.key === 'Enter'  || e.key === ' ') && toggleCheckbox()}
+            tabindex="0"
+            role="button"
     >
         {#if value.checkbox?.checked}
             <use xlink:href="#iconCheck"></use>
