@@ -1,5 +1,8 @@
 {
     "databasePropertyPanel": "Database properties",
+    "settingTitle": "Database Properties Panel Settings",
+    "settingGroupDisplay": "Display",
+    "settingGroupPrivacy": "Privacy",
     "configAllowErrorReportingTitle": "Allow error reporting",
     "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
     "configAllowEditingTitle": "Allow editing",
