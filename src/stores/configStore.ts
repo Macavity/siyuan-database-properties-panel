@@ -1,4 +1,5 @@
 import {writable, get} from "svelte/store";
+import {ERROR_REPORTING_LOCAL_STORAGE_KEY} from "@/constants";
 
 export const PluginSetting = {
     ShowPrimaryKey: "showPrimaryKey",
@@ -6,6 +7,20 @@ export const PluginSetting = {
     ShowDatabaseAttributes: "showDatabaseAttributes",
     AllowErrorReporting: "allowErrorReporting",
 } as const;
+
+/**
+ * Determines if error reporting should be enabled.
+ * Only allows error reporting if:
+ * 1. localStorage key 'dpp-allow-error-reporting' is 'true', OR
+ * 2. Not in production mode (NODE_ENV !== 'production')
+ */
+export function isErrorReportingAllowed(): boolean {
+    const localStorageValue = localStorage.getItem(ERROR_REPORTING_LOCAL_STORAGE_KEY);
+    if (localStorageValue === "true") {
+        return true;
+    }
+    return process.env.NODE_ENV !== "production";
+}
 
 export type PluginSettingKey = typeof PluginSetting[keyof typeof PluginSetting];
 

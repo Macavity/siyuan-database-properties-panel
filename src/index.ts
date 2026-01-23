@@ -22,7 +22,7 @@ import {storageService} from "@/services/StorageService";
 import {settingsStore} from "@/stores/localSettingStore";
 import {mount, unmount} from "svelte";
 import {i18nStore} from "@/stores/i18nStore";
-import {configStore, createConfigFromStorage, PluginConfigDTO} from "@/stores/configStore";
+import {configStore, createConfigFromStorage, isErrorReportingAllowed, PluginConfigDTO} from "@/stores/configStore";
 import {STORAGE_NAME} from "@/constants";
 import PluginConfig from "@/components/PluginConfig.svelte";
 
@@ -113,30 +113,33 @@ export default class DatabasePropertiesPanel extends Plugin {
 
     private async loadPluginConfig() {
         try {
-            // Load settings using plugin's loadData method
             configStore.setLoading(true);
 
             const storageConfigObject = (await this.loadData(STORAGE_NAME)) as PluginConfigDTO;
 
+            let settings: PluginConfigDTO;
             if (
                 storageConfigObject &&
                 typeof storageConfigObject === "object" &&
                 Object.keys(storageConfigObject).length > 0
             ) {
-                const settings = createConfigFromStorage(storageConfigObject);
-                configStore.setFromConfigDTO(settings);
+                settings = createConfigFromStorage(storageConfigObject);
             } else {
-                // Use default settings if no data found
-                configStore.setFromConfigDTO(createConfigFromStorage({}));
+                settings = createConfigFromStorage({});
             }
 
-            // Mark config as loaded
+            // Override allowErrorReporting based on localStorage or dev mode
+            settings.allowErrorReporting = isErrorReportingAllowed();
+
+            configStore.setFromConfigDTO(settings);
             configStore.setLoading(false);
-            this.logger.debug("settingsData initialized", storageConfigObject);
+            this.logger.debug("Plugin config initialized", settings);
         } catch (error) {
             this.logger.error("Failed to load settings:", error);
-            // Use default settings on error
-            configStore.setFromConfigDTO(createConfigFromStorage({}));
+            configStore.setFromConfigDTO({
+                ...createConfigFromStorage({}),
+                allowErrorReporting: isErrorReportingAllowed(),
+            });
             configStore.setLoading(false);
         }
     }

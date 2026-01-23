@@ -12,7 +12,7 @@
     }
 
     let { plugin }: Props = $props();
-    const logger = new LoggerService("Settings");
+    const logger = new LoggerService("PluginConfig");
 
     // Derive groups from i18n reactively
     const groups = $derived(() => {
@@ -55,28 +55,16 @@
         ];
     });
 
+    // Privacy settings - reserved for future use
     const privacyItems = $derived(() => {
-        const t = $i18nStore;
-        return [
-            {
-                key: PluginSetting.AllowErrorReporting,
-                value: $configStore.allowErrorReporting,
-                type: "checkbox" as const,
-                title: t.configAllowErrorReportingTitle,
-                description: t.configAllowErrorReportingDesc,
-            },
-        ];
+        return [];
     });
 
-    /********** Callbacks **********/
-    const onSettingChange = async (group: string, key: string, value: unknown) => {
-        logger.debug("onSettingChange", { group, key, value });
+    const onSettingChange = async (_group: string, key: string, value: unknown) => {
+        logger.debug("onSettingChange", { key, value });
 
         try {
-            // Update config store
             configStore.setSetting(key as typeof PluginSetting[keyof typeof PluginSetting], value as boolean);
-
-            // Save settings to storage using plugin's saveData method
             await plugin.saveData(STORAGE_NAME, configStore.getSettingsObject());
             logger.debug("Settings saved successfully");
         } catch (error) {
