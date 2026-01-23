@@ -10,6 +10,10 @@
 
 ## 最近更改
 
+### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
+
+- 🇨🇳 修复选择复选框的点击功能
+
 ### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
 
 - 🇨🇳 修复弹出字段（选择、日期、资产）在更改值后无响应的问题

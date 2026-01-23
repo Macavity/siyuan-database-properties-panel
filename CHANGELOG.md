@@ -2,6 +2,11 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
+
+- 🇺🇸 Fix click functionality of select checkboxes
+- 🇨🇳 修复选择复选框的点击功能
+
 ### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
 
 - 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value

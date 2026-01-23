@@ -58,7 +58,6 @@ export class AttributeViewService {
     avData: AttributeView[],
     showEmptyAttributes: boolean
   ) {
-    // logger.debug("handleEmptyAttributes");
     avData.forEach((table) => {
       const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
       emptyKeyAndValues.forEach((item) => {

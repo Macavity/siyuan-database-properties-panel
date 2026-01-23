@@ -140,8 +140,6 @@
                 effectiveShowEmptyAttributes
             );
 
-            AttributeViewService.removeAvRowClasses(renderedElement);
-
             if (!settingsStore.isAnyTabActive(blockId)) {
                 const first = renderedElement.querySelector(`[data-type="NodeAttributeView"]`);
                 activateTab(first.getAttribute("data-av-id"));
@@ -168,5 +166,6 @@
                 onclick={showContent}
         />
     {/if}
-    <div class="dpp-av-panel custom-attr dpp-av-panel--native" bind:this={element}></div>
+    <!-- NodeBlockQueryEmbed is actually wrong, but it prevents an error which happens on hovering over the av__row elements. -->
+    <div class="dpp-av-panel custom-attr dpp-av-panel--native" bind:this={element} data-type="NodeBlockQueryEmbed"></div>
 </div>
