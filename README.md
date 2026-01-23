@@ -11,9 +11,13 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
+### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
+
+- 🇺🇸 Fix click functionality of select checkboxes
+
 ### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
 
-- 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value 
+- 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value
 - 🇺🇸 Panel now automatically refreshes when database values are updated via edit popups
 
 ### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
