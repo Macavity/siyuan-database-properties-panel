@@ -6,6 +6,7 @@
     import { STORAGE_NAME } from "@/constants";
     import { LoggerService } from "@/services/LoggerService";
     import { i18nStore } from "@/stores/i18nStore";
+    import DatabaseColumnSettings from "./DatabaseColumnSettings.svelte";
 
     interface Props {
         plugin: Plugin;
@@ -17,7 +18,7 @@
     // Derive groups from i18n reactively
     const groups = $derived(() => {
         const t = $i18nStore;
-        return [t.settingGroupDisplay, t.settingGroupPrivacy];
+        return [t.settingGroupDisplay, t.settingGroupStyling, t.settingGroupPrivacy, t.settingGroupColumnVisibility];
     });
 
     // Focus group (initialize once i18n is available)
@@ -126,10 +127,27 @@
         </SettingPanel>
         <SettingPanel
             group={groups()[1]}
-            settingItems={privacyItems()}
+            settingItems={stylingItems()}
             display={focusGroup === groups()[1]}
             onSettingChange={onSettingChange}
         >
+        </SettingPanel>
+        <SettingPanel
+            group={groups()[2]}
+            settingItems={privacyItems()}
+            display={focusGroup === groups()[2]}
+            onSettingChange={onSettingChange}
+        >
+        </SettingPanel>
+        <SettingPanel
+            group={groups()[3]}
+            settingItems={[]}
+            display={focusGroup === groups()[3]}
+            onSettingChange={onSettingChange}
+        >
+            {#snippet children()}
+                <DatabaseColumnSettings {plugin} />
+            {/snippet}
         </SettingPanel>
     </div>
 </div>
@@ -140,5 +158,8 @@
     }
     .config__panel > ul > li {
         padding-left: 1rem;
+    }
+    .config__tab-wrap {
+        min-height: 170px;
     }
 </style>

@@ -67,11 +67,32 @@ export class AttributeViewService {
       showEmptyAttributes
     );
 
+    AttributeViewService.handleHiddenColumns(element, blockId, avData);
     AttributeViewService.addToggleShowEmptyAttributes(element, blockId);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
     AttributeViewService.removeDuplicateHrElements(element);
     AttributeViewService.handleAlignPropertiesLeft(element, alignPropertiesLeft);
+  }
+
+  static handleHiddenColumns(
+    element: HTMLElement,
+    blockId: string,
+    avData: AttributeView[]
+  ) {
+    avData.forEach((table) => {
+      table.keyValues.forEach((item) => {
+        if (!configStore.isColumnVisible(table.avID, item.key.id)) {
+          element
+            .querySelectorAll(
+              `[data-id='${blockId}'][data-col-id='${item.key.id}']`
+            )
+            .forEach((field) => {
+              field.classList.add("dpp-av-panel--hidden");
+            });
+        }
+      });
+    });
   }
 
   static handleEmptyAttributes(

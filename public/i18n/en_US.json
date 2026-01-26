@@ -30,5 +30,9 @@
     "settingGroupColumnVisibility": "Column Visibility",
     "columnVisibilitySelectDatabase": "Select a database",
     "columnVisibilityNoColumns": "No columns found",
-    "columnVisibilityLoading": "Loading..."
+    "columnVisibilityLoading": "Loading...",
+    "columnVisibilityNoDatabases": "No databases found",
+    "columnVisibilityRefresh": "Refresh",
+    "columnVisibilityOrphanedWarning": "This database is no longer visible in any document.",
+    "columnVisibilityHiddenByGlobalSetting": "Hidden by global setting"
 }

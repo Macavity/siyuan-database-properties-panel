@@ -8,6 +8,7 @@ export const PluginSetting = {
     AllowErrorReporting: "allowErrorReporting",
     AlignPropertiesLeft: "alignPropertiesLeft",
     ShowBottomSeparator: "showBottomSeparator",
+    ColumnVisibility: "columnVisibility",
 } as const;
 
 /**
@@ -26,6 +27,12 @@ export function isErrorReportingAllowed(): boolean {
 
 export type PluginSettingKey = typeof PluginSetting[keyof typeof PluginSetting];
 
+export interface ColumnVisibilityConfig {
+    [avId: string]: {
+        [columnId: string]: boolean; // false = hidden
+    };
+}
+
 export interface PluginConfigDTO {
     showPrimaryKey: boolean;
     showEmptyAttributes: boolean;
@@ -33,6 +40,7 @@ export interface PluginConfigDTO {
     allowErrorReporting: boolean;
     alignPropertiesLeft: boolean;
     showBottomSeparator: boolean;
+    columnVisibility: ColumnVisibilityConfig;
 }
 
 export interface ConfigStoreType extends PluginConfigDTO {
@@ -46,6 +54,7 @@ export const defaultConfig: PluginConfigDTO = {
     allowErrorReporting: false,
     alignPropertiesLeft: false,
     showBottomSeparator: true,
+    columnVisibility: {},
 };
 
 export function createConfigFromStorage(data: Partial<PluginConfigDTO>): PluginConfigDTO {
@@ -73,6 +82,35 @@ function createConfigStore() {
         },
         setSetting: (key: PluginSettingKey, value: boolean) => {
             update((config) => ({...config, [key]: value}));
+        },
+        setColumnVisibility: (avId: string, columnId: string, visible: boolean) => {
+            update((config) => {
+                const columnVisibility = {...config.columnVisibility};
+                if (!columnVisibility[avId]) {
+                    columnVisibility[avId] = {};
+                }
+                if (visible) {
+                    // Remove the entry if visible (default is visible)
+                    delete columnVisibility[avId][columnId];
+                    // Clean up empty av entries
+                    if (Object.keys(columnVisibility[avId]).length === 0) {
+                        delete columnVisibility[avId];
+                    }
+                } else {
+                    columnVisibility[avId][columnId] = false;
+                }
+                return {...config, columnVisibility};
+            });
+        },
+        isColumnVisible: (avId: string, columnId: string): boolean => {
+            const config = get({subscribe});
+            const avConfig = config.columnVisibility[avId];
+            if (!avConfig) return true;
+            return avConfig[columnId] !== false;
+        },
+        getColumnVisibility: (avId: string): Record<string, boolean> => {
+            const config = get({subscribe});
+            return config.columnVisibility[avId] || {};
         },
     };
 }

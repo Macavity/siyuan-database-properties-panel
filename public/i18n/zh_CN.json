@@ -30,5 +30,9 @@
   "settingGroupColumnVisibility": "列可见性",
   "columnVisibilitySelectDatabase": "选择数据库",
   "columnVisibilityNoColumns": "未找到列",
-  "columnVisibilityLoading": "加载中..."
+  "columnVisibilityLoading": "加载中...",
+  "columnVisibilityNoDatabases": "未找到数据库",
+  "columnVisibilityRefresh": "刷新",
+  "columnVisibilityOrphanedWarning": "此数据库在任何文档中都不可见。",
+  "columnVisibilityHiddenByGlobalSetting": "已被全局设置隐藏"
 }
