@@ -1,20 +1,29 @@
 <script lang="ts">
-    import Button from "@/components/ui/Button.svelte";
+    import ActionButton from "@/components/ui/ActionButton.svelte";
     import {settingsStore} from "@/stores/localSettingStore";
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
 
-    const i18n = getContext(Context.I18N);
-    const documentId = getContext(Context.BlockID);
+    interface Props {
+        documentId?: string;
+    }
+
+    const {documentId: propDocumentId}: Props = $props();
+
+    // Use prop if provided, otherwise fall back to context
+    const contextDocumentId = getContext<string | undefined>(Context.BlockID);
+    const documentId = $derived(propDocumentId || contextDocumentId);
+
     let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
 
-    const toggleCollapseTab = async () => {
+    const toggleCollapseTab = () => {
         settingsStore.toggleCollapsed(documentId);
     };
 </script>
 
-<Button icon={isCollapsed ? "iconExpand" : "iconContract"}
-        onclick={toggleCollapseTab}
-        tooltip={isCollapsed ? i18n.expand : i18n.collapse}
+<ActionButton
+    icon={isCollapsed ? "iconExpand" : "iconContract"}
+    onclick={toggleCollapseTab}
+    class="dpp-collapse-button"
 />
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "@/components/ui/Icon.svelte";
+  import ActionButton from "@/components/ui/ActionButton.svelte";
   import { i18nStore } from "@/stores/i18nStore";
   import { configStore } from "@/stores/configStore";
   import { documentSettingsStore } from "@/stores/documentSettingsStore";
@@ -34,18 +34,11 @@
   }
 </script>
 
-<button
-  class="b3-button b3-button--cancel dpp-empty-attributes-toggle"
-  onclick={toggleShowEmptyAttributes}
->
-  <Icon icon={effectiveShowEmptyAttributes ? "iconEyeoff" : "iconEye"} />
-  {effectiveShowEmptyAttributes
+<ActionButton
+  icon={effectiveShowEmptyAttributes ? "iconEyeoff" : "iconEye"}
+  label={effectiveShowEmptyAttributes
     ? i18n.hideEmptyAttributesToggle
     : i18n.showEmptyAttributesToggle}
-</button>
-
-<style lang="css">
-    .dpp-empty-attributes-toggle {
-        margin-left: 5px;
-    }
-</style>
+  onclick={toggleShowEmptyAttributes}
+  class="dpp-empty-attributes-toggle"
+/>

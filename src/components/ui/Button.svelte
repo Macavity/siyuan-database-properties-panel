@@ -7,6 +7,7 @@
         icon?: SiYuanIcon | null;
         isFocused?: boolean;
         tooltip?: string | null;
+        class?: string | null;
         onclick?: (event: Event) => void;
     }
 
@@ -15,12 +16,13 @@
         icon = null,
         isFocused = false,
         tooltip = null,
+        class: customClass = null,
         onclick= ()=>{},
     }: Props = $props();
 </script>
 
 <button
-        class="block__icon block__icon--show"
+        class="block__icon block__icon--show {customClass ?? ''}"
         class:b3-tooltips__w={tooltip !== null}
         class:b3-tooltips={tooltip !== null}
         class:item--focus={isFocused}

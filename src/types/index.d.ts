@@ -22,11 +22,11 @@ type NotebookConf = {
 };
 
 type BlockType =
-  | "d"
-  | "p"
-  | "query_embed"
-  | "l"
-  | "i"
+  | "d" // Document
+  | "p" // Paragraph Block
+  | "query_embed" // Query Embed Block
+  | "l" // List
+  | "i" // also List
   | "h"
   | "iframe"
   | "tb"

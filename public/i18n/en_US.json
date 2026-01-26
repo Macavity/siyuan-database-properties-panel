@@ -3,6 +3,7 @@
     "settingTitle": "Database Properties Panel Settings",
     "settingGroupDisplay": "Display",
     "settingGroupPrivacy": "Privacy",
+    "settingGroupStyling": "Styling",
     "configAllowErrorReportingTitle": "Allow error reporting",
     "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
     "configAllowEditingTitle": "Allow editing",
@@ -21,5 +22,13 @@
     "hideEmptyAttributesToggle": "Hide Empty Attributes",
     "overrideSettings": "Override default settings",
     "collapse": "Collapse",
-    "expand": "Expand"
+    "expand": "Expand",
+    "configAlignPropertiesLeftTitle": "Align properties to left",
+    "configAlignPropertiesLeftDesc": "Align property rows to the left with a custom margin.",
+    "configShowBottomSeparatorTitle": "Show bottom separator",
+    "configShowBottomSeparatorDesc": "Display a horizontal line at the bottom of the properties panel.",
+    "settingGroupColumnVisibility": "Column Visibility",
+    "columnVisibilitySelectDatabase": "Select a database",
+    "columnVisibilityNoColumns": "No columns found",
+    "columnVisibilityLoading": "Loading..."
 }

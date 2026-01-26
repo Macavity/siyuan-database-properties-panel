@@ -55,6 +55,27 @@
         ];
     });
 
+    // Styling settings
+    const stylingItems = $derived(() => {
+        const t = $i18nStore;
+        return [
+            {
+                key: PluginSetting.AlignPropertiesLeft,
+                value: $configStore.alignPropertiesLeft,
+                type: "checkbox" as const,
+                title: t.configAlignPropertiesLeftTitle,
+                description: t.configAlignPropertiesLeftDesc,
+            },
+            {
+                key: PluginSetting.ShowBottomSeparator,
+                value: $configStore.showBottomSeparator,
+                type: "checkbox" as const,
+                title: t.configShowBottomSeparatorTitle,
+                description: t.configShowBottomSeparatorDesc,
+            },
+        ];
+    });
+
     // Privacy settings - reserved for future use
     const privacyItems = $derived(() => {
         return [];

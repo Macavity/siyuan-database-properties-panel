@@ -19,10 +19,11 @@
         group: string;
         settingItems: SettingItem[];
         display?: boolean;
+        children?: () => unknown;
         onSettingChange?: (group: string, key: string, value: unknown) => void;
     }
 
-    let { group, settingItems, display = true, onSettingChange = () => {} }: Props = $props();
+    let { group, settingItems, children, display = true, onSettingChange = () => {} }: Props = $props();
 
     const fn__none = $derived(display ? "" : "fn__none");
 
@@ -32,7 +33,7 @@
 </script>
 
 <div class="config__tab-container {fn__none}" data-name={group}>
-    <slot />
+    {@render children?.()}
     {#each settingItems as item (item.key)}
         <FormWrap
             title={item.title}

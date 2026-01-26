@@ -6,6 +6,8 @@ export const PluginSetting = {
     ShowEmptyAttributes: "showEmptyAttributes",
     ShowDatabaseAttributes: "showDatabaseAttributes",
     AllowErrorReporting: "allowErrorReporting",
+    AlignPropertiesLeft: "alignPropertiesLeft",
+    ShowBottomSeparator: "showBottomSeparator",
 } as const;
 
 /**
@@ -29,6 +31,8 @@ export interface PluginConfigDTO {
     showEmptyAttributes: boolean;
     showDatabaseAttributes: boolean;
     allowErrorReporting: boolean;
+    alignPropertiesLeft: boolean;
+    showBottomSeparator: boolean;
 }
 
 export interface ConfigStoreType extends PluginConfigDTO {
@@ -40,6 +44,8 @@ export const defaultConfig: PluginConfigDTO = {
     showEmptyAttributes: false,
     showDatabaseAttributes: true,
     allowErrorReporting: false,
+    alignPropertiesLeft: false,
+    showBottomSeparator: true,
 };
 
 export function createConfigFromStorage(data: Partial<PluginConfigDTO>): PluginConfigDTO {

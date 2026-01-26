@@ -3,11 +3,30 @@ import { LoggerService } from "./LoggerService";
 import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
+import CollapseButton from "@/components/ui/CollapseButton.svelte";
 import { mount } from "svelte";
+import { configStore } from "@/stores/configStore";
 
 const logger = new LoggerService("AttributeViewService");
 
+export interface AVTab {
+  key: string;
+  name: string;
+  icon: "iconDatabase";
+}
+
 export class AttributeViewService {
+  /**
+   * Build tabs array from avData for use in LayoutTabBar.
+   */
+  static buildTabs(avData: AttributeView[]): AVTab[] {
+    return avData.map((av) => ({
+      key: av.avID,
+      name: av.avName,
+      icon: "iconDatabase" as const,
+    }));
+  }
+
   static handlePrimaryKey(
     element: HTMLElement,
     blockId: string,
@@ -34,7 +53,8 @@ export class AttributeViewService {
     blockId: string,
     avData: AttributeView[],
     showPrimaryKey: boolean,
-    showEmptyAttributes: boolean
+    showEmptyAttributes: boolean,
+    alignPropertiesLeft: boolean = false
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
@@ -50,6 +70,8 @@ export class AttributeViewService {
     AttributeViewService.addToggleShowEmptyAttributes(element, blockId);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
+    AttributeViewService.removeDuplicateHrElements(element);
+    AttributeViewService.handleAlignPropertiesLeft(element, alignPropertiesLeft);
   }
 
   static handleEmptyAttributes(
@@ -154,15 +176,59 @@ export class AttributeViewService {
   }
 
   /**
-   * TODO only triggered once maybe?
+   * Remove duplicate fn__hr--b elements from NodeAttributeView.
+   * SiYuan sometimes renders two separators at the bottom - we keep only the first.
+   */
+  static removeDuplicateHrElements(element: HTMLElement) {
+    const nodeAttrViews = element.querySelectorAll('[data-type="NodeAttributeView"]');
+    nodeAttrViews.forEach((nodeAttrView) => {
+      const hrElements = nodeAttrView.querySelectorAll('.fn__hr--b');
+      if (hrElements.length >= 2) {
+        hrElements[hrElements.length - 1].remove();
+      }
+    });
+  }
+
+  /**
+   * Toggle left alignment class on av__row elements and layout-tab-bar-wrapper padding.
+   */
+  static handleAlignPropertiesLeft(element: HTMLElement, alignPropertiesLeft: boolean) {
+    // Handle av__row elements
+    const rows = element.querySelectorAll('.av__row');
+    rows.forEach((row) => {
+      if (alignPropertiesLeft) {
+        row.classList.add('av-panel-row--align-left');
+      } else {
+        row.classList.remove('av-panel-row--align-left');
+      }
+    });
+
+    // Handle layout-tab-bar-wrapper padding - look in parent plugin-panel
+    const pluginPanel = element.closest('.plugin-panel');
+    if (pluginPanel) {
+      const tabBarWrapper = pluginPanel.querySelector('.layout-tab-bar-wrapper') as HTMLElement;
+      if (tabBarWrapper) {
+        if (alignPropertiesLeft) {
+          tabBarWrapper.style.paddingLeft = '0';
+          tabBarWrapper.style.paddingRight = '0';
+        } else {
+          tabBarWrapper.style.paddingLeft = '';
+          tabBarWrapper.style.paddingRight = '';
+        }
+      }
+    }
+  }
+
+  /**
+   * Add action buttons (collapse, show empty attributes) after the addColumn button.
    */
   static addToggleShowEmptyAttributes(
     container: HTMLElement,
     documentId: string
   ) {
-    // First remove any existing toggle buttons
+    // First remove any existing action buttons
     container
-      .querySelectorAll(".dpp-empty-attributes-toggle")
+      .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button")
       .forEach((button) => {
         button.remove();
       });
@@ -171,9 +237,22 @@ export class AttributeViewService {
       "[data-type='addColumn']"
     );
     addColumnButton.forEach((element) => {
+      const parent = element.parentNode;
+      const nextSibling = element.nextSibling;
+
+      // Mount CollapseButton directly
+      mount(CollapseButton, {
+        target: parent as HTMLElement,
+        anchor: nextSibling,
+        props: {
+          documentId,
+        },
+      });
+
+      // Mount ShowEmptyAttributesToggle directly
       mount(ShowEmptyAttributesToggle, {
-        target: container,
-        anchor: element.nextSibling,
+        target: parent as HTMLElement,
+        anchor: nextSibling,
         props: {
           documentId,
         },

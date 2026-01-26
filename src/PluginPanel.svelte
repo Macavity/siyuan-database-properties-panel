@@ -9,6 +9,7 @@
   import { type AttributeView } from "@/types/AttributeView";
   import Icon from "@/components/ui/Icon.svelte";
   import { settingsStore } from "@/stores/localSettingStore";
+  import { configStore } from "@/stores/configStore";
   import { Logger } from "@/services/LoggerService";
   import { getAttributeViewKeys } from "@/api";
 
@@ -99,6 +100,7 @@
   });
 
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
+  const showBottomSeparator = $derived($configStore.showBottomSeparator);
 
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
@@ -133,5 +135,18 @@
     {:else}
       <AttributeViewPanel {avData} />
     {/if}
+    {#if showBottomSeparator}
+      <div class="dpp-separator"></div>
+    {/if}
   {/if}
 </div>
+
+<style>
+  .dpp-separator {
+    height: 0.0625em;
+    background-color: var(--b3-theme-background-light);
+    width: calc(100% - 1px);
+    left: 0;
+    top: 0.8125em;
+  }
+</style>

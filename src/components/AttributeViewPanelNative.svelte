@@ -23,17 +23,12 @@
     const protyle = getContext(Context.Protyle);
     const logger = new LoggerService("AttributeViewPanelNative");
 
-    const tabs = $derived(
-        avData.map((attributeView) => ({
-            key: attributeView.avID,
-            name: attributeView.avName,
-            icon: "iconDatabase",
-        }))
-    );
+    const tabs = $derived(AttributeViewService.buildTabs(avData));
 
     // Get settings from stores
     const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
     const globalShowPrimaryKey = $derived($configStore.showPrimaryKey);
+    const alignPropertiesLeft = $derived($configStore.alignPropertiesLeft);
     const effectiveShowEmptyAttributesStore = $derived(
         documentSettingsStore.getEffectiveShowEmptyAttributes(
             blockId,
@@ -57,7 +52,8 @@
                 blockId,
                 avData,
                 globalShowPrimaryKey,
-                effectiveShowEmptyAttributes
+                effectiveShowEmptyAttributes,
+                alignPropertiesLeft
             );
         }
     });
@@ -137,7 +133,8 @@
                 blockId,
                 avData,
                 globalShowPrimaryKey,
-                effectiveShowEmptyAttributes
+                effectiveShowEmptyAttributes,
+                alignPropertiesLeft
             );
 
             if (!settingsStore.isAnyTabActive(blockId)) {
