@@ -3,8 +3,8 @@ import { LoggerService } from "./LoggerService";
 import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
-import CollapseButton from "@/components/ui/CollapseButton.svelte";
-import RefreshButton from "@/components/ui/RefreshButton.svelte";
+import CollapseButton from "@/components/CollapseButton.svelte";
+import RefreshButton from "@/components/RefreshButton.svelte";
 import { mount } from "svelte";
 import { configStore } from "@/stores/configStore";
 

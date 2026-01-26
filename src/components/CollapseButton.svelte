@@ -30,4 +30,3 @@
     {label}
     onclick={toggleCollapseTab}
 />
-

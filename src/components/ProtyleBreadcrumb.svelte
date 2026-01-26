@@ -2,7 +2,7 @@
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import {settingsStore} from "@/stores/localSettingStore";
-    import CollapseButton from "@/components/ui/CollapseButton.svelte";
+    import CollapseButton from "@/components/CollapseButton.svelte";
 
     interface Props {
         children?: import("svelte").Snippet;

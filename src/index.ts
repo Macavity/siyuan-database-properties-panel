@@ -108,7 +108,6 @@ export default class DatabasePropertiesPanel extends Plugin {
                 }
             }
         });
-        return;
     }
 
     private async loadPluginConfig() {

@@ -16,16 +16,17 @@
     const logger = new LoggerService("PluginConfig");
 
     // Derive groups from i18n reactively
-    const groups = $derived(() => {
-        const t = $i18nStore;
-        return [t.settingGroupDisplay, t.settingGroupStyling, t.settingGroupColumnVisibility];
-    });
+    const groups = $derived([
+        $i18nStore.settingGroupDisplay,
+        $i18nStore.settingGroupStyling,
+        $i18nStore.settingGroupColumnVisibility,
+    ]);
 
     // Focus group (initialize once i18n is available)
     let focusGroup = $state("");
     $effect(() => {
-        if (!focusGroup && groups()[0]) {
-            focusGroup = groups()[0];
+        if (!focusGroup && groups[0]) {
+            focusGroup = groups[0];
         }
     });
 
@@ -77,11 +78,6 @@
         ];
     });
 
-    // Privacy settings - reserved for future use
-    const privacyItems = $derived(() => {
-        return [];
-    });
-
     const onSettingChange = async (_group: string, key: string, value: unknown) => {
         logger.debug("onSettingChange", { key, value });
 
@@ -98,7 +94,7 @@
 
 <div class="fn__flex-1 fn__flex config__panel">
     <ul class="b3-tab-bar b3-list b3-list--background">
-        {#each groups() as group}
+        {#each groups as group}
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <li
                 data-name="editor"
@@ -119,23 +115,23 @@
     </ul>
     <div class="config__tab-wrap">
         <SettingPanel
-            group={groups()[0]}
+            group={groups[0]}
             settingItems={displayItems()}
-            display={focusGroup === groups()[0]}
+            display={focusGroup === groups[0]}
             onSettingChange={onSettingChange}
         >
         </SettingPanel>
         <SettingPanel
-            group={groups()[1]}
+            group={groups[1]}
             settingItems={stylingItems()}
-            display={focusGroup === groups()[1]}
+            display={focusGroup === groups[1]}
             onSettingChange={onSettingChange}
         >
         </SettingPanel>
         <SettingPanel
-            group={groups()[2]}
+            group={groups[2]}
             settingItems={[]}
-            display={focusGroup === groups()[2]}
+            display={focusGroup === groups[2]}
             onSettingChange={onSettingChange}
         >
             {#snippet children()}

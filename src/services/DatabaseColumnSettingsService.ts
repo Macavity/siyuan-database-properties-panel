@@ -42,6 +42,10 @@ export class DatabaseColumnSettingsService {
         const placedAvIds = new Set<string>();
 
         try {
+            // Cast to number and validate to prevent SQL injection
+            // Ensure it's a positive integer
+            limit = Math.min(Math.max(1, Number(limit)), 1000);
+
             const blocks = await sql(`SELECT * FROM blocks WHERE type='av' LIMIT ${limit}`) as AvBlock[];
 
             if (!blocks || !Array.isArray(blocks)) {

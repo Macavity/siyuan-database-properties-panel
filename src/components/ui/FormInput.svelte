@@ -1,7 +1,7 @@
 <script lang="ts">
     export let type: string; // Setting Type
     export let key: string;
-    export let value: unknown;
+    export let value: boolean | number | string; // Current Value
     export let onValueChange: (key: string, value: unknown) => void = () => {};
 
     // Optional parameters
@@ -15,7 +15,7 @@
     export let button: {
         label: string;
         callback?: () => void;
-    } = { label: value as string, callback: () => {} };
+    } = { label: value.toString(), callback: () => {} };
     export let fnSize: boolean = true; // If the form input is used within setting panel context, it is usually given a fixed width by a class named "fn__size200".
     export let style: string = ""; // Custom style
 
@@ -24,13 +24,13 @@
     };
 </script>
 
-{#if type === "checkbox"}
+{#if type === "checkbox" && typeof value === "boolean"}
     <!-- Checkbox -->
     <input
         class="b3-switch fn__flex-center"
         id={key}
         type="checkbox"
-        bind:checked={value as boolean}
+        bind:checked={value}
         on:change={() => handleChange(value)}
         style={style}
     />
@@ -92,9 +92,9 @@
             <option {value}>{text}</option>
         {/each}
     </select>
-{:else if type == "slider"}
+{:else if type === "slider"}
     <!-- Slider -->
-    <div class="b3-tooltips b3-tooltips__n" aria-label={value as string}>
+    <div class="b3-tooltips b3-tooltips__n" aria-label={value.toString()}>
         <input
             class:b3-slider={true}
             class:fn__size200={fnSize}
