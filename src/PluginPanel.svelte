@@ -39,22 +39,11 @@
   // Debounce timer for data refresh
   let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Use untrack to explicitly capture initial values for context (these don't change after mount)
-  untrack(() => {
-    setContext(Context.I18N, i18n);
-    setContext(Context.Protyle, protyle);
-    setContext(Context.BlockID, blockId);
-  });
-
-  const openAvPanel = (avId: string) => {
-    settingsStore.activateTab(blockId, avId);
-  };
-
   /**
    * Refresh avData by re-fetching from the API.
    * Debounced to avoid excessive API calls when multiple mutations occur.
    */
-  const refreshAvData = async () => {
+  function refreshAvData() {
     // Clear existing timer
     if (refreshTimer) {
       clearTimeout(refreshTimer);
@@ -72,6 +61,18 @@
         Logger.error("Failed to refresh avData", error);
       }
     }, 100);
+  }
+  setContext(Context.RefreshCallback, refreshAvData);
+
+  // Use untrack to explicitly capture initial values for context (these don't change after mount)
+  untrack(() => {
+    setContext(Context.I18N, i18n);
+    setContext(Context.Protyle, protyle);
+    setContext(Context.BlockID, blockId);
+  });
+
+  const openAvPanel = (avId: string) => {
+    settingsStore.activateTab(blockId, avId);
   };
 
   /**
@@ -131,7 +132,7 @@
   </ProtyleBreadcrumb>
   {#if !isCollapsed}
     {#if allowEditing}
-      <AttributeViewPanelNative {avData} />
+      <AttributeViewPanelNative {avData} onrefresh={refreshAvData} />
     {:else}
       <AttributeViewPanel {avData} />
     {/if}

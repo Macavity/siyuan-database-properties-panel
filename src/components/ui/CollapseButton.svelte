@@ -3,6 +3,7 @@
     import {settingsStore} from "@/stores/localSettingStore";
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
+    import {i18nStore} from "@/stores/i18nStore";
 
     interface Props {
         documentId?: string;
@@ -15,6 +16,8 @@
     const documentId = $derived(propDocumentId || contextDocumentId);
 
     let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
+    let icon = $derived(isCollapsed ? "iconExpand" : "iconContract");
+    let label = $derived(isCollapsed ? "" : $i18nStore.collapse);
 
     const toggleCollapseTab = () => {
         settingsStore.toggleCollapsed(documentId);
@@ -22,8 +25,9 @@
 </script>
 
 <ActionButton
-    icon={isCollapsed ? "iconExpand" : "iconContract"}
-    onclick={toggleCollapseTab}
     class="dpp-collapse-button"
+    {icon}
+    {label}
+    onclick={toggleCollapseTab}
 />
 

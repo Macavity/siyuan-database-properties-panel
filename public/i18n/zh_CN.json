@@ -34,5 +34,6 @@
   "columnVisibilityNoDatabases": "未找到数据库",
   "columnVisibilityRefresh": "刷新",
   "columnVisibilityOrphanedWarning": "此数据库在任何文档中都不可见。",
-  "columnVisibilityHiddenByGlobalSetting": "已被全局设置隐藏"
+  "columnVisibilityHiddenByGlobalSetting": "已被全局设置隐藏",
+  "refresh": "刷新"
 }

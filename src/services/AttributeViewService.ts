@@ -4,6 +4,7 @@ import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
 import CollapseButton from "@/components/ui/CollapseButton.svelte";
+import RefreshButton from "@/components/ui/RefreshButton.svelte";
 import { mount } from "svelte";
 import { configStore } from "@/stores/configStore";
 
@@ -54,7 +55,8 @@ export class AttributeViewService {
     avData: AttributeView[],
     showPrimaryKey: boolean,
     showEmptyAttributes: boolean,
-    alignPropertiesLeft: boolean = false
+    alignPropertiesLeft: boolean = false,
+    onRefresh?: () => void
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
@@ -68,7 +70,7 @@ export class AttributeViewService {
     );
 
     AttributeViewService.handleHiddenColumns(element, blockId, avData);
-    AttributeViewService.addToggleShowEmptyAttributes(element, blockId);
+    AttributeViewService.addActionButtons(element, blockId, onRefresh);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
     AttributeViewService.removeDuplicateHrElements(element);
@@ -241,15 +243,17 @@ export class AttributeViewService {
   }
 
   /**
-   * Add action buttons (collapse, show empty attributes) after the addColumn button.
+   * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
+   * RefreshButton receives its callback via prop if provided, otherwise falls back to context.
    */
-  static addToggleShowEmptyAttributes(
+  static addActionButtons(
     container: HTMLElement,
-    documentId: string
+    documentId: string,
+    onRefresh?: () => void
   ) {
     // First remove any existing action buttons
     container
-      .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button")
+      .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button, .dpp-refresh-button")
       .forEach((button) => {
         button.remove();
       });
@@ -261,8 +265,17 @@ export class AttributeViewService {
       const parent = element.parentNode;
       const nextSibling = element.nextSibling;
 
-      // Mount CollapseButton directly
+      // Mount CollapseButton BEFORE addColumnButton
       mount(CollapseButton, {
+        target: parent as HTMLElement,
+        anchor: element, // Insert before the addColumnButton element
+        props: {
+          documentId,
+        },
+      });
+
+      // Mount ShowEmptyAttributesToggle AFTER addColumnButton
+      mount(ShowEmptyAttributesToggle, {
         target: parent as HTMLElement,
         anchor: nextSibling,
         props: {
@@ -270,12 +283,12 @@ export class AttributeViewService {
         },
       });
 
-      // Mount ShowEmptyAttributesToggle directly
-      mount(ShowEmptyAttributesToggle, {
+      // Mount RefreshButton AFTER ShowEmptyAttributesToggle
+      mount(RefreshButton, {
         target: parent as HTMLElement,
         anchor: nextSibling,
         props: {
-          documentId,
+          onRefresh,
         },
       });
     });

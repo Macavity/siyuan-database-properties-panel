@@ -6,6 +6,7 @@ export enum Context {
   Protyle = "protyle",
   I18N = "i18n",
   ShowEmptyAttributes = "showEmptyAttributes",
+  RefreshCallback = "refreshCallback",
 }
 
 declare module "svelte" {
@@ -14,4 +15,5 @@ declare module "svelte" {
   export function getContext(context: Context.Protyle): Protyle;
   export function getContext(context: Context.I18N): I18N;
   export function getContext(context: Context.ShowEmptyAttributes): boolean;
+  export function getContext(context: Context.RefreshCallback): (() => void) | undefined;
 }

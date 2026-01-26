@@ -34,5 +34,6 @@
     "columnVisibilityNoDatabases": "No databases found",
     "columnVisibilityRefresh": "Refresh",
     "columnVisibilityOrphanedWarning": "This database is no longer visible in any document.",
-    "columnVisibilityHiddenByGlobalSetting": "Hidden by global setting"
+    "columnVisibilityHiddenByGlobalSetting": "Hidden by global setting",
+    "refresh": "Refresh"
 }

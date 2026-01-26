@@ -11,6 +11,14 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
+### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
+
+- 🇺🇸 Add database column visibility settings to control which columns are displayed in the properties panel
+- 🇺🇸 Columns can be hidden/shown on a per-database basis via the plugin settings
+- 🇺🇸 Detect and warn about orphaned databases (databases no longer visible in any document)
+- 🇺🇸 Add option to align property labels to the left
+- 🇺🇸 Add option to show bottom separator lines between properties
+
 ### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
 
 - 🇺🇸 Fix click functionality of select checkboxes
@@ -20,24 +28,13 @@ This plugin allows users to view database row attributes directly on the dedicat
 - 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value
 - 🇺🇸 Panel now automatically refreshes when database values are updated via edit popups
 
-### [1.4.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.4.0)
-
-- 🇺🇸 Fix bug where properties panel would hide when hovering over relation fields
-- 🇺🇸 Improve panel management to support multiple document panels simultaneously
-- 🇺🇸 Add block-specific panel identification to prevent interference between documents
-
-### [1.3.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.3.0)
-
-- 🇺🇸 Hide database name when there is only one database
-- 🇺🇸 Overall layout adjustments to reduce used space
-- 🇺🇸 Fix bug which might have shown the panel although no databases are visible
-
 ## Features
 
 - Attribute Display: Automatically display and edit database row attributes on their corresponding pages
 - Familiar Interface: Provides a user experience similar to popular note-taking applications like Notion and Anytype while keeping the design of SiYuan
 - Allow optionally to hide the primary key
 - Allow optionally to hide empty fields
+- Column Visibility Control: Configure which columns are visible on a per-database basis
 
 ## Data Security Statement
 

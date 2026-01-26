@@ -12,9 +12,10 @@
 
     interface Props {
         avData: AttributeView[];
+        onrefresh?: () => void;
     }
 
-    let {avData}: Props = $props();
+    let {avData, onrefresh}: Props = $props();
 
     let element: HTMLDivElement | null = $state(null);
 
@@ -53,7 +54,8 @@
                 avData,
                 globalShowPrimaryKey,
                 effectiveShowEmptyAttributes,
-                alignPropertiesLeft
+                alignPropertiesLeft,
+                onrefresh
             );
         }
     });
@@ -134,7 +136,8 @@
                 avData,
                 globalShowPrimaryKey,
                 effectiveShowEmptyAttributes,
-                alignPropertiesLeft
+                alignPropertiesLeft,
+                onrefresh
             );
 
             if (!settingsStore.isAnyTabActive(blockId)) {

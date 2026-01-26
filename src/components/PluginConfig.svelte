@@ -18,7 +18,7 @@
     // Derive groups from i18n reactively
     const groups = $derived(() => {
         const t = $i18nStore;
-        return [t.settingGroupDisplay, t.settingGroupStyling, t.settingGroupPrivacy, t.settingGroupColumnVisibility];
+        return [t.settingGroupDisplay, t.settingGroupStyling, t.settingGroupColumnVisibility];
     });
 
     // Focus group (initialize once i18n is available)
@@ -134,15 +134,8 @@
         </SettingPanel>
         <SettingPanel
             group={groups()[2]}
-            settingItems={privacyItems()}
-            display={focusGroup === groups()[2]}
-            onSettingChange={onSettingChange}
-        >
-        </SettingPanel>
-        <SettingPanel
-            group={groups()[3]}
             settingItems={[]}
-            display={focusGroup === groups()[3]}
+            display={focusGroup === groups()[2]}
             onSettingChange={onSettingChange}
         >
             {#snippet children()}

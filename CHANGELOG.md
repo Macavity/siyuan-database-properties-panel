@@ -2,6 +2,19 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
+
+- 🇺🇸 Add database column visibility settings to control which columns are displayed in the properties panel
+- 🇺🇸 Columns can be hidden/shown on a per-database basis via the plugin settings
+- 🇺🇸 Detect and warn about orphaned databases (databases no longer visible in any document)
+- 🇺🇸 Add option to align property labels to the left
+- 🇺🇸 Add option to show bottom separator lines between properties
+- 🇨🇳 添加数据库列可见性设置，控制属性面板中显示哪些列
+- 🇨🇳 可以通过插件设置按数据库隐藏/显示列
+- 🇨🇳 检测并警告孤立的数据库（不再在任何文档中可见的数据库）
+- 🇨🇳 添加将属性标签向左对齐的选项
+- 🇨🇳 添加在属性之间显示底部分隔线的选项
+
 ### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
 
 - 🇺🇸 Fix click functionality of select checkboxes
