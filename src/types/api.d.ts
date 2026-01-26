@@ -34,11 +34,13 @@ interface IResGetTemplates {
     path: string;
 }
 
-interface IResReadDir {
+interface IResReadDirEntry {
     isDir: boolean;
     isSymlink: boolean;
     name: string;
 }
+
+type IResReadDir = IResReadDirEntry[];
 
 interface IResExportMdContent {
     hPath: string;
@@ -61,5 +63,27 @@ interface IResForwardProxy {
 
 interface IResExportResources {
     path: string;
+}
+
+interface IResRenderAttributeViewColumn {
+    id: string;
+    name: string;
+    type: string;
+    icon: string;
+    hidden: boolean;
+    wrap: boolean;
+    pin: boolean;
+    width: string;
+}
+
+interface IResRenderAttributeView {
+    id: string;
+    name: string;
+    isMirror: boolean;
+    view: {
+        id: string;
+        name: string;
+        columns: IResRenderAttributeViewColumn[];
+    };
 }
 

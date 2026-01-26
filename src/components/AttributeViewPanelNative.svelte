@@ -12,9 +12,10 @@
 
     interface Props {
         avData: AttributeView[];
+        onrefresh?: () => void;
     }
 
-    let {avData}: Props = $props();
+    let {avData, onrefresh}: Props = $props();
 
     let element: HTMLDivElement | null = $state(null);
 
@@ -23,17 +24,12 @@
     const protyle = getContext(Context.Protyle);
     const logger = new LoggerService("AttributeViewPanelNative");
 
-    const tabs = $derived(
-        avData.map((attributeView) => ({
-            key: attributeView.avID,
-            name: attributeView.avName,
-            icon: "iconDatabase",
-        }))
-    );
+    const tabs = $derived(AttributeViewService.buildTabs(avData));
 
     // Get settings from stores
     const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
     const globalShowPrimaryKey = $derived($configStore.showPrimaryKey);
+    const alignPropertiesLeft = $derived($configStore.alignPropertiesLeft);
     const effectiveShowEmptyAttributesStore = $derived(
         documentSettingsStore.getEffectiveShowEmptyAttributes(
             blockId,
@@ -57,7 +53,9 @@
                 blockId,
                 avData,
                 globalShowPrimaryKey,
-                effectiveShowEmptyAttributes
+                effectiveShowEmptyAttributes,
+                alignPropertiesLeft,
+                onrefresh
             );
         }
     });
@@ -137,7 +135,9 @@
                 blockId,
                 avData,
                 globalShowPrimaryKey,
-                effectiveShowEmptyAttributes
+                effectiveShowEmptyAttributes,
+                alignPropertiesLeft,
+                onrefresh
             );
 
             if (!settingsStore.isAnyTabActive(blockId)) {

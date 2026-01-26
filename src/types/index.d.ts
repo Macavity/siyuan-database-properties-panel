@@ -1,12 +1,3 @@
-/*
- * Copyright (c) 2024 by frostime. All Rights Reserved.
- * @Author       : frostime
- * @Date         : 2023-08-15 10:28:10
- * @FilePath     : /src/types/index.d.ts
- * @LastEditTime : 2024-06-08 20:50:53
- * @Description  : Frequently used data structures in SiYuan
- */
-
 type DocumentId = string;
 type BlockId = string;
 type NotebookId = string;
@@ -31,11 +22,11 @@ type NotebookConf = {
 };
 
 type BlockType =
-  | "d"
-  | "p"
-  | "query_embed"
-  | "l"
-  | "i"
+  | "d" // Document
+  | "p" // Paragraph Block
+  | "query_embed" // Query Embed Block
+  | "l" // List
+  | "i" // also List
   | "h"
   | "iframe"
   | "tb"

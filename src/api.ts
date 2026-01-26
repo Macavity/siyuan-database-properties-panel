@@ -559,3 +559,11 @@ export async function version(): Promise<string> {
 export async function currentTime(): Promise<number> {
   return request("/api/system/currentTime", {});
 }
+
+// **************************************** Attribute View ****************************************
+
+export async function renderAttributeView(avId: string): Promise<IResRenderAttributeView | null> {
+  const data = { id: avId };
+  const url = "/api/av/renderAttributeView";
+  return request(url, data);
+}

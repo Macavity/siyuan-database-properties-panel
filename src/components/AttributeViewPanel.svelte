@@ -13,6 +13,7 @@
   import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
   import { openEdit } from "@/libs/siyuan/protyle/render/av/blockAttr";
   import type { Protyle } from "siyuan";
+  import { AttributeViewService } from "@/services/AttributeViewService";
 
   interface Props {
     avData: AttributeView[];
@@ -33,15 +34,12 @@
   const protyle = getContext<Protyle>(Context.Protyle);
 
   // Build tabs from avData (reactive)
-  const tabs = $derived(avData.map((av) => ({
-    key: av.avID,
-    name: av.avName,
-    icon: "iconDatabase" as const,
-  })));
+  const tabs = $derived(AttributeViewService.buildTabs(avData));
 
   // Store-derived settings
   const globalShowEmptyAttributes = $derived($configStore.showEmptyAttributes);
   const globalShowPrimaryKey = $derived($configStore.showPrimaryKey);
+  const alignPropertiesLeft = $derived($configStore.alignPropertiesLeft);
   const effectiveShowEmptyAttributesStore = $derived(
     documentSettingsStore.getEffectiveShowEmptyAttributes(blockId, globalShowEmptyAttributes)
   );
@@ -53,8 +51,8 @@
   const activeTable = $derived(avData.find(t => t.avID === activeAvId) || avData[0]);
 
   // Filtered key values using store settings
-  let filteredKeyValues = $derived((keyValues: AttributeView["keyValues"]) =>
-    filterAVKeyAndValues(keyValues, globalShowPrimaryKey, effectiveShowEmptyAttributes));
+  let filteredKeyValues = $derived((keyValues: AttributeView["keyValues"], avId: string) =>
+    filterAVKeyAndValues(keyValues, globalShowPrimaryKey, effectiveShowEmptyAttributes, avId));
 
   const showContent = (tabFocus: string) => {
     if (tabFocus) {
@@ -77,10 +75,11 @@
 <div class="dpp-av-panel custom-attr" bind:this={panelElement}>
   {#if activeTable}
     <div data-av-id={activeTable.avID} data-node-id={blockId} data-type="NodeAttributeView">
-      {#each filteredKeyValues(activeTable.keyValues) as item}
+      {#each filteredKeyValues(activeTable.keyValues, activeTable.avID) as item}
         <div
           class="av-panel-row block__icons"
           class:av-panel-row--editable={allowEditing}
+          class:av-panel-row--align-left={alignPropertiesLeft}
           data-id={blockId}
           data-col-id={item.key.id}
         >
@@ -124,8 +123,6 @@
       {/each}
     </div>
     <ShowEmptyAttributesToggle documentId={blockId} />
-    <div class="fn__hr"></div>
   {/if}
 </div>
-
 

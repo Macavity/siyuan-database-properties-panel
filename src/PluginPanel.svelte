@@ -9,6 +9,7 @@
   import { type AttributeView } from "@/types/AttributeView";
   import Icon from "@/components/ui/Icon.svelte";
   import { settingsStore } from "@/stores/localSettingStore";
+  import { configStore } from "@/stores/configStore";
   import { Logger } from "@/services/LoggerService";
   import { getAttributeViewKeys } from "@/api";
 
@@ -38,22 +39,11 @@
   // Debounce timer for data refresh
   let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Use untrack to explicitly capture initial values for context (these don't change after mount)
-  untrack(() => {
-    setContext(Context.I18N, i18n);
-    setContext(Context.Protyle, protyle);
-    setContext(Context.BlockID, blockId);
-  });
-
-  const openAvPanel = (avId: string) => {
-    settingsStore.activateTab(blockId, avId);
-  };
-
   /**
    * Refresh avData by re-fetching from the API.
    * Debounced to avoid excessive API calls when multiple mutations occur.
    */
-  const refreshAvData = async () => {
+  function refreshAvData() {
     // Clear existing timer
     if (refreshTimer) {
       clearTimeout(refreshTimer);
@@ -71,6 +61,18 @@
         Logger.error("Failed to refresh avData", error);
       }
     }, 100);
+  }
+  setContext(Context.RefreshCallback, refreshAvData);
+
+  // Use untrack to explicitly capture initial values for context (these don't change after mount)
+  untrack(() => {
+    setContext(Context.I18N, i18n);
+    setContext(Context.Protyle, protyle);
+    setContext(Context.BlockID, blockId);
+  });
+
+  const openAvPanel = (avId: string) => {
+    settingsStore.activateTab(blockId, avId);
   };
 
   /**
@@ -99,6 +101,7 @@
   });
 
   let isCollapsed = $derived($settingsStore.get(blockId).isCollapsed);
+  const showBottomSeparator = $derived($configStore.showBottomSeparator);
 
   // function onError(error: Error) {
   //     Sentry.withScope(scope => {
@@ -129,9 +132,22 @@
   </ProtyleBreadcrumb>
   {#if !isCollapsed}
     {#if allowEditing}
-      <AttributeViewPanelNative {avData} />
+      <AttributeViewPanelNative {avData} onrefresh={refreshAvData} />
     {:else}
       <AttributeViewPanel {avData} />
     {/if}
+    {#if showBottomSeparator}
+      <div class="dpp-separator"></div>
+    {/if}
   {/if}
 </div>
+
+<style>
+  .dpp-separator {
+    height: 0.0625em;
+    background-color: var(--b3-theme-background-light);
+    width: calc(100% - 1px);
+    left: 0;
+    top: 0.8125em;
+  }
+</style>

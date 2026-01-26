@@ -3,11 +3,31 @@ import { LoggerService } from "./LoggerService";
 import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
+import CollapseButton from "@/components/CollapseButton.svelte";
+import RefreshButton from "@/components/RefreshButton.svelte";
 import { mount } from "svelte";
+import { configStore } from "@/stores/configStore";
 
 const logger = new LoggerService("AttributeViewService");
 
+export interface AVTab {
+  key: string;
+  name: string;
+  icon: "iconDatabase";
+}
+
 export class AttributeViewService {
+  /**
+   * Build tabs array from avData for use in LayoutTabBar.
+   */
+  static buildTabs(avData: AttributeView[]): AVTab[] {
+    return avData.map((av) => ({
+      key: av.avID,
+      name: av.avName,
+      icon: "iconDatabase" as const,
+    }));
+  }
+
   static handlePrimaryKey(
     element: HTMLElement,
     blockId: string,
@@ -34,7 +54,9 @@ export class AttributeViewService {
     blockId: string,
     avData: AttributeView[],
     showPrimaryKey: boolean,
-    showEmptyAttributes: boolean
+    showEmptyAttributes: boolean,
+    alignPropertiesLeft: boolean = false,
+    onRefresh?: () => void
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
@@ -47,9 +69,32 @@ export class AttributeViewService {
       showEmptyAttributes
     );
 
-    AttributeViewService.addToggleShowEmptyAttributes(element, blockId);
+    AttributeViewService.handleHiddenColumns(element, blockId, avData);
+    AttributeViewService.addActionButtons(element, blockId, onRefresh);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
+    AttributeViewService.removeDuplicateHrElements(element);
+    AttributeViewService.handleAlignPropertiesLeft(element, alignPropertiesLeft);
+  }
+
+  static handleHiddenColumns(
+    element: HTMLElement,
+    blockId: string,
+    avData: AttributeView[]
+  ) {
+    avData.forEach((table) => {
+      table.keyValues.forEach((item) => {
+        if (!configStore.isColumnVisible(table.avID, item.key.id)) {
+          element
+            .querySelectorAll(
+              `[data-id='${blockId}'][data-col-id='${item.key.id}']`
+            )
+            .forEach((field) => {
+              field.classList.add("dpp-av-panel--hidden");
+            });
+        }
+      });
+    });
   }
 
   static handleEmptyAttributes(
@@ -154,15 +199,61 @@ export class AttributeViewService {
   }
 
   /**
-   * TODO only triggered once maybe?
+   * Remove duplicate fn__hr--b elements from NodeAttributeView.
+   * SiYuan sometimes renders two separators at the bottom - we keep only the first.
    */
-  static addToggleShowEmptyAttributes(
+  static removeDuplicateHrElements(element: HTMLElement) {
+    const nodeAttrViews = element.querySelectorAll('[data-type="NodeAttributeView"]');
+    nodeAttrViews.forEach((nodeAttrView) => {
+      const hrElements = nodeAttrView.querySelectorAll('.fn__hr--b');
+      if (hrElements.length >= 2) {
+        hrElements[hrElements.length - 1].remove();
+      }
+    });
+  }
+
+  /**
+   * Toggle left alignment class on av__row elements and layout-tab-bar-wrapper padding.
+   */
+  static handleAlignPropertiesLeft(element: HTMLElement, alignPropertiesLeft: boolean) {
+    // Handle av__row elements
+    const rows = element.querySelectorAll('.av__row');
+    rows.forEach((row) => {
+      if (alignPropertiesLeft) {
+        row.classList.add('av-panel-row--align-left');
+      } else {
+        row.classList.remove('av-panel-row--align-left');
+      }
+    });
+
+    // Handle layout-tab-bar-wrapper padding - look in parent plugin-panel
+    const pluginPanel = element.closest('.plugin-panel');
+    if (pluginPanel) {
+      const tabBarWrapper = pluginPanel.querySelector('.layout-tab-bar-wrapper') as HTMLElement;
+      if (tabBarWrapper) {
+        if (alignPropertiesLeft) {
+          tabBarWrapper.style.paddingLeft = '0';
+          tabBarWrapper.style.paddingRight = '0';
+        } else {
+          tabBarWrapper.style.paddingLeft = '';
+          tabBarWrapper.style.paddingRight = '';
+        }
+      }
+    }
+  }
+
+  /**
+   * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
+   * RefreshButton receives its callback via prop if provided, otherwise falls back to context.
+   */
+  static addActionButtons(
     container: HTMLElement,
-    documentId: string
+    documentId: string,
+    onRefresh?: () => void
   ) {
-    // First remove any existing toggle buttons
+    // First remove any existing action buttons
     container
-      .querySelectorAll(".dpp-empty-attributes-toggle")
+      .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button, .dpp-refresh-button")
       .forEach((button) => {
         button.remove();
       });
@@ -171,11 +262,33 @@ export class AttributeViewService {
       "[data-type='addColumn']"
     );
     addColumnButton.forEach((element) => {
-      mount(ShowEmptyAttributesToggle, {
-        target: container,
-        anchor: element.nextSibling,
+      const parent = element.parentNode;
+      const nextSibling = element.nextSibling;
+
+      // Mount CollapseButton BEFORE addColumnButton
+      mount(CollapseButton, {
+        target: parent as HTMLElement,
+        anchor: element, // Insert before the addColumnButton element
         props: {
           documentId,
+        },
+      });
+
+      // Mount ShowEmptyAttributesToggle AFTER addColumnButton
+      mount(ShowEmptyAttributesToggle, {
+        target: parent as HTMLElement,
+        anchor: nextSibling,
+        props: {
+          documentId,
+        },
+      });
+
+      // Mount RefreshButton AFTER ShowEmptyAttributesToggle
+      mount(RefreshButton, {
+        target: parent as HTMLElement,
+        anchor: nextSibling,
+        props: {
+          onRefresh,
         },
       });
     });

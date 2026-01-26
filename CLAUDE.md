@@ -38,8 +38,16 @@ PluginPanel.svelte              # Root - context setup, layout, collapse state
 
 ### Services
 - `src/services/LoggerService.ts` - Structured logging with levels, Sentry integration
-- `src/services/AttributeViewService.ts` - AV data fetching/processing
+- `src/services/AttributeViewService.ts` - AV data fetching/processing, DOM manipulation for both panel variants
 - `src/services/StorageService.ts` - Plugin storage management
+
+### Important Patterns
+- **Shared panel logic:** Any logic duplicated between `AttributeViewPanel.svelte` and `AttributeViewPanelNative.svelte` should be extracted to `AttributeViewService.ts`
+- **Global styles:** Plugin-wide CSS classes go in `src/index.scss` (e.g., `.av-panel-row--align-left`, `.dpp-av-panel--hidden`)
+- **Adding settings:** New plugin settings require updates to:
+  1. `src/stores/configStore.ts` - Add to `PluginSetting`, `PluginConfigDTO`, and `defaultConfig`
+  2. `public/i18n/*.json` - Add translation keys
+  3. `src/components/PluginConfig.svelte` - Add to appropriate settings group
 
 ### API
 - `src/api.ts` - SiYuan API wrapper around `fetchSyncPost`/`fetchPost`

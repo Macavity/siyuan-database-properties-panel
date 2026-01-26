@@ -1,7 +1,6 @@
 <script lang="ts">
     import Icon from "@/components/ui/Icon.svelte";
     import type {SiYuanIcon} from "@/types/SiyuanIcon";
-    import CollapseButton from "@/components/ui/CollapseButton.svelte";
 
     interface Tab {
         key: string;
@@ -25,9 +24,6 @@
 </script>
 
 <div class="fn__flex layout-tab-bar-wrapper">
-    <div class="fn__flex">
-        <CollapseButton/>
-    </div>
     <div class="layout-tab-bar fn__flex fn__flex-1">
 
         {#each tabs as tab, index (tab.key)}

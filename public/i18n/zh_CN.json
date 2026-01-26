@@ -1,5 +1,9 @@
 {
   "databasePropertyPanel": "数据库属性",
+  "settingTitle": "数据库属性面板设置",
+  "settingGroupDisplay": "显示",
+  "settingGroupPrivacy": "隐私",
+  "settingGroupStyling": "样式",
   "configAllowErrorReportingTitle": "允许错误报告",
   "configAllowErrorReportingDesc": "如果您发现插件中的行为出现故障，请在 Github 上创建问题前激活此功能。这样会更容易找到解决方案。",
   "configAllowEditingTitle": "允许编辑",
@@ -18,5 +22,18 @@
   "hideEmptyAttributesToggle": "隐藏空属性",
   "overrideSettings": "覆盖默认设置",
   "collapse": "折叠",
-  "expand": "展开"
+  "expand": "展开",
+  "configAlignPropertiesLeftTitle": "左对齐属性",
+  "configAlignPropertiesLeftDesc": "将属性行左对齐并使用自定义边距。",
+  "configShowBottomSeparatorTitle": "显示底部分隔线",
+  "configShowBottomSeparatorDesc": "在属性面板底部显示水平分隔线。",
+  "settingGroupColumnVisibility": "列可见性",
+  "columnVisibilitySelectDatabase": "选择数据库",
+  "columnVisibilityNoColumns": "未找到列",
+  "columnVisibilityLoading": "加载中...",
+  "columnVisibilityNoDatabases": "未找到数据库",
+  "columnVisibilityRefresh": "刷新",
+  "columnVisibilityOrphanedWarning": "此数据库在任何文档中都不可见。",
+  "columnVisibilityHiddenByGlobalSetting": "已被全局设置隐藏",
+  "refresh": "刷新"
 }
