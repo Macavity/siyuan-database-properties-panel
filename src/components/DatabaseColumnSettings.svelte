@@ -30,8 +30,12 @@
     let columns: ColumnInfo[] = $state([]);
     let loadingDatabases = $state(true);
     let loadingColumns = $state(false);
+    let showOrphanedDatabases = $state(false);
 
     // Derived state
+    const filteredDatabases = $derived(
+        showOrphanedDatabases ? databases : databases.filter(db => !db.isOrphaned)
+    );
     const selectedDatabase = $derived(
         databases.find(db => db.id === selectedDatabaseId)
     );
@@ -102,10 +106,23 @@
             loadColumns(selectedDatabaseId);
         }
     });
+
+    // Clear selected database if it's orphaned and toggle is off
+    $effect(() => {
+        if (!showOrphanedDatabases && selectedDatabase?.isOrphaned) {
+            selectedDatabaseId = "";
+        }
+    });
 </script>
 
-<div class="database-column-settings">
+ <div class="database-column-settings">
     <div class="database-selector b3-label">
+        <div class="show-orphaned-toggle-row">
+            <label>
+                <input type="checkbox" class="b3-switch" bind:checked={showOrphanedDatabases} />
+                Show orphaned databases
+            </label>
+        </div>
         <div class="database-selector-row">
             <select
                 class="b3-select fn__flex-1"
@@ -114,11 +131,11 @@
             >
                 {#if loadingDatabases}
                     <option value="">{$i18nStore.columnVisibilityLoading}</option>
-                {:else if databases.length === 0}
+                {:else if filteredDatabases.length === 0}
                     <option value="">{$i18nStore.columnVisibilityNoDatabases}</option>
                 {:else}
                     <option value="">{$i18nStore.columnVisibilitySelectDatabase}</option>
-                    {#each databases as db (db.id)}
+                    {#each filteredDatabases as db (db.id)}
                         <option value={db.id}>{db.isOrphaned ? "⚠️ " : ""}{db.name}</option>
                     {/each}
                 {/if}
@@ -134,7 +151,7 @@
         </div>
     </div>
 
-    {#if !loadingDatabases && databases.length === 0}
+    {#if !loadingDatabases && filteredDatabases.length === 0}
         <div class="no-databases-message b3-label">
             {$i18nStore.columnVisibilityNoDatabases}
         </div>
@@ -186,6 +203,19 @@
 
     .database-selector {
         margin-bottom: 16px;
+    }
+
+    .show-orphaned-toggle-row {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
     }
 
     .database-selector-row {
