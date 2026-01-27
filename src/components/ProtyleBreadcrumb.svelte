@@ -21,8 +21,8 @@
     <div class="protyle-breadcrumb"
          class:protyle-breadcrumb--single-tab={singleTab}
          id="top-navigation-bar">
-        <CollapseButton/>
         {#if isCollapsed}
+            <CollapseButton/>
             <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
                 {@render children?.()}
             </div>

@@ -22,5 +22,6 @@
 }
 
 .dpp-collapse-button {
-  padding-left: 0;
+  /* Left margin of the size of the padding to align left */
+  margin-left: -8px;
 }
