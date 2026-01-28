@@ -1,18 +1,20 @@
 <script lang="ts">
-    import { showMessage } from "siyuan";
+    import {showMessage} from "siyuan";
     import SettingPanel from "./ui/SettingPanel.svelte";
-    import { PluginSetting, configStore } from "@/stores/configStore";
-    import { Plugin } from "siyuan";
-    import { STORAGE_NAME } from "@/constants";
-    import { LoggerService } from "@/services/LoggerService";
-    import { i18nStore } from "@/stores/i18nStore";
+    import {PluginSetting, configStore} from "@/stores/configStore";
+    import {Plugin} from "siyuan";
+    import {STORAGE_NAME} from "@/constants";
+    import {LoggerService} from "@/services/LoggerService";
+    import {i18nStore} from "@/stores/i18nStore";
     import DatabaseColumnSettings from "./DatabaseColumnSettings.svelte";
+    import Icon from "@/components/ui/Icon.svelte";
+    import type {SiYuanIcon} from "@/types/SiyuanIcon";
 
     interface Props {
         plugin: Plugin;
     }
 
-    let { plugin }: Props = $props();
+    let {plugin}: Props = $props();
     const logger = new LoggerService("PluginConfig");
 
     // Derive groups from i18n reactively
@@ -21,6 +23,13 @@
         $i18nStore.settingGroupStyling,
         $i18nStore.settingGroupColumnVisibility,
     ]);
+
+    // Icon mapping for each group
+    const groupIcons = $derived({
+        [$i18nStore.settingGroupDisplay]: "iconEye" as SiYuanIcon,
+        [$i18nStore.settingGroupStyling]: "iconTheme" as SiYuanIcon,
+        [$i18nStore.settingGroupColumnVisibility]: "iconFilter" as SiYuanIcon,
+    });
 
     // Focus group (initialize once i18n is available)
     let focusGroup = $state("");
@@ -79,7 +88,7 @@
     });
 
     const onSettingChange = async (_group: string, key: string, value: unknown) => {
-        logger.debug("onSettingChange", { key, value });
+        logger.debug("onSettingChange", {key, value});
 
         try {
             configStore.setSetting(key as typeof PluginSetting[keyof typeof PluginSetting], value as boolean);
@@ -97,58 +106,68 @@
         {#each groups as group}
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <li
-                data-name="editor"
-                class:b3-list-item--focus={(group) === focusGroup}
-                class="b3-list-item"
-                onclick={() => {
+                    data-name="editor"
+                    class:b3-list-item--focus={(group) === focusGroup}
+                    class="b3-list-item"
+                    onclick={() => {
                     focusGroup = group;
                 }}
-                onkeydown={(e) => {
+                    onkeydown={(e) => {
                     if (e.key === "Enter") {
                         focusGroup = group;
                     }
                 }}
             >
                 <span class="b3-list-item__text">{group}</span>
+                <span class="b3-list-item__action"><Icon icon={groupIcons[group]}/></span>
             </li>
         {/each}
     </ul>
     <div class="config__tab-wrap">
         <SettingPanel
-            group={groups[0]}
-            settingItems={displayItems()}
-            display={focusGroup === groups[0]}
-            onSettingChange={onSettingChange}
+                group={groups[0]}
+                settingItems={displayItems()}
+                display={focusGroup === groups[0]}
+                onSettingChange={onSettingChange}
         >
         </SettingPanel>
         <SettingPanel
-            group={groups[1]}
-            settingItems={stylingItems()}
-            display={focusGroup === groups[1]}
-            onSettingChange={onSettingChange}
+                group={groups[1]}
+                settingItems={stylingItems()}
+                display={focusGroup === groups[1]}
+                onSettingChange={onSettingChange}
         >
         </SettingPanel>
         <SettingPanel
-            group={groups[2]}
-            settingItems={[]}
-            display={focusGroup === groups[2]}
-            onSettingChange={onSettingChange}
+                group={groups[2]}
+                settingItems={[]}
+                display={focusGroup === groups[2]}
+                onSettingChange={onSettingChange}
         >
             {#snippet children()}
-                <DatabaseColumnSettings {plugin} />
+                <DatabaseColumnSettings {plugin}/>
             {/snippet}
         </SettingPanel>
     </div>
 </div>
 
 <style lang="scss">
-    .config__panel {
-        height: 100%;
-    }
+  .config__panel {
+    height: 100%;
+  }
+
+  .config__panel > ul > li {
+    padding-left: 1rem;
+  }
+
+  @media (max-width: 750px) {
     .config__panel > ul > li {
-        padding-left: 1rem;
+      padding-left: 0;
+      width: 24px;
     }
-    .config__tab-wrap {
-        min-height: 170px;
-    }
+  }
+
+  .config__tab-wrap {
+    min-height: 170px;
+  }
 </style>
