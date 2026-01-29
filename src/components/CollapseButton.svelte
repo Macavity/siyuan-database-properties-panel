@@ -4,6 +4,7 @@
     import {getContext} from "svelte";
     import {Context} from "@/types/context";
     import {i18nStore} from "@/stores/i18nStore";
+    import type {SiYuanIcon} from "@/types/SiyuanIcon";
 
     interface Props {
         documentId?: string;
@@ -16,7 +17,7 @@
     const documentId = $derived(propDocumentId || contextDocumentId);
 
     let isCollapsed = $derived($settingsStore.get(documentId).isCollapsed);
-    let icon = $derived(isCollapsed ? "iconExpand" : "iconContract");
+    let icon = $derived<SiYuanIcon>(isCollapsed ? "iconExpand" : "iconContract");
     let label = $derived(isCollapsed ? "" : $i18nStore.collapse);
 
     const toggleCollapseTab = () => {

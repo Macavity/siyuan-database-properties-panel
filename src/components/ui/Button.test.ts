@@ -9,7 +9,7 @@ describe("Button", () => {
   });
 
   it("renders with icon", () => {
-    render(Button, { props: { icon: "iconName" } });
+    render(Button, { props: { icon: "iconExpand" } });
     // Check if Icon component is rendered
     expect(document.querySelector(".block__icon")).toBeTruthy();
   });

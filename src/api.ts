@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Copyright (c) 2023 frostime. All rights reserved.
  * https://github.com/frostime/sy-plugin-template-vite

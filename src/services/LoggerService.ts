@@ -32,9 +32,9 @@ export class LoggerService {
     }
 
     static getReadableName(id: string): string {
-        if (process.env.NODE_ENV === "production") {
-            return id;
-        }
+        // if (process.env.NODE_ENV === "production") {
+        //     return id;
+        // }
         const registered = this.registeredIds.get(id);
         return registered ? `"${registered}"` : id;
     }

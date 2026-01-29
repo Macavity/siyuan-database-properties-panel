@@ -19,7 +19,7 @@ describe("Icon", () => {
   it("applies additional class names when provided", () => {
     const { container } = render(Icon, {
       props: {
-        icon: "iconTest",
+        icon: "iconDatabase",
         class: "custom-class",
       },
     });

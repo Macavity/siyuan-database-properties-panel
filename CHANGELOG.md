@@ -2,6 +2,13 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.7.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.0)
+
+- 🇺🇸 Fix mobile settings dialog displaying incorrectly on small screens
+- 🇺🇸 Fix mobile issue where database properties panel remained visible on documents without database attributes
+- 🇨🇳 修复移动设备上设置对话框在小屏幕上显示不正确的问题
+- 🇨🇳 修复移动设备上数据库属性面板在没有数据库属性的文档上仍然可见的问题
+
 ### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
 
 - 🇺🇸 Add database column visibility settings to control which columns are displayed in the properties panel

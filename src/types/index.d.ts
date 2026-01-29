@@ -142,3 +142,16 @@ interface Window {
   };
   Lute: never;
 }
+
+declare namespace NodeJS {
+  interface ProcessEnv {
+    NODE_ENV: "development" | "production";
+    PLUGIN_VERSION: string;
+    SENTRY_DSN?: string;
+    DEV_MODE: string;
+  }
+}
+
+declare const process: {
+  env: NodeJS.ProcessEnv;
+};

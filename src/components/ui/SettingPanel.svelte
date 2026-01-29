@@ -1,7 +1,7 @@
 <script lang="ts">
     import FormWrap from './FormWrap.svelte';
     import FormInput from './FormInput.svelte';
-    import {Snippet} from "svelte";
+    import type { Snippet } from 'svelte';
 
     interface SettingItem {
         type: "checkbox" | "select" | "textinput" | "textarea" | "number" | "slider" | "button";
@@ -20,7 +20,7 @@
         group: string;
         settingItems: SettingItem[];
         display?: boolean;
-        children?: () => Snippet;
+        children?: Snippet;
         onSettingChange?: (group: string, key: string, value: unknown) => void;
     }
 

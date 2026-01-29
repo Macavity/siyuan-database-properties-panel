@@ -141,7 +141,8 @@ describe("configStore", () => {
 
             const settings = configStore.getSettingsObject();
 
-            expect(settings.loading).toBeUndefined();
+            // loading property should not exist on PluginConfigDTO (removed by getSettingsObject)
+            expect('loading' in settings).toBe(false);
             expect(settings.columnVisibility).toBeDefined();
             expect(settings.columnVisibility[avId]).toEqual({
                 [columnId]: false,
