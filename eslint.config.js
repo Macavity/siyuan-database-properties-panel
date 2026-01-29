@@ -30,10 +30,12 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
+        process: "readonly",
       },
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   {
@@ -47,11 +49,17 @@ export default [
   {
     ignores: [
       "src/**/*.test.ts",
+      "src/**/*.test.js",
+      "src/**/*.spec.ts",
+      "src/**/*.spec.js",
       "src/libs/siyuan/**/*",
+      "src/types/**/*.d.ts",
       "test/**",
       "vue/**",
       "scripts/**",
       "dev/**",
+      "*.config.js",
+      "*.config.ts",
       "yaml-plugin.js",
       "dist/**",
     ],

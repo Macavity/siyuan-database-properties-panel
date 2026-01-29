@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { filterAVKeyAndValues } from "./getAVKeyAndValues";
-import type { AttributeView } from "@/types/AttributeView";
+import type { AttributeView, AVValue } from "@/types/AttributeView";
 import { configStore } from "@/stores/configStore";
 
 // Mock configStore
@@ -20,7 +20,7 @@ describe("filterAVKeyAndValues", () => {
                 blockID: "block-1",
                 type: "text",
                 text: { content: "Test Value" }
-            }],
+            } as AVValue],
         },
         {
             key: { id: "col-2", name: "Primary Key", type: "block", icon: "" },
@@ -30,7 +30,7 @@ describe("filterAVKeyAndValues", () => {
                 blockID: "block-1",
                 type: "block",
                 block: { id: "block-1" }
-            }],
+            } as AVValue],
         },
         {
             key: { id: "col-3", name: "Empty Field", type: "text", icon: "" },
@@ -39,7 +39,7 @@ describe("filterAVKeyAndValues", () => {
                 keyID: "col-3",
                 blockID: "block-1",
                 type: "text",
-            }],
+            } as AVValue],
         },
         {
             key: { id: "col-4", name: "Number", type: "number", icon: "" },
@@ -49,7 +49,7 @@ describe("filterAVKeyAndValues", () => {
                 blockID: "block-1",
                 type: "number",
                 number: { content: 42, isNotEmpty: true }
-            }],
+            } as AVValue],
         },
     ];
 
@@ -85,8 +85,8 @@ describe("filterAVKeyAndValues", () => {
     });
 
     test("filters by column visibility when avId provided", () => {
-                vi.mocked(configStore.isColumnVisible).mockImplementation(
-            (avId: string, columnId: string) => columnId !== "col-1"
+        vi.mocked(configStore.isColumnVisible).mockImplementation(
+            (_avId: string, columnId: string) => columnId !== "col-1"
         );
 
         const result = filterAVKeyAndValues(mockKeyValues, true, true, "test-av-id");
@@ -97,7 +97,7 @@ describe("filterAVKeyAndValues", () => {
     });
 
     test("does not filter by column visibility when avId not provided", () => {
-                vi.mocked(configStore.isColumnVisible).mockReturnValue(false);
+        vi.mocked(configStore.isColumnVisible).mockReturnValue(false);
 
         const result = filterAVKeyAndValues(mockKeyValues, true, true);
 
@@ -106,8 +106,8 @@ describe("filterAVKeyAndValues", () => {
     });
 
     test("applies all filters together", () => {
-                vi.mocked(configStore.isColumnVisible).mockImplementation(
-            (avId: string, columnId: string) => columnId !== "col-4"
+        vi.mocked(configStore.isColumnVisible).mockImplementation(
+            (_avId: string, columnId: string) => columnId !== "col-4"
         );
 
         // Hide primary key, hide empty, hide col-4 by visibility
@@ -118,7 +118,7 @@ describe("filterAVKeyAndValues", () => {
     });
 
     test("returns empty array when all columns filtered", () => {
-                vi.mocked(configStore.isColumnVisible).mockReturnValue(false);
+        vi.mocked(configStore.isColumnVisible).mockReturnValue(false);
 
         const result = filterAVKeyAndValues(mockKeyValues, false, false, "test-av-id");
 

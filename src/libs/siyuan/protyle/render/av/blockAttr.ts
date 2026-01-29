@@ -3,23 +3,66 @@
  * @source app/src/protyle/render/av/blockAttr.ts
  */
 import dayjs from "dayjs";
-import {IProtyle, TAVCol} from "siyuan";
+import { IProtyle, TAVCol } from "siyuan";
 import { IAVCellValue } from "@/types/siyuan.types";
-// import { TAVCol } from "siyuan";
 import { escapeAttr } from "@/libs/siyuan/protyle/util/escape";
-import {Logger} from "@/services/LoggerService";
+import { Logger } from "@/services/LoggerService";
 
 /**
- * Find the closest ancestor with data-node-id attribute (a SiYuan block).
+ * @source siyuan-app/app/src/protyle/util/hasClosest
  */
-const hasClosestBlock = (element: HTMLElement): HTMLElement | false => {
-  if (!element) return false;
-  let target = element;
-  while (target && !target.classList?.contains("protyle-wysiwyg")) {
-    if (target.dataset?.nodeId) return target;
-    target = target.parentElement as HTMLElement;
+export const hasClosestBlock = (element: Node) => {
+  const nodeElement = hasClosestByAttribute(element, "data-node-id", null);
+  if (nodeElement && nodeElement.tagName !== "BUTTON" && nodeElement.getAttribute("data-type")?.startsWith("Node")) {
+    return nodeElement;
   }
   return false;
+};
+
+/**
+ * @source siyuan-app/app/src/protyle/util/hasClosest
+ */
+export const hasClosestByAttribute = (element: Node, attr: string, value: string | null, top = false) => {
+  if (!element || element.nodeType === 9) {
+    return false;
+  }
+  if (element.nodeType === 3) {
+    element = element.parentElement;
+  }
+  let e = element as HTMLElement;
+  let isClosest = false;
+  while (e && !isClosest && (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))) {
+    if (typeof value === "string" && e.getAttribute(attr)?.split(" ").includes(value)) {
+      isClosest = true;
+    } else if (typeof value !== "string" && e.hasAttribute(attr)) {
+      isClosest = true;
+    } else {
+      e = e.parentElement;
+    }
+  }
+  return isClosest && e;
+};
+
+/**
+ * @source siyuan-app/app/src/protyle/util/hasClosest
+ */
+export const hasClosestByClassName = (element: Node, className: string, top = false) => {
+  if (!element || element.nodeType === 9) {
+    return false;
+  }
+  if (element.nodeType === 3) {
+    element = element.parentElement;
+  }
+  let e = element as HTMLElement;
+  let isClosest = false;
+  while (e && !isClosest && (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))) {
+    if (e.classList?.contains(className)) {
+      isClosest = true;
+    } else {
+      e = e.parentElement;
+    }
+  }
+  return isClosest && e;
 };
 
 /**
@@ -278,7 +321,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
 };
 
 export const openEdit = (
-  protyle: IProtyle,
+  _protyle: IProtyle,
   element: HTMLElement,
   event: MouseEvent
 ) => {

@@ -17,7 +17,7 @@
     "build:install": "NODE_ENV=production vite build && node --no-warnings ./scripts/make_install.js",
     "build:install:dev": "NODE_ENV=development vite build && node --no-warnings ./scripts/make_install.js",
     "check-i18n": "node ./scripts/check_i18n.js",
-    "lint": "eslint",
+    "lint": "eslint && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest",
     "make-install": "vite build && node --no-warnings ./scripts/make_install.js"
   },
@@ -64,6 +64,7 @@
     "@vitest/ui": "^3.2.4",
     "happy-dom": "^20.3.1",
     "jsdom": "^25.0.1",
+    "svelte-check": "^4.3.5",
     "vitest": "^3.2.4"
   }
 }
