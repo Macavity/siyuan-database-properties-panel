@@ -11,6 +11,11 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
+### [1.7.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.0)
+
+- 🇺🇸 Fix mobile settings dialog displaying incorrectly on small screens
+- 🇺🇸 Fix mobile issue where database properties panel remained visible on documents without database attributes
+
 ### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
 
 - 🇺🇸 Add database column visibility settings to control which columns are displayed in the properties panel
@@ -18,15 +23,6 @@ This plugin allows users to view database row attributes directly on the dedicat
 - 🇺🇸 Detect and warn about orphaned databases (databases no longer visible in any document)
 - 🇺🇸 Add option to align property labels to the left
 - 🇺🇸 Add option to show bottom separator lines between properties
-
-### [1.5.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.1)
-
-- 🇺🇸 Fix click functionality of select checkboxes
-
-### [1.5.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.5.0)
-
-- 🇺🇸 Fix issue where popup fields (select, date, asset) would become unresponsive after changing a value
-- 🇺🇸 Panel now automatically refreshes when database values are updated via edit popups
 
 ## Features
 
@@ -48,7 +44,41 @@ This plugin depends on the following APIs:
 
 About data: The modification of your data by this plug-in is limited to the specified modification of the properties of the specified block according to the user's instructions under the user's operation, and will not modify anything else
 About UI: The user interface changes are limited to adding a properties panel under the document title, and have no effect on the rest of the section
-About networking: This plug-in is completely local and does not include any extranet communication
+About networking: This plug-in is completely local and does not include any extranet communication, except when error reporting is explicitly enabled by the user in settings (which sends anonymized error reports to Sentry for debugging purposes)
+
+## Development
+
+### Building the Plugin
+
+```bash
+# Development build with live reload
+pnpm dev
+
+# Production build
+pnpm build
+
+# Build and install to local SiYuan workspace
+pnpm build:install         # Production build + install
+pnpm build:install:dev     # Development build + install
+```
+
+### Sentry Integration (Optional)
+
+To enable error reporting in your builds (for developers only):
+
+1. Copy `.env.example` to `.env`
+2. Add your Sentry DSN to `.env`:
+   ```
+   SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+   ```
+3. Build the plugin:
+   ```bash
+   pnpm build
+   ```
+
+If SENTRY_DSN is set at build time, error reporting will be enabled in that build. Marketplace builds without SENTRY_DSN will have no error reporting. This is intentional - only developers building their own versions should have Sentry enabled.
+
+Builds with SENTRY_DSN also include a debug panel in settings that displays plugin version, recent logs, and a copy button for easy sharing when debugging issues (especially useful on mobile).
 
 ## Support & Feedback
 

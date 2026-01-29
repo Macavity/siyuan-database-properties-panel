@@ -22,7 +22,7 @@ import {storageService} from "@/services/StorageService";
 import {settingsStore} from "@/stores/localSettingStore";
 import {mount, unmount} from "svelte";
 import {i18nStore} from "@/stores/i18nStore";
-import {configStore, createConfigFromStorage, isErrorReportingAllowed, PluginConfigDTO} from "@/stores/configStore";
+import {configStore, createConfigFromStorage, PluginConfigDTO} from "@/stores/configStore";
 import {STORAGE_NAME} from "@/constants";
 import PluginConfig from "@/components/PluginConfig.svelte";
 
@@ -72,7 +72,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 - Version: ${process.env.PLUGIN_VERSION}
 - Show DB: ${config.showDatabaseAttributes}
 - Show Primary: ${config.showPrimaryKey}
-- Allow Error Reporting: ${config.allowErrorReporting}
+- Sentry Enabled: ${!!process.env.SENTRY_DSN}
 - Show Empty Attributes: ${config.showEmptyAttributes}`
         );
 
@@ -127,18 +127,12 @@ export default class DatabasePropertiesPanel extends Plugin {
                 settings = createConfigFromStorage({});
             }
 
-            // Override allowErrorReporting based on localStorage or dev mode
-            settings.allowErrorReporting = isErrorReportingAllowed();
-
             configStore.setFromConfigDTO(settings);
             configStore.setLoading(false);
             this.logger.debug("Plugin config initialized", settings);
         } catch (error) {
             this.logger.error("Failed to load settings:", error);
-            configStore.setFromConfigDTO({
-                ...createConfigFromStorage({}),
-                allowErrorReporting: isErrorReportingAllowed(),
-            });
+            configStore.setFromConfigDTO(createConfigFromStorage({}));
             configStore.setLoading(false);
         }
     }
@@ -182,10 +176,12 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     private protyleSwitchListener(event: TEventSwitchProtyle) {
+        this.logger.addBreadcrumb(event.detail.protyle.block.id, "------ Protyle Switch -----");
         this.renderPanel(event.detail.protyle);
     }
 
     private protyleLoadedListener(event: TEventLoadedProtyle) {
+        this.logger.addBreadcrumb(event.detail.protyle.block.id, "------ Protyle Loaded -----");
         this.renderPanel(event.detail.protyle);
     }
 
@@ -223,6 +219,31 @@ export default class DatabasePropertiesPanel extends Plugin {
         const blockId = openProtyle.block.rootID;
         const config = get(configStore);
 
+        // Find the title node first (even if no DB properties)
+        const titleNode = document.querySelector(
+            `div[data-node-id="${blockId}"].protyle-title`
+        );
+
+        // Clean up any existing panels in this protyle's container FIRST
+        // This ensures panels from previous documents are removed even if we return early
+        // Important for mobile where switching to docs without properties leaves stale panels
+        if (titleNode) {
+            const protyleTop = titleNode.closest(".protyle-top");
+            if (protyleTop?.parentElement) {
+                const existingPanelsInContainer = protyleTop.parentElement.querySelectorAll(
+                    PANEL_PARENT_CLASS_SELECTOR
+                );
+                existingPanelsInContainer.forEach((panel) => {
+                    this.logger.debug("🧼 Cleanup at start: removing panel from protyle container", {
+                        panelBlockId: panel.getAttribute("data-block-id"),
+                        currentBlockId: blockId,
+                    });
+                    panel.remove();
+                });
+            }
+        }
+
+        // Now check if we should render a panel (needs DB properties)
         const topNode = this.getProtyleTopNode(blockId);
         if (!topNode) {
             this.enableErrorReporting = false;
@@ -288,6 +309,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         const padding = getPadding(openProtyle);
         tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
+        this.logger.addBreadcrumb(blockId, "Rendering panel");
         mount(PluginPanel, {
             target: tabDiv,
             props: {
@@ -312,7 +334,9 @@ export default class DatabasePropertiesPanel extends Plugin {
     ) {
         const config = get(configStore);
 
-        if (config.allowErrorReporting && process.env.SENTRY_DSN) {
+        // Only enable Sentry if SENTRY_DSN was set at build time
+        // This ensures only developer builds have error reporting
+        if (process.env.SENTRY_DSN) {
             this.enableErrorReporting = true;
             Sentry.init({
                 dsn: process.env.SENTRY_DSN,

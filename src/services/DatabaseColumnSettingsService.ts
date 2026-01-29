@@ -104,7 +104,6 @@ export class DatabaseColumnSettingsService {
     async loadDatabases(): Promise<DatabaseInfo[]> {
         try {
             const dirEntries = await readDir(AV_STORAGE_PATH);
-            this.logger.debug("readDir response", dirEntries);
 
             if (!dirEntries || !Array.isArray(dirEntries)) {
                 this.logger.debug("No valid directory entries returned");
@@ -113,7 +112,7 @@ export class DatabaseColumnSettingsService {
 
             const jsonFiles = dirEntries.filter(e => !e.isDir && e.name.endsWith(".json"));
             const placedAvIds = await this.fetchPlacedAvIds(jsonFiles.length);
-            this.logger.debug("Placed AV IDs", [...placedAvIds]);
+            // this.logger.debug("Placed AV IDs", [...placedAvIds]);
 
             const databases: DatabaseInfo[] = [];
             for (const entry of jsonFiles) {
@@ -125,7 +124,7 @@ export class DatabaseColumnSettingsService {
             }
 
             const sorted = this.sortDatabases(databases);
-            this.logger.debug(`Loaded ${sorted.length} databases`);
+            // this.logger.debug(`Loaded ${sorted.length} databases`);
             return sorted;
         } catch (error) {
             this.logger.error("Failed to load databases", error);

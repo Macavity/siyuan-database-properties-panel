@@ -35,5 +35,10 @@
     "columnVisibilityRefresh": "Refresh",
     "columnVisibilityOrphanedWarning": "This database is no longer visible in any document.",
     "columnVisibilityHiddenByGlobalSetting": "Hidden by global setting",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "settingGroupDebug": "Debug",
+    "debugPluginVersion": "Plugin Version",
+    "debugLogs": "Recent Logs",
+    "debugLogsDesc": "Last 20 log entries from the plugin. These logs help diagnose issues, especially on mobile devices where console access is limited.",
+    "debugCopyLogs": "Copy Logs"
 }

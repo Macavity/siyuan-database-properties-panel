@@ -17,11 +17,37 @@
     let {plugin}: Props = $props();
     const logger = new LoggerService("PluginConfig");
 
+    // Debug panel state
+    let logsText = $state("");
+
+    // Update logs text every second for the debug panel
+    $effect(() => {
+        const updateLogs = () => {
+            logsText = LoggerService.getLogs().join("\n");
+        };
+
+        updateLogs();
+        const interval = setInterval(updateLogs, 1000);
+
+        return () => clearInterval(interval);
+    });
+
+    const copyLogs = () => {
+        navigator.clipboard.writeText(logsText).then(() => {
+            showMessage("Logs copied to clipboard");
+        }).catch((err) => {
+            logger.error("Failed to copy logs:", err);
+            showMessage("Failed to copy logs");
+        });
+    };
+
     // Derive groups from i18n reactively
+    // Only include debug group if SENTRY_DSN is set (developer builds only)
     const groups = $derived([
         $i18nStore.settingGroupDisplay,
         $i18nStore.settingGroupStyling,
         $i18nStore.settingGroupColumnVisibility,
+        ...(process.env.SENTRY_DSN ? [$i18nStore.settingGroupDebug] : []),
     ]);
 
     // Icon mapping for each group
@@ -29,6 +55,7 @@
         [$i18nStore.settingGroupDisplay]: "iconEye" as SiYuanIcon,
         [$i18nStore.settingGroupStyling]: "iconTheme" as SiYuanIcon,
         [$i18nStore.settingGroupColumnVisibility]: "iconFilter" as SiYuanIcon,
+        [$i18nStore.settingGroupDebug]: "iconBug" as SiYuanIcon,
     });
 
     // Focus group (initialize once i18n is available)
@@ -148,6 +175,46 @@
                 <DatabaseColumnSettings {plugin}/>
             {/snippet}
         </SettingPanel>
+        {#if process.env.SENTRY_DSN}
+            <SettingPanel
+                    group={groups[3]}
+                    settingItems={[]}
+                    display={focusGroup === groups[3]}
+                    onSettingChange={onSettingChange}
+            >
+                {#snippet children()}
+                <div class="config__debug-panel">
+                    <div class="b3-label">
+                        <div class="fn__flex">
+                            <div class="fn__flex-1">
+                                {$i18nStore.debugPluginVersion}
+                            </div>
+                            <span class="b3-label__text">{process.env.PLUGIN_VERSION || 'unknown'}</span>
+                        </div>
+                    </div>
+                    <div class="b3-label">
+                        <div class="fn__flex">
+                            <div class="fn__flex-1">
+                                {$i18nStore.debugLogs}
+                                <div class="b3-label__text">{$i18nStore.debugLogsDesc}</div>
+                            </div>
+                            <button class="b3-button b3-button--outline" onclick={copyLogs}>
+                                {$i18nStore.debugCopyLogs}
+                            </button>
+                        </div>
+                        <div class="b3-label__text">
+                            <textarea
+                                class="b3-text-field fn__block"
+                                readonly
+                                rows="15"
+                                bind:value={logsText}
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            {/snippet}
+        </SettingPanel>
+        {/if}
     </div>
 </div>
 
@@ -169,5 +236,13 @@
 
   .config__tab-wrap {
     min-height: 170px;
+  }
+
+  .config__debug-panel {
+    textarea {
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
   }
 </style>
