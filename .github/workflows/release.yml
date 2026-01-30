@@ -17,7 +17,6 @@ jobs:
       # Environment Variables
       - name: Set Environment Variable
         run: |
-          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
 
       # Install Node.js
