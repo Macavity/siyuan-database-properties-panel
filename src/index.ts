@@ -129,7 +129,6 @@ export default class DatabasePropertiesPanel extends Plugin {
 
             configStore.setFromConfigDTO(settings);
             configStore.setLoading(false);
-            LoggerService.setDebugMode(settings.enableDebugLogging);
             this.logger.debug("Plugin config initialized", settings);
         } catch (error) {
             this.logger.error("Failed to load settings:", error);

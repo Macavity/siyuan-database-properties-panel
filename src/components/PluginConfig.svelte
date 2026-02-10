@@ -134,9 +134,7 @@
 
     // Dynamic logs description based on current buffer size
     let logsDesc = $derived(
-        $configStore.enableDebugLogging
-            ? $i18nStore.debugLogsDesc?.replace("{count}", "200")
-            : $i18nStore.debugLogsDesc?.replace("{count}", "20")
+        $i18nStore.debugLogsDesc?.replace("{count}", String(LoggerService.getMaxLogs()))
     );
 
     const onSettingChange = async (_group: string, key: string, value: unknown) => {
@@ -146,10 +144,6 @@
             configStore.setSetting(key as typeof PluginSetting[keyof typeof PluginSetting], value as boolean);
             await plugin.saveData(STORAGE_NAME, configStore.getSettingsObject());
             logger.debug("Settings saved successfully");
-
-            if (key === PluginSetting.EnableDebugLogging) {
-                LoggerService.setDebugMode(value as boolean);
-            }
         } catch (error) {
             logger.error("Failed to save settings:", error);
             showMessage("Failed to save settings");

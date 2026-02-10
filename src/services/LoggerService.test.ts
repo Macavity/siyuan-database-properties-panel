@@ -25,13 +25,13 @@ describe("LoggerService", () => {
   });
 
   it("should not exceed the maximum number of logs", () => {
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 210; i++) {
       logger.debug(`Debug message ${i}`);
     }
 
     const logs = LoggerService.getLogs();
-    expect(logs.length).toBe(20);
-    expect(logs[0]).toMatch(/Debug message 5/);
+    expect(logs.length).toBe(200);
+    expect(logs[0]).toMatch(/Debug message 10/);
   });
 
   it("should handle objects in logs", () => {
