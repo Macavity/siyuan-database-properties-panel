@@ -2,6 +2,17 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
+
+- 🇺🇸 Add user-accessible Debug tab in settings (no longer requires developer builds)
+- 🇺🇸 Add "Enable debug logging" toggle to increase log buffer from 20 to 200 entries
+- 🇺🇸 Add "Reset Logs" button to clear the log buffer
+- 🇺🇸 Fix silent failures when rendering panels: missing rootID, API errors, and missing DOM ancestors now produce log entries
+- 🇨🇳 在设置中添加用户可访问的调试选项卡（不再需要开发者构建版本）
+- 🇨🇳 添加"启用调试日志"开关，将日志缓冲区从 20 条增加到 200 条
+- 🇨🇳 添加"重置日志"按钮以清除日志缓冲区
+- 🇨🇳 修复面板渲染时的静默失败：缺少 rootID、API 错误和缺少 DOM 祖先元素现在会生成日志条目
+
 ### [1.7.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.0)
 
 - 🇺🇸 Fix mobile settings dialog displaying incorrectly on small screens

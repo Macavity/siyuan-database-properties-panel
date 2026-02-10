@@ -208,11 +208,16 @@ export default class DatabasePropertiesPanel extends Plugin {
             LoggerService.registerDocumentId(nodeId, titleInput?.textContent);
         }
 
-        return titleNode.closest(".protyle-top");
+        const protyleTop = titleNode.closest(".protyle-top");
+        if (!protyleTop) {
+            this.logger.debug("No .protyle-top ancestor found, hide panel", {nodeId});
+        }
+        return protyleTop;
     }
 
     private async renderPanel(openProtyle: IProtyle) {
         if (!openProtyle.block.rootID) {
+            this.logger.debug("=> no rootID on protyle, skip rendering");
             return;
         }
 
@@ -276,17 +281,22 @@ export default class DatabasePropertiesPanel extends Plugin {
             return;
         }
 
-        avData = await getAttributeViewKeys(blockId);
+        try {
+            avData = await getAttributeViewKeys(blockId);
+        } catch (error) {
+            this.logger.error("=> getAttributeViewKeys failed for blockId", blockId, error);
+            return;
+        }
+
+        if (!avData || avData.length === 0) {
+            this.enableErrorReporting = false;
+            this.logger.debug("=> no database attributes found, hide panel", {blockId});
+            return;
+        }
 
         avData.forEach((av) => {
             LoggerService.registerDocumentId(av.avID, av.avName);
         });
-
-        if (avData.length === 0) {
-            this.enableErrorReporting = false;
-            this.logger.debug("=> no database attributes found, hide panel");
-            return;
-        }
 
         // Only remove panels that match the current blockId
         const existingPanels = document.querySelectorAll(

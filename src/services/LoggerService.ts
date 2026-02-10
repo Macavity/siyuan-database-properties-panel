@@ -14,6 +14,8 @@ export const DEFAULT_LOGLEVEL =
     process.env.NODE_ENV === "production" ? LogLevel.ERROR : LogLevel.DEBUG;
 
 export class LoggerService {
+    private static MAX_LOGS = 200;
+
     private static registeredIds: Map<string, string> = new Map();
     private static logs: LogEntry[] = [];
 
@@ -36,10 +38,12 @@ export class LoggerService {
         //     return id;
         // }
         const registered = this.registeredIds.get(id);
-        return registered ? `"${registered}"` : id;
+        return registered ? `"${registered}" (${id})` : id;
     }
 
-    private static readonly MAX_LOGS = 20;
+    static getMaxLogs(): number {
+        return LoggerService.MAX_LOGS;
+    }
 
     get prefix() {
         if (process.env.NODE_ENV === "production") {

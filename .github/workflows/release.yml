@@ -64,6 +64,26 @@ jobs:
       - name: Build for production
         run: pnpm build
 
+      - name: Extract release notes from CHANGELOG.md
+        id: release_notes
+        run: |
+          VERSION_NUMBER="${{ env.VERSION }}"
+
+          # Extract content between the matching version heading and the next version heading
+          # Handles ### [1.7.2](url), ## [1.0.0](url), and ## v1.1.2 formats
+          RELEASE_NOTES=$(awk -v ver="$VERSION_NUMBER" '
+            $0 ~ "^##" && $0 ~ ver { found=1; next }
+            found && /^##/ { exit }
+            found { print }
+          ' CHANGELOG.md | sed '/^[[:space:]]*$/d')
+
+          if [ -z "$RELEASE_NOTES" ]; then
+            RELEASE_NOTES=$(printf "Release %s" "$VERSION_NUMBER")
+          fi
+
+          # Write to file for multi-line support
+          echo "$RELEASE_NOTES" > /tmp/release_notes.md
+
       - name: Create release on Sentry
         run: |
           # Pin sentry-cli for reproducibility.
@@ -79,13 +99,12 @@ jobs:
           SENTRY_ORG: paneon
           SENTRY_PROJECT: siyuan-database-properties-plugin
 
-      - name: Release
+      - name: Package plugin
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
           artifacts: "package.zip"
-          omitBodyDuringUpdate: true
-          omitNameDuringUpdate: true
+          bodyFile: /tmp/release_notes.md
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false

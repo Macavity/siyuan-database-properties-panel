@@ -10,18 +10,12 @@
 
 ## 最近更改
 
-### [1.7.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.0)
+### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
 
-- 🇨🇳 修复移动设备上设置对话框在小屏幕上显示不正确的问题
-- 🇨🇳 修复移动设备上数据库属性面板在没有数据库属性的文档上仍然可见的问题
-
-### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
-
-- 🇨🇳 添加数据库列可见性设置，控制属性面板中显示哪些列
-- 🇨🇳 可以通过插件设置按数据库隐藏/显示列
-- 🇨🇳 检测并警告孤立的数据库（不再在任何文档中可见的数据库）
-- 🇨🇳 添加将属性标签向左对齐的选项
-- 🇨🇳 添加在属性之间显示底部分隔线的选项
+- 🇨🇳 在设置中添加用户可访问的调试选项卡（不再需要开发者构建版本）
+- 🇨🇳 添加"启用调试日志"开关，将日志缓冲区从 20 条增加到 200 条
+- 🇨🇳 添加"重置日志"按钮以清除日志缓冲区
+- 🇨🇳 修复面板渲染时的静默失败：缺少 rootID、API 错误和缺少 DOM 祖先元素现在会生成日志条目
 
 ## 功能
 

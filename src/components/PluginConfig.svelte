@@ -41,13 +41,17 @@
         });
     };
 
+    const resetLogs = () => {
+        LoggerService.clearLogs();
+        logsText = "";
+    };
+
     // Derive groups from i18n reactively
-    // Only include debug group if SENTRY_DSN is set (developer builds only)
     const groups = $derived([
         $i18nStore.settingGroupDisplay,
         $i18nStore.settingGroupStyling,
         $i18nStore.settingGroupColumnVisibility,
-        ...(process.env.SENTRY_DSN ? [$i18nStore.settingGroupDebug] : []),
+        $i18nStore.settingGroupDebug,
     ]);
 
     // Icon mapping for each group
@@ -114,6 +118,25 @@
         ];
     });
 
+    // Debug settings
+    const debugItems = $derived(() => {
+        const t = $i18nStore;
+        return [
+            {
+                key: PluginSetting.EnableDebugLogging,
+                value: $configStore.enableDebugLogging,
+                type: "checkbox" as const,
+                title: t.configEnableDebugLoggingTitle,
+                description: t.configEnableDebugLoggingDesc,
+            },
+        ];
+    });
+
+    // Dynamic logs description based on current buffer size
+    let logsDesc = $derived(
+        $i18nStore.debugLogsDesc?.replace("{count}", String(LoggerService.getMaxLogs()))
+    );
+
     const onSettingChange = async (_group: string, key: string, value: unknown) => {
         logger.debug("onSettingChange", {key, value});
 
@@ -175,14 +198,13 @@
                 <DatabaseColumnSettings {plugin}/>
             {/snippet}
         </SettingPanel>
-        {#if process.env.SENTRY_DSN}
-            <SettingPanel
-                    group={groups[3]}
-                    settingItems={[]}
-                    display={focusGroup === groups[3]}
-                    onSettingChange={onSettingChange}
-            >
-                {#snippet children()}
+        <SettingPanel
+                group={groups[3]}
+                settingItems={debugItems()}
+                display={focusGroup === groups[3]}
+                onSettingChange={onSettingChange}
+        >
+            {#snippet children()}
                 <div class="config__debug-panel">
                     <div class="b3-label">
                         <div class="fn__flex">
@@ -192,29 +214,36 @@
                             <span class="b3-label__text">{process.env.PLUGIN_VERSION || 'unknown'}</span>
                         </div>
                     </div>
-                    <div class="b3-label">
-                        <div class="fn__flex">
-                            <div class="fn__flex-1">
-                                {$i18nStore.debugLogs}
-                                <div class="b3-label__text">{$i18nStore.debugLogsDesc}</div>
+                    {#if $configStore.enableDebugLogging}
+                        <div class="b3-label">
+                            <div class="fn__flex">
+                                <div class="fn__flex-1">
+                                    {$i18nStore.debugLogs}
+                                    <div class="b3-label__text">{logsDesc}</div>
+                                </div>
                             </div>
-                            <button class="b3-button b3-button--outline" onclick={copyLogs}>
-                                {$i18nStore.debugCopyLogs}
-                            </button>
+                            <div class="fn__flex config__debug-actions">
+                                <div class="fn__flex-1"></div>
+                                <button class="b3-button b3-button--outline" onclick={resetLogs}>
+                                    {$i18nStore.debugResetLogs}
+                                </button>
+                                <button class="b3-button b3-button--outline" onclick={copyLogs}>
+                                    {$i18nStore.debugCopyLogs}
+                                </button>
+                            </div>
+                            <div class="b3-label__text">
+                                <textarea
+                                    class="b3-text-field fn__block"
+                                    readonly
+                                    rows="15"
+                                    bind:value={logsText}
+                                ></textarea>
+                            </div>
                         </div>
-                        <div class="b3-label__text">
-                            <textarea
-                                class="b3-text-field fn__block"
-                                readonly
-                                rows="15"
-                                bind:value={logsText}
-                            ></textarea>
-                        </div>
-                    </div>
+                    {/if}
                 </div>
             {/snippet}
         </SettingPanel>
-        {/if}
     </div>
 </div>
 
@@ -244,5 +273,10 @@
       font-size: 12px;
       line-height: 1.4;
     }
+  }
+
+  .config__debug-actions {
+    gap: 8px;
+    margin-bottom: 8px;
   }
 </style>

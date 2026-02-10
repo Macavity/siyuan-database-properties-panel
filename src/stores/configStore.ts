@@ -7,6 +7,7 @@ export const PluginSetting = {
     AlignPropertiesLeft: "alignPropertiesLeft",
     ShowBottomSeparator: "showBottomSeparator",
     ColumnVisibility: "columnVisibility",
+    EnableDebugLogging: "enableDebugLogging",
 } as const;
 
 export type PluginSettingKey = typeof PluginSetting[keyof typeof PluginSetting];
@@ -24,6 +25,7 @@ export interface PluginConfigDTO {
     alignPropertiesLeft: boolean;
     showBottomSeparator: boolean;
     columnVisibility: ColumnVisibilityConfig;
+    enableDebugLogging: boolean;
 }
 
 export interface ConfigStoreType extends PluginConfigDTO {
@@ -37,6 +39,7 @@ export const defaultConfig: PluginConfigDTO = {
     alignPropertiesLeft: false,
     showBottomSeparator: true,
     columnVisibility: {},
+    enableDebugLogging: false,
 };
 
 export function createConfigFromStorage(data: Partial<PluginConfigDTO>): PluginConfigDTO {

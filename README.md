@@ -11,18 +11,12 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.7.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.0)
+### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
 
-- 🇺🇸 Fix mobile settings dialog displaying incorrectly on small screens
-- 🇺🇸 Fix mobile issue where database properties panel remained visible on documents without database attributes
-
-### [1.6.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.6.0)
-
-- 🇺🇸 Add database column visibility settings to control which columns are displayed in the properties panel
-- 🇺🇸 Columns can be hidden/shown on a per-database basis via the plugin settings
-- 🇺🇸 Detect and warn about orphaned databases (databases no longer visible in any document)
-- 🇺🇸 Add option to align property labels to the left
-- 🇺🇸 Add option to show bottom separator lines between properties
+- 🇺🇸 Add user-accessible Debug tab in settings (no longer requires developer builds)
+- 🇺🇸 Add "Enable debug logging" toggle to increase log buffer from 20 to 200 entries
+- 🇺🇸 Add "Reset Logs" button to clear the log buffer
+- 🇺🇸 Fix silent failures when rendering panels: missing rootID, API errors, and missing DOM ancestors now produce log entries
 
 ## Features
 
@@ -77,8 +71,6 @@ To enable error reporting in your builds (for developers only):
    ```
 
 If SENTRY_DSN is set at build time, error reporting will be enabled in that build. Marketplace builds without SENTRY_DSN will have no error reporting. This is intentional - only developers building their own versions should have Sentry enabled.
-
-Builds with SENTRY_DSN also include a debug panel in settings that displays plugin version, recent logs, and a copy button for easy sharing when debugging issues (especially useful on mobile).
 
 ## Support & Feedback
 
