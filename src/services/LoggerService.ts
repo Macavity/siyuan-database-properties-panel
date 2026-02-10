@@ -36,10 +36,25 @@ export class LoggerService {
         //     return id;
         // }
         const registered = this.registeredIds.get(id);
-        return registered ? `"${registered}"` : id;
+        return registered ? `"${registered}" (${id})` : id;
     }
 
-    private static readonly MAX_LOGS = 20;
+    private static MAX_LOGS = 20;
+
+    static setDebugMode(enabled: boolean) {
+        if (enabled) {
+            LoggerService.MAX_LOGS = 200;
+        } else {
+            LoggerService.MAX_LOGS = 20;
+            if (LoggerService.logs.length > LoggerService.MAX_LOGS) {
+                LoggerService.logs = LoggerService.logs.slice(-LoggerService.MAX_LOGS);
+            }
+        }
+    }
+
+    static getMaxLogs(): number {
+        return LoggerService.MAX_LOGS;
+    }
 
     get prefix() {
         if (process.env.NODE_ENV === "production") {

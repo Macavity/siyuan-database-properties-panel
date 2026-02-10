@@ -39,6 +39,9 @@
   "settingGroupDebug": "调试",
   "debugPluginVersion": "插件版本",
   "debugLogs": "最近的日志",
-  "debugLogsDesc": "插件的最后 20 条日志条目。这些日志有助于诊断问题，特别是在无法访问控制台的移动设备上。",
-  "debugCopyLogs": "复制日志"
+  "debugLogsDesc": "插件的最后 {count} 条日志条目。这些日志有助于诊断问题，特别是在无法访问控制台的移动设备上。",
+  "debugCopyLogs": "复制日志",
+  "debugResetLogs": "重置日志",
+  "configEnableDebugLoggingTitle": "启用调试日志",
+  "configEnableDebugLoggingDesc": "记录详细日志以便排查问题。启用后最多保留 200 条日志条目。在提交错误报告时分享这些日志有助于诊断问题。"
 }

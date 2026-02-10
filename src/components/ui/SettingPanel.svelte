@@ -34,7 +34,6 @@
 </script>
 
 <div class="config__tab-container {fn__none}" data-name={group}>
-    {@render children?.()}
     {#each settingItems as item (item.key)}
         <FormWrap
             title={item.title}
@@ -53,4 +52,5 @@
             />
         </FormWrap>
     {/each}
+    {@render children?.()}
 </div>

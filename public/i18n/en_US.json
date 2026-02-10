@@ -39,6 +39,9 @@
     "settingGroupDebug": "Debug",
     "debugPluginVersion": "Plugin Version",
     "debugLogs": "Recent Logs",
-    "debugLogsDesc": "Last 20 log entries from the plugin. These logs help diagnose issues, especially on mobile devices where console access is limited.",
-    "debugCopyLogs": "Copy Logs"
+    "debugLogsDesc": "Last {count} log entries from the plugin. These logs help diagnose issues, especially on mobile devices where console access is limited.",
+    "debugCopyLogs": "Copy Logs",
+    "debugResetLogs": "Reset Logs",
+    "configEnableDebugLoggingTitle": "Enable debug logging",
+    "configEnableDebugLoggingDesc": "Record detailed logs for troubleshooting. When enabled, up to 200 log entries are kept. Share these logs in bug reports to help diagnose issues."
 }
