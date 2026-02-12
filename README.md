@@ -26,6 +26,10 @@ This plugin allows users to view database row attributes directly on the dedicat
 - Allow optionally to hide empty fields
 - Column Visibility Control: Configure which columns are visible on a per-database basis
 
+## Demo
+
+https://github.com/user-attachments/assets/5e27f269-4569-4bed-81c8-8bc69b70f514
+
 ## Data Security Statement
 
 Out of absolute importance to data security, this plugin hereby declares that all APIs used by the plugin, and the code is completely open source (uncompiled and not confused), everyone is welcome to report security issues
