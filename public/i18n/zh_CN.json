@@ -43,5 +43,7 @@
   "debugCopyLogs": "复制日志",
   "debugResetLogs": "重置日志",
   "configEnableDebugLoggingTitle": "启用调试日志",
-  "configEnableDebugLoggingDesc": "在设置中显示调试日志查看器。在提交错误报告时分享这些日志有助于诊断问题。"
+  "configEnableDebugLoggingDesc": "在设置中显示调试日志查看器。在提交错误报告时分享这些日志有助于诊断问题。",
+  "configHideInSpacedRepetitionTitle": "在间隔重复中隐藏",
+  "configHideInSpacedRepetitionDesc": "在间隔重复模式下复习闪卡时隐藏属性面板，以防止剧透。"
 }

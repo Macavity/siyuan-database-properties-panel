@@ -2,6 +2,13 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
+
+- 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default) ([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))
+- 🇺🇸 Fix column visibility settings not showing columns for kanban and card view databases ([#89](https://github.com/Macavity/siyuan-database-properties-panel/issues/89))
+- 🇨🇳 添加"在间隔重复中隐藏"设置，防止属性面板在复习闪卡时剧透答案（默认启用）([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))
+- 🇨🇳 修复列可见性设置不显示看板和卡片视图数据库的列的问题 ([#89](https://github.com/Macavity/siyuan-database-properties-panel/issues/89))
+
 ### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
 
 - 🇺🇸 Add user-accessible Debug tab in settings (no longer requires developer builds)

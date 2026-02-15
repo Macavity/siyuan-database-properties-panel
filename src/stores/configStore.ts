@@ -8,6 +8,7 @@ export const PluginSetting = {
     ShowBottomSeparator: "showBottomSeparator",
     ColumnVisibility: "columnVisibility",
     EnableDebugLogging: "enableDebugLogging",
+    HideInSpacedRepetition: "hideInSpacedRepetition",
 } as const;
 
 export type PluginSettingKey = typeof PluginSetting[keyof typeof PluginSetting];
@@ -26,6 +27,7 @@ export interface PluginConfigDTO {
     showBottomSeparator: boolean;
     columnVisibility: ColumnVisibilityConfig;
     enableDebugLogging: boolean;
+    hideInSpacedRepetition: boolean;
 }
 
 export interface ConfigStoreType extends PluginConfigDTO {
@@ -40,6 +42,7 @@ export const defaultConfig: PluginConfigDTO = {
     showBottomSeparator: true,
     columnVisibility: {},
     enableDebugLogging: false,
+    hideInSpacedRepetition: true,
 };
 
 export function createConfigFromStorage(data: Partial<PluginConfigDTO>): PluginConfigDTO {

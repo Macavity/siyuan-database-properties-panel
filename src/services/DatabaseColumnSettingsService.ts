@@ -142,8 +142,9 @@ export class DatabaseColumnSettingsService {
 
         try {
             const avData = await renderAttributeView(avId);
-            if (avData?.view?.columns) {
-                return avData.view.columns.map((col) => ({
+            const entries = avData?.view?.columns ?? avData?.view?.fields;
+            if (entries) {
+                return entries.map((col) => ({
                     id: col.id,
                     name: col.name,
                     type: col.type,

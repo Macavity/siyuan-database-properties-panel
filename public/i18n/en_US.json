@@ -43,5 +43,7 @@
     "debugCopyLogs": "Copy Logs",
     "debugResetLogs": "Reset Logs",
     "configEnableDebugLoggingTitle": "Enable debug logging",
-    "configEnableDebugLoggingDesc": "Show the debug log viewer in settings. Share these logs in bug reports to help diagnose issues."
+    "configEnableDebugLoggingDesc": "Show the debug log viewer in settings. Share these logs in bug reports to help diagnose issues.",
+    "configHideInSpacedRepetitionTitle": "Hide in Spaced Repetition",
+    "configHideInSpacedRepetitionDesc": "Hide the properties panel when reviewing flashcards in Spaced Repetition mode to prevent spoilers."
 }
