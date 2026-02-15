@@ -11,12 +11,9 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
+### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
 
-- 🇺🇸 Add user-accessible Debug tab in settings (no longer requires developer builds)
-- 🇺🇸 Add "Enable debug logging" toggle to increase log buffer from 20 to 200 entries
-- 🇺🇸 Add "Reset Logs" button to clear the log buffer
-- 🇺🇸 Fix silent failures when rendering panels: missing rootID, API errors, and missing DOM ancestors now produce log entries
+- 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default)
 
 ## Features
 

@@ -10,12 +10,9 @@
 
 ## 最近更改
 
-### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
+### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
 
-- 🇨🇳 在设置中添加用户可访问的调试选项卡（不再需要开发者构建版本）
-- 🇨🇳 添加"启用调试日志"开关，将日志缓冲区从 20 条增加到 200 条
-- 🇨🇳 添加"重置日志"按钮以清除日志缓冲区
-- 🇨🇳 修复面板渲染时的静默失败：缺少 rootID、API 错误和缺少 DOM 祖先元素现在会生成日志条目
+- 🇨🇳 添加"在间隔重复中隐藏"设置，防止属性面板在复习闪卡时剧透答案（默认启用）
 
 ## 功能
 

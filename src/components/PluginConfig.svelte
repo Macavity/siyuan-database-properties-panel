@@ -94,6 +94,13 @@
                 title: t.configShowEmptyPropertiesTitle,
                 description: t.configShowEmptyPropertiesDesc,
             },
+            {
+                key: PluginSetting.HideInSpacedRepetition,
+                value: $configStore.hideInSpacedRepetition,
+                type: "checkbox" as const,
+                title: t.configHideInSpacedRepetitionTitle,
+                description: t.configHideInSpacedRepetitionDesc,
+            },
         ];
     });
 

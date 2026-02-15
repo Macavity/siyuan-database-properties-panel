@@ -275,6 +275,18 @@ export default class DatabasePropertiesPanel extends Plugin {
             supportsEditing = true;
         }
 
+        if (config.hideInSpacedRepetition && titleNode) {
+            const dialog = titleNode.closest(".b3-dialog__container");
+            if (dialog) {
+                const isRiffCard = Array.from(dialog.querySelectorAll('.block__logo use, .block__logoicon use'))
+                    .some(use => (use.getAttribute('xlink:href') || use.getAttribute('href')) === '#iconRiffCard');
+                if (isRiffCard) {
+                    this.logger.addBreadcrumb(blockId, "Hidden: inside spaced repetition dialog");
+                    return;
+                }
+            }
+        }
+
         if (!config.showDatabaseAttributes) {
             this.enableErrorReporting = false;
             this.logger.debug("=> showDatabaseAttributes is false, hide panel");

@@ -2,6 +2,11 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
+
+- 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default)
+- 🇨🇳 添加"在间隔重复中隐藏"设置，防止属性面板在复习闪卡时剧透答案（默认启用）
+
 ### [1.7.2](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.7.2)
 
 - 🇺🇸 Add user-accessible Debug tab in settings (no longer requires developer builds)
