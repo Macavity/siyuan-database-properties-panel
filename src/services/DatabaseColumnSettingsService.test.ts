@@ -279,5 +279,54 @@ describe("DatabaseColumnSettingsService", () => {
 
             expect(result).toEqual([]);
         });
+
+        it("loads columns from fields for kanban/card views", async () => {
+            const mockAvData = {
+                id: "av-1",
+                name: "Kanban Database",
+                isMirror: false,
+                view: {
+                    id: "view-1",
+                    name: "Kanban View",
+                    fields: [
+                        { id: "field-1", name: "Primary Key", type: "block", icon: "", hidden: false, wrap: false, pin: false, width: "" },
+                        { id: "field-2", name: "Status", type: "select", icon: "", hidden: false, wrap: false, pin: false, width: "" },
+                    ],
+                },
+            };
+
+            vi.mocked(api.renderAttributeView).mockResolvedValue(mockAvData);
+
+            const result = await service.loadColumns("av-1");
+
+            expect(result.length).toBe(2);
+            expect(result[0]).toEqual({ id: "field-1", name: "Primary Key", type: "block" });
+            expect(result[1]).toEqual({ id: "field-2", name: "Status", type: "select" });
+        });
+
+        it("prefers columns over fields when both are present", async () => {
+            const mockAvData = {
+                id: "av-1",
+                name: "Database",
+                isMirror: false,
+                view: {
+                    id: "view-1",
+                    name: "View",
+                    columns: [
+                        { id: "col-1", name: "Column 1", type: "text", icon: "", hidden: false, wrap: false, pin: false, width: "100px" },
+                    ],
+                    fields: [
+                        { id: "field-1", name: "Field 1", type: "text", icon: "", hidden: false, wrap: false, pin: false, width: "" },
+                    ],
+                },
+            };
+
+            vi.mocked(api.renderAttributeView).mockResolvedValue(mockAvData);
+
+            const result = await service.loadColumns("av-1");
+
+            expect(result.length).toBe(1);
+            expect(result[0]).toEqual({ id: "col-1", name: "Column 1", type: "text" });
+        });
     });
 });

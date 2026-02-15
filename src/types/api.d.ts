@@ -83,7 +83,8 @@ interface IResRenderAttributeView {
     view: {
         id: string;
         name: string;
-        columns: IResRenderAttributeViewColumn[];
+        columns?: IResRenderAttributeViewColumn[];
+        fields?: IResRenderAttributeViewColumn[];
     };
 }
 
