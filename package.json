@@ -48,7 +48,7 @@
     "semver": "^7.7.3",
     "siyuan": "^1.1.7",
     "siyuan-app": "github:siyuan-note/siyuan#v3.5.0",
-    "svelte": "^5.46.4",
+    "svelte": "^5.51.5",
     "svelte-eslint-parser": "^0.42.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
