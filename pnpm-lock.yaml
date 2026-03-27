@@ -124,8 +124,8 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
       happy-dom:
-        specifier: ^20.3.1
-        version: 20.3.1
+        specifier: ^20.8.8
+        version: 20.8.8
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
@@ -134,7 +134,7 @@ importers:
         version: 4.3.5(picomatch@4.0.3)(svelte@5.53.5)(typescript@5.9.3)
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.3.1)(jsdom@25.0.1)(sass@1.97.2)
+        version: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.8.8)(jsdom@25.0.1)(sass@1.97.2)
 
 packages:
 
@@ -1132,6 +1132,10 @@ packages:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
+    engines: {node: '>=0.12'}
+
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
     engines: {node: '>= 0.4'}
@@ -1374,8 +1378,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.3.1:
-    resolution: {integrity: sha512-tLvsizNno05Hij0PoB0QN/S8xf0YU2AGvO11/JlJDw5McA/gzyn0Ni1RwbTI1/zteUbOekJH0t6q8HFvjbxsGg==}
+  happy-dom@20.8.8:
+    resolution: {integrity: sha512-5/F8wxkNxYtsN0bXfMwIyNLZ9WYsoOYPbmoluqVJqv8KBUbcyKZawJ7uYK4WTX8IHBLYv+VXIwfeNDPy1oKMwQ==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -2227,6 +2231,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xml-name-validator@5.0.0:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
@@ -2716,7 +2732,7 @@ snapshots:
       svelte: 5.53.5
     optionalDependencies:
       vite: 5.4.21(@types/node@20.19.30)(sass@1.97.2)
-      vitest: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.3.1)(jsdom@25.0.1)(sass@1.97.2)
+      vitest: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.8.8)(jsdom@25.0.1)(sass@1.97.2)
 
   '@tsconfig/node10@1.0.12': {}
 
@@ -2916,7 +2932,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.3.1)(jsdom@25.0.1)(sass@1.97.2)
+      vitest: 3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.8.8)(jsdom@25.0.1)(sass@1.97.2)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -3121,6 +3137,8 @@ snapshots:
   emoji-regex@9.2.2: {}
 
   entities@6.0.1: {}
+
+  entities@7.0.1: {}
 
   es-define-property@1.0.1: {}
 
@@ -3416,13 +3434,14 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.3.1:
+  happy-dom@20.8.8:
     dependencies:
       '@types/node': 20.19.30
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
+      entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.19.0
+      ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -4168,7 +4187,7 @@ snapshots:
     optionalDependencies:
       vite: 5.4.21(@types/node@20.19.30)(sass@1.97.2)
 
-  vitest@3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.3.1)(jsdom@25.0.1)(sass@1.97.2):
+  vitest@3.2.4(@types/node@20.19.30)(@vitest/ui@3.2.4)(happy-dom@20.8.8)(jsdom@25.0.1)(sass@1.97.2):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.4
@@ -4196,7 +4215,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.19.30
       '@vitest/ui': 3.2.4(vitest@3.2.4)
-      happy-dom: 20.3.1
+      happy-dom: 20.8.8
       jsdom: 25.0.1
     transitivePeerDependencies:
       - less
@@ -4254,6 +4273,8 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.19.0: {}
+
+  ws@8.20.0: {}
 
   xml-name-validator@5.0.0: {}
 
