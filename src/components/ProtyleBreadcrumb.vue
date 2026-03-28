@@ -17,12 +17,12 @@ const isCollapsed = computed(() => settingsStore.getDocumentSettings(documentId)
 <template>
   <div
     v-if="isCollapsed || singleTab"
+    id="top-navigation-bar"
     class="protyle-breadcrumb"
     :class="{ 'protyle-breadcrumb--single-tab': singleTab }"
-    id="top-navigation-bar"
   >
     <template v-if="isCollapsed">
-      <CollapseButton />
+      <CollapseButton :document-id="documentId" />
       <div class="protyle-breadcrumb__bar protyle-breadcrumb__bar--nowrap">
         <slot />
       </div>

@@ -6,7 +6,7 @@ import semver from "semver";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.vue";
 import CollapseButton from "@/components/CollapseButton.vue";
 import RefreshButton from "@/components/RefreshButton.vue";
-import { pinia } from "@/stores/index";
+import { pinia } from "@/stores";
 
 const logger = new LoggerService("AttributeViewService");
 
