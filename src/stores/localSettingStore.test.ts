@@ -32,7 +32,6 @@ describe("localSettingStore", () => {
   test("getDocumentSettings returns default values for new document", () => {
     const settings = settingsStore.getDocumentSettings(documentId);
     expect(settings).toEqual({
-      documentId,
       isCollapsed: false,
       lastSelectedAttributeView: null,
     });

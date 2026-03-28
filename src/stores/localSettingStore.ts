@@ -65,7 +65,6 @@ export const useLocalSettingStore = defineStore("localSettings", () => {
   function getDocumentSettings(documentId: string): SettingsState {
     return (
       state.get(documentId) ?? {
-        documentId,
         isCollapsed: false,
         lastSelectedAttributeView: null,
       }

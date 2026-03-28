@@ -30,7 +30,8 @@ describe("PluginPanel", () => {
     breadcrumb: { render: vi.fn() },
   };
 
-  const mockProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockProps: any = {
     i18n: {},
     protyle: mockProtyle,
     blockId: "test-block-id",
@@ -44,7 +45,7 @@ describe("PluginPanel", () => {
     vi.clearAllMocks();
   });
 
-  function createPinia(collapsed = false) {
+  function createPinia() {
     return createTestingPinia({
       createSpy: vi.fn,
       stubActions: false,

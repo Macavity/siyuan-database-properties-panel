@@ -11,7 +11,6 @@ import { useConfigStore } from "@/stores/configStore";
 import { useDocumentSettingsStore } from "@/stores/documentSettingsStore";
 import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.vue";
 import { openEdit } from "@/libs/siyuan/protyle/render/av/blockAttr";
-import type { Protyle } from "siyuan";
 import { AttributeViewService } from "@/services/AttributeViewService";
 import { usePluginContext } from "@/composables/usePluginContext";
 

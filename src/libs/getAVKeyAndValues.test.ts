@@ -8,7 +8,7 @@ vi.mock("@/stores/index", () => ({
 }));
 
 // Mock useConfigStore to return a store object with isColumnVisible
-const mockIsColumnVisible = vi.fn(() => true);
+const mockIsColumnVisible = vi.fn((_avId: string, _columnId: string): boolean => true);
 
 vi.mock("@/stores/configStore", () => ({
     useConfigStore: vi.fn(() => ({

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { IAVCellValue } from "@/types/siyuan.types";
 import dayjs from "dayjs";
+import { computed } from "vue";
 
 defineProps<{ value: IAVCellValue }>();
+
+const labelUntitled = computed(() => window.siyuan?.languages?.untitled ?? "");
 </script>
 
 <template>
   <template v-if="value.type === 'block'">
     <span v-if="value.isDetached" :data-id="value.block?.id">
-      {{ value.block?.content || window.siyuan.languages.untitled }}
+      {{ value.block?.content || labelUntitled }}
     </span>
     <span
       v-else
@@ -17,7 +20,7 @@ defineProps<{ value: IAVCellValue }>();
       data-subtype="s"
       class="av__celltext--ref"
     >
-      {{ value.block?.content || window.siyuan.languages.untitled }}
+      {{ value.block?.content || labelUntitled }}
     </span>
   </template>
   <template v-else-if="value.type === 'text'">{{ value.text.content }}</template>

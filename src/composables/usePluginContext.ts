@@ -1,5 +1,4 @@
 import { inject } from "vue";
-import type { Protyle } from "siyuan";
 import { ProtyleKey, BlockIDKey, RefreshCallbackKey } from "@/types/context";
 
 export function usePluginContext() {

@@ -18,6 +18,7 @@ const props = defineProps<{
 const logger = new LoggerService("PluginConfig");
 const configStore = useConfigStore();
 const i18nStore = useI18nStore();
+const pluginVersion = (process as NodeJS.Process & { env: Record<string, string | undefined> }).env?.PLUGIN_VERSION ?? "unknown";
 
 // Debug panel state
 const logsText = ref("");
@@ -162,7 +163,7 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
 
   try {
     configStore.setSetting(
-      key as (typeof PluginSetting)[keyof typeof PluginSetting],
+      key as Exclude<(typeof PluginSetting)[keyof typeof PluginSetting], "columnVisibility">,
       value as boolean
     );
     await props.plugin.saveData(STORAGE_NAME, configStore.getSettingsObject());
@@ -223,7 +224,7 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
               <div class="fn__flex-1">
                 {{ i18nStore.strings.debugPluginVersion }}
               </div>
-              <span class="b3-label__text">{{ process.env.PLUGIN_VERSION || 'unknown' }}</span>
+              <span class="b3-label__text">{{ pluginVersion }}</span>
             </div>
           </div>
           <div v-if="configStore.enableDebugLogging" class="b3-label">

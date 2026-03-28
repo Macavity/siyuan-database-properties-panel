@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
+import { computed } from "vue";
 import MAssetValue from "./ValueTypes/MAssetValue.vue";
 import DateValue from "./ValueTypes/DateValue.vue";
 import RelationValue from "./ValueTypes/RelationValue.vue";
@@ -8,6 +9,9 @@ import AttributeViewRollup from "./ValueTypes/AttributeViewRollup.vue";
 import TemplateValue from "./ValueTypes/TemplateValue.vue";
 import type { IAVCellValue } from "@/types/siyuan.types";
 import { setAttributeViewBlockAttr } from "@/api";
+
+const labelFormat = computed(() => window.siyuan?.languages?.format ?? "");
+const labelOpenBy = computed(() => window.siyuan?.languages?.openBy ?? "");
 
 const props = withDefaults(
   defineProps<{
@@ -93,7 +97,7 @@ const toggleCheckbox = async () => {
       <span class="fn__space"></span>
       <span
         class="fn__flex-center ft__on-surface b3-tooltips__w b3-tooltips"
-        :aria-label="window.siyuan.languages.format"
+        :aria-label="labelFormat"
       >
         {{ value.number.formattedContent }}
       </span>
@@ -125,7 +129,7 @@ const toggleCheckbox = async () => {
     <a
       :href="value.url?.content || ''"
       target="_blank"
-      :aria-label="window.siyuan.languages.openBy"
+      :aria-label="labelOpenBy"
       class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"
     >
       <svg><use xlink:href="#iconLink"></use></svg>
@@ -142,7 +146,7 @@ const toggleCheckbox = async () => {
     <a
       :href="`tel:${value.phone?.content || ''}`"
       target="_blank"
-      :aria-label="window.siyuan.languages.openBy"
+      :aria-label="labelOpenBy"
       class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"
     >
       <svg><use xlink:href="#iconPhone"></use></svg>
@@ -175,7 +179,7 @@ const toggleCheckbox = async () => {
     <a
       :href="`mailto:${value.email?.content || ''}`"
       target="_blank"
-      :aria-label="window.siyuan.languages.openBy"
+      :aria-label="labelOpenBy"
       class="block__icon block__icon--show fn__flex-center b3-tooltips__w b3-tooltips"
     >
       <svg><use xlink:href="#iconEmail"></use></svg>

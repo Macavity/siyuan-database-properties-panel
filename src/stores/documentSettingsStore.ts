@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive, computed } from "vue";
+import { reactive } from "vue";
 import { LoggerService } from "@/services/LoggerService";
 
 const logger = new LoggerService("DocumentSettingsStore");

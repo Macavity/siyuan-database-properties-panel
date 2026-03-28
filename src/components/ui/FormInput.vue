@@ -56,7 +56,7 @@ function handleChange(newValue: unknown) {
     <textarea
       class="b3-text-field fn__block"
       :style="`resize: vertical; height: 10em; white-space: nowrap; ${style}`"
-      :value="modelValue"
+      :value="String(modelValue)"
       @change="($event) => { const val = ($event.target as HTMLTextAreaElement).value; emit('update:modelValue', val); handleChange(val); }"
     ></textarea>
   </template>
