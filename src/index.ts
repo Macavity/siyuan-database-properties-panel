@@ -8,23 +8,24 @@ import {
     Model,
     Plugin,
 } from "siyuan";
-import {get} from "svelte/store";
 import * as Sentry from "@sentry/browser";
 import "@/index.scss";
-import PluginPanel from "@/PluginPanel.svelte";
+import { createApp, type App } from "vue";
+import PluginPanel from "@/PluginPanel.vue";
 import {SiyuanEvents} from "@/types/events";
 import {getAttributeViewKeys} from "@/api";
 import {AttributeView} from "./types/AttributeView";
 import {LoggerService} from "./services/LoggerService";
+import {AttributeViewService} from "./services/AttributeViewService";
 import {getPadding} from "@/libs/siyuan/protyle/ui/initUI";
 import {I18N} from "./types/i18n";
 import {storageService} from "@/services/StorageService";
-import {settingsStore} from "@/stores/localSettingStore";
-import {mount, unmount} from "svelte";
-import {i18nStore} from "@/stores/i18nStore";
-import {configStore, createConfigFromStorage, PluginConfigDTO} from "@/stores/configStore";
+import { useLocalSettingStore } from "@/stores/localSettingStore";
+import { pinia } from "@/stores/index";
+import { useI18nStore } from "@/stores/i18nStore";
+import { useConfigStore, createConfigFromStorage, type PluginConfigDTO } from "@/stores/configStore";
 import {STORAGE_NAME} from "@/constants";
-import PluginConfig from "@/components/PluginConfig.svelte";
+import PluginConfig from "@/components/PluginConfig.vue";
 
 const PANEL_PARENT_CLASS = "plugin-database-properties-wrapper";
 const PANEL_PARENT_CLASS_SELECTOR = "." + PANEL_PARENT_CLASS;
@@ -39,6 +40,7 @@ type TEventSwitchProtyle = CustomEvent<
 export default class DatabasePropertiesPanel extends Plugin {
     customTab: () => Model;
     private logger: LoggerService;
+    private panelApps: Map<string, App> = new Map();
 
     /**
      * Used to disable error reporting on documents when the panel isn't rendered.
@@ -52,7 +54,8 @@ export default class DatabasePropertiesPanel extends Plugin {
         this.logger = new LoggerService("DatabasePropertiesPanel");
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
-        i18nStore.set(this.i18n as I18N);
+        const i18nStore = useI18nStore(pinia);
+        i18nStore.setStrings(this.i18n as I18N);
 
         if (process.env.NODE_ENV === "development") {
             this.addCommand({
@@ -66,14 +69,14 @@ export default class DatabasePropertiesPanel extends Plugin {
     async onLayoutReady() {
         await this.loadPluginConfig();
 
-        const config = get(configStore);
+        const configStore = useConfigStore(pinia);
         this.logger.debug(
             `Database Properties Panel Config:
 - Version: ${process.env.PLUGIN_VERSION}
-- Show DB: ${config.showDatabaseAttributes}
-- Show Primary: ${config.showPrimaryKey}
+- Show DB: ${configStore.showDatabaseAttributes}
+- Show Primary: ${configStore.showPrimaryKey}
 - Sentry Enabled: ${!!process.env.SENTRY_DSN}
-- Show Empty Attributes: ${config.showEmptyAttributes}`
+- Show Empty Attributes: ${configStore.showEmptyAttributes}`
         );
 
         this.eventBus.on(
@@ -111,6 +114,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     private async loadPluginConfig() {
+        const configStore = useConfigStore(pinia);
         try {
             configStore.setLoading(true);
 
@@ -147,32 +151,34 @@ export default class DatabasePropertiesPanel extends Plugin {
             this.boundProtyleSwitchListener
         );
 
+        this.panelApps.forEach((app) => app.unmount());
+        this.panelApps.clear();
+
+        AttributeViewService.cleanup();
+
         const allPanels = document.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
         allPanels.forEach((panel) => panel.remove());
     }
 
     public openSetting(): void {
-        let settingsComponent: ReturnType<typeof mount> | null = null;
+        let settingsApp: App | null = null;
         const dialog = new Dialog({
             title: this.t.settingTitle,
             content: `<div id="dppSettings" style="height: 100%;"></div>`,
             width: "800px",
             destroyCallback: () => {
-                if (settingsComponent) {
+                if (settingsApp) {
                     try {
-                        unmount(settingsComponent);
+                        settingsApp.unmount();
                     } catch (error) {
                         this.logger.debug("Failed to unmount settings:", error);
                     }
                 }
             },
         });
-        settingsComponent = mount(PluginConfig, {
-            target: dialog.element.querySelector("#dppSettings"),
-            props: {
-                plugin: this,
-            },
-        });
+        settingsApp = createApp(PluginConfig, { plugin: this });
+        settingsApp.use(pinia);
+        settingsApp.mount(dialog.element.querySelector("#dppSettings"));
     }
 
     private protyleSwitchListener(event: TEventSwitchProtyle) {
@@ -222,7 +228,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         }
 
         const blockId = openProtyle.block.rootID;
-        const config = get(configStore);
+        const configStore = useConfigStore(pinia);
 
         // Find the title node first (even if no DB properties)
         const titleNode = document.querySelector(
@@ -243,6 +249,11 @@ export default class DatabasePropertiesPanel extends Plugin {
                         panelBlockId: panel.getAttribute("data-block-id"),
                         currentBlockId: blockId,
                     });
+                    const panelBlockId = panel.getAttribute("data-block-id");
+                    if (panelBlockId && this.panelApps.has(panelBlockId)) {
+                        this.panelApps.get(panelBlockId)!.unmount();
+                        this.panelApps.delete(panelBlockId);
+                    }
                     panel.remove();
                 });
             }
@@ -265,8 +276,9 @@ export default class DatabasePropertiesPanel extends Plugin {
             return;
         }
 
+        const localSettingStore = useLocalSettingStore(pinia);
         const settings = await storageService.fetchSettings(blockId);
-        settingsStore.setFromDTO(settings);
+        localSettingStore.setFromDTO(settings);
 
         let avData = [] as AttributeView[];
         let supportsEditing = false;
@@ -275,7 +287,7 @@ export default class DatabasePropertiesPanel extends Plugin {
             supportsEditing = true;
         }
 
-        if (config.hideInSpacedRepetition && titleNode) {
+        if (configStore.hideInSpacedRepetition && titleNode) {
             const dialog = titleNode.closest(".b3-dialog__container");
             if (dialog) {
                 const isRiffCard = Array.from(dialog.querySelectorAll('.block__logo use, .block__logoicon use'))
@@ -287,7 +299,7 @@ export default class DatabasePropertiesPanel extends Plugin {
             }
         }
 
-        if (!config.showDatabaseAttributes) {
+        if (!configStore.showDatabaseAttributes) {
             this.enableErrorReporting = false;
             this.logger.debug("=> showDatabaseAttributes is false, hide panel");
             return;
@@ -319,6 +331,11 @@ export default class DatabasePropertiesPanel extends Plugin {
                 this.logger.debug("renderPanel remove previous panel for blockId", {
                     blockId,
                 });
+                const existingApp = this.panelApps.get(blockId);
+                if (existingApp) {
+                    existingApp.unmount();
+                    this.panelApps.delete(blockId);
+                }
                 panel.remove();
             }
         });
@@ -332,16 +349,17 @@ export default class DatabasePropertiesPanel extends Plugin {
         tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
         this.logger.addBreadcrumb(blockId, "Rendering panel");
-        mount(PluginPanel, {
-            target: tabDiv,
-            props: {
-                blockId,
-                protyle: editor,
-                allowEditing: supportsEditing,
-                i18n: this.i18n as I18N,
-                avData,
-            },
+
+        const app = createApp(PluginPanel, {
+            blockId,
+            protyle: editor,
+            allowEditing: supportsEditing,
+            i18n: this.i18n as I18N,
+            avData,
         });
+        app.use(pinia);
+        app.mount(tabDiv);
+        this.panelApps.set(blockId, app);
 
         topNode.after(tabDiv);
     }
@@ -354,7 +372,7 @@ export default class DatabasePropertiesPanel extends Plugin {
         avData: AttributeView[],
         supportsEditing: boolean
     ) {
-        const config = get(configStore);
+        const configStore = useConfigStore(pinia);
 
         // Only enable Sentry if SENTRY_DSN was set at build time
         // This ensures only developer builds have error reporting
@@ -427,9 +445,9 @@ export default class DatabasePropertiesPanel extends Plugin {
             }
 
             Sentry.setContext("Config", {
-                showDatabaseAttributes: config.showDatabaseAttributes,
-                showPrimaryKey: config.showPrimaryKey,
-                showEmptyAttributes: config.showEmptyAttributes,
+                showDatabaseAttributes: configStore.showDatabaseAttributes,
+                showPrimaryKey: configStore.showPrimaryKey,
+                showEmptyAttributes: configStore.showEmptyAttributes,
             });
 
             Sentry.setContext("AttributeView", {avData});
