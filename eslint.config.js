@@ -1,32 +1,29 @@
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import eslintPluginSvelte from "eslint-plugin-svelte";
-import svelteParser from "svelte-eslint-parser";
+import pluginVue from "eslint-plugin-vue";
+import vueParser from "vue-eslint-parser";
 import js from "@eslint/js";
 
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...pluginVue.configs["flat/recommended"],
   {
-    files: ["src/**/*.svelte"],
-    plugins: {
-      svelte: eslintPluginSvelte,
-    },
+    files: ["src/**/*.vue"],
     languageOptions: {
-      parser: svelteParser,
+      parser: vueParser,
       parserOptions: {
         parser: tseslint.parser,
+        ecmaVersion: "latest",
+        sourceType: "module",
       },
     },
     rules: {
-      ...eslintPluginSvelte.configs.recommended.rules,
-      // Disable specific a11y rules
-      "svelte/a11y-click-events-have-key-events": "off",
-      "svelte/a11y-missing-attribute": "off",
+      "vue/multi-word-component-names": "off",
     },
   },
   {
-    files: ["src/**/*.{js,ts,svelte}"],
+    files: ["src/**/*.{js,ts,vue}"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -36,14 +33,6 @@ export default [
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
-    },
-  },
-  {
-    rules: {
-      // Disable specific a11y rules
-      "svelte/a11y-click-events-have-key-events": "off",
-      "svelte/no-static-element-interactions": "off",
-      "svelte/a11y-missing-attribute": "off",
     },
   },
   {
