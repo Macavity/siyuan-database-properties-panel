@@ -48,14 +48,14 @@ About networking: This plug-in is completely local and does not include any extr
 
 ```bash
 # Development build with live reload
-pnpm dev
+bun dev
 
 # Production build
-pnpm build
+bun run build
 
 # Build and install to local SiYuan workspace
-pnpm build:install         # Production build + install
-pnpm build:install:dev     # Development build + install
+bun run build:install         # Production build + install
+bun run build:install:dev     # Development build + install
 ```
 
 ### Sentry Integration (Optional)
@@ -69,7 +69,7 @@ To enable error reporting in your builds (for developers only):
    ```
 3. Build the plugin:
    ```bash
-   pnpm build
+   bun run build
    ```
 
 If SENTRY_DSN is set at build time, error reporting will be enabled in that build. Marketplace builds without SENTRY_DSN will have no error reporting. This is intentional - only developers building their own versions should have Sentry enabled.
