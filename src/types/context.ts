@@ -1,19 +1,6 @@
-import { I18N } from "./i18n";
-import { Protyle } from "siyuan";
+import type { InjectionKey } from "vue";
+import type { Protyle } from "siyuan";
 
-export enum Context {
-  BlockID = "blockId",
-  Protyle = "protyle",
-  I18N = "i18n",
-  ShowEmptyAttributes = "showEmptyAttributes",
-  RefreshCallback = "refreshCallback",
-}
-
-declare module "svelte" {
-  // Define overloaded signatures
-  export function getContext(context: Context.BlockID): string;
-  export function getContext(context: Context.Protyle): Protyle;
-  export function getContext(context: Context.I18N): I18N;
-  export function getContext(context: Context.ShowEmptyAttributes): boolean;
-  export function getContext(context: Context.RefreshCallback): (() => void) | undefined;
-}
+export const ProtyleKey: InjectionKey<Protyle> = Symbol("protyle");
+export const BlockIDKey: InjectionKey<string> = Symbol("blockId");
+export const RefreshCallbackKey: InjectionKey<(() => void) | undefined> = Symbol("refreshCallback");
