@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { showMessage } from "siyuan";
 import type { Plugin } from "siyuan";
 import SettingPanel from "./ui/SettingPanel.vue";
-import { PluginSetting, useConfigStore } from "@/stores/configStore";
+import { PluginSetting, type PluginConfigDTO, useConfigStore } from "@/stores/configStore";
 import { STORAGE_NAME } from "@/constants";
 import { LoggerService } from "@/services/LoggerService";
 import { useI18nStore } from "@/stores/i18nStore";
@@ -162,10 +162,7 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
   logger.debug("onSettingChange", { key, value });
 
   try {
-    configStore.setSetting(
-      key as Exclude<(typeof PluginSetting)[keyof typeof PluginSetting], "columnVisibility">,
-      value as boolean
-    );
+    configStore.setSetting(key as keyof PluginConfigDTO, value as boolean);
     await props.plugin.saveData(STORAGE_NAME, configStore.getSettingsObject());
     logger.debug("Settings saved successfully");
   } catch (error) {

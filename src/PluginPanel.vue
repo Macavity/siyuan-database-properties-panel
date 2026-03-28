@@ -55,8 +55,10 @@ const openAvPanel = (avId: string) => {
   settingsStore.activateTab(props.blockId, avId);
 };
 
+// Handle custom event from plugin when AV data changes via transaction
 const handleAvDataChanged = (event: Event) => {
   const customEvent = event as CustomEvent<{ rowID: string; avID: string; keyID: string }>;
+  // Only refresh if this event is for our block
   if (customEvent.detail.rowID === props.blockId) {
     Logger.debug("Received dpp-av-data-changed for our blockId, refreshing");
     refreshAvData();

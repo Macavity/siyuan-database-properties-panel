@@ -65,15 +65,16 @@ export const useConfigStore = defineStore("config", () => {
     loading.value = value;
   }
 
-  function setSetting(key: Exclude<PluginSettingKey, "columnVisibility">, value: boolean) {
+  function setSetting<K extends keyof PluginConfigDTO>(key: K, value: PluginConfigDTO[K]) {
     switch (key) {
-      case "showPrimaryKey": showPrimaryKey.value = value; break;
-      case "showEmptyAttributes": showEmptyAttributes.value = value; break;
-      case "showDatabaseAttributes": showDatabaseAttributes.value = value; break;
-      case "alignPropertiesLeft": alignPropertiesLeft.value = value; break;
-      case "showBottomSeparator": showBottomSeparator.value = value; break;
-      case "enableDebugLogging": enableDebugLogging.value = value; break;
-      case "hideInSpacedRepetition": hideInSpacedRepetition.value = value; break;
+      case "showPrimaryKey": showPrimaryKey.value = value as boolean; break;
+      case "showEmptyAttributes": showEmptyAttributes.value = value as boolean; break;
+      case "showDatabaseAttributes": showDatabaseAttributes.value = value as boolean; break;
+      case "alignPropertiesLeft": alignPropertiesLeft.value = value as boolean; break;
+      case "showBottomSeparator": showBottomSeparator.value = value as boolean; break;
+      case "enableDebugLogging": enableDebugLogging.value = value as boolean; break;
+      case "hideInSpacedRepetition": hideInSpacedRepetition.value = value as boolean; break;
+      case "columnVisibility": columnVisibility.value = { ...(value as ColumnVisibilityConfig) }; break;
     }
   }
 

@@ -21,7 +21,7 @@ import {getPadding} from "@/libs/siyuan/protyle/ui/initUI";
 import {I18N} from "./types/i18n";
 import {storageService} from "@/services/StorageService";
 import { useLocalSettingStore } from "@/stores/localSettingStore";
-import { pinia } from "@/stores/index";
+import { pinia } from "@/stores";
 import { useI18nStore } from "@/stores/i18nStore";
 import { useConfigStore, createConfigFromStorage, type PluginConfigDTO } from "@/stores/configStore";
 import {STORAGE_NAME} from "@/constants";
