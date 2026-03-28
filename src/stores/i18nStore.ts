@@ -1,4 +1,13 @@
-import { writable } from "svelte/store";
-import { I18N } from "@/types/i18n";
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import type { I18N } from "@/types/i18n";
 
-export const i18nStore = writable<I18N>();
+export const useI18nStore = defineStore("i18n", () => {
+  const strings = ref<I18N>({} as I18N);
+
+  function setStrings(i18n: I18N) {
+    strings.value = i18n;
+  }
+
+  return { strings, setStrings };
+});
