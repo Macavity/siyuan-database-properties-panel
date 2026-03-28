@@ -76,6 +76,32 @@ PluginPanel.svelte              # Root - context setup, layout, collapse state
 - Variables and functions: camelCase
 - Path aliases: `@/*` → `./src/*`
 
+## Git Conventions
+
+Use **Conventional Commits** with **gitmoji** prefixes:
+
+```
+🐛 fix: resolve panel not rendering on empty databases
+✨ feat: add column visibility toggle
+🔧 chore: update dependencies
+♻️ refactor: extract shared panel logic to service
+🎨 style: align property labels consistently
+📝 docs: update README with new build instructions
+✅ test: add coverage for date value renderer
+```
+
+Common gitmoji:
+- ✨ `feat` — new feature
+- 🐛 `fix` — bug fix
+- ♻️ `refactor` — code restructuring
+- 🔧 `chore` — maintenance, config, dependencies
+- 📝 `docs` — documentation
+- 🎨 `style` — formatting, CSS
+- ✅ `test` — adding or updating tests
+- 🔀 merge commits
+
+**Branching:** Always branch from `develop`, not `main`.
+
 ## Testing
 
 - Framework: Vitest with jsdom environment
