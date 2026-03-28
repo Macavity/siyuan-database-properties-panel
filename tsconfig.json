@@ -28,8 +28,7 @@
       "node",
       "vite/client",
       "vitest/globals",
-      "@testing-library/jest-dom",
-      "./src/types/siyuan.types.ts"
+      "@testing-library/jest-dom"
     ],
     "baseUrl": "./",
     "paths": {
