@@ -1,12 +1,12 @@
+import { createApp, type App } from "vue";
 import { AttributeView } from "@/types/AttributeView";
 import { LoggerService } from "./LoggerService";
 import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
-import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
-import CollapseButton from "@/components/CollapseButton.svelte";
-import RefreshButton from "@/components/RefreshButton.svelte";
-import { mount } from "svelte";
-import { configStore } from "@/stores/configStore";
+import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.vue";
+import CollapseButton from "@/components/CollapseButton.vue";
+import RefreshButton from "@/components/RefreshButton.vue";
+import { pinia } from "@/stores/index";
 
 const logger = new LoggerService("AttributeViewService");
 
@@ -56,7 +56,8 @@ export class AttributeViewService {
     showPrimaryKey: boolean,
     showEmptyAttributes: boolean,
     alignPropertiesLeft: boolean = false,
-    onRefresh?: () => void
+    onRefresh?: () => void,
+    isColumnVisible?: (avId: string, colId: string) => boolean
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
@@ -69,7 +70,7 @@ export class AttributeViewService {
       showEmptyAttributes
     );
 
-    AttributeViewService.handleHiddenColumns(element, blockId, avData);
+    AttributeViewService.handleHiddenColumns(element, blockId, avData, isColumnVisible ?? (() => true));
     AttributeViewService.addActionButtons(element, blockId, onRefresh);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
@@ -80,11 +81,12 @@ export class AttributeViewService {
   static handleHiddenColumns(
     element: HTMLElement,
     blockId: string,
-    avData: AttributeView[]
+    avData: AttributeView[],
+    isColumnVisible: (avId: string, colId: string) => boolean
   ) {
     avData.forEach((table) => {
       table.keyValues.forEach((item) => {
-        if (!configStore.isColumnVisible(table.avID, item.key.id)) {
+        if (!isColumnVisible(table.avID, item.key.id)) {
           element
             .querySelectorAll(
               `[data-id='${blockId}'][data-col-id='${item.key.id}']`
@@ -242,6 +244,9 @@ export class AttributeViewService {
     }
   }
 
+  // Track Vue app instances for cleanup
+  private static actionButtonApps: App[] = [];
+
   /**
    * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
    * RefreshButton receives its callback via prop if provided, otherwise falls back to context.
@@ -251,46 +256,54 @@ export class AttributeViewService {
     documentId: string,
     onRefresh?: () => void
   ) {
-    // First remove any existing action buttons
+    // Clean up existing Vue app instances
+    AttributeViewService.actionButtonApps.forEach((app) => app.unmount());
+    AttributeViewService.actionButtonApps = [];
+
+    // Remove existing action button DOM elements
     container
       .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button, .dpp-refresh-button")
-      .forEach((button) => {
-        button.remove();
-      });
+      .forEach((button) => button.remove());
 
-    const addColumnButton = container.querySelectorAll(
-      "[data-type='addColumn']"
-    );
+    const addColumnButton = container.querySelectorAll("[data-type='addColumn']");
     addColumnButton.forEach((element) => {
-      const parent = element.parentNode;
+      const parent = element.parentNode as HTMLElement;
       const nextSibling = element.nextSibling;
 
       // Mount CollapseButton BEFORE addColumnButton
-      mount(CollapseButton, {
-        target: parent as HTMLElement,
-        anchor: element, // Insert before the addColumnButton element
-        props: {
-          documentId,
-        },
-      });
+      const collapseWrapper = document.createElement("div");
+      collapseWrapper.style.display = "contents";
+      parent.insertBefore(collapseWrapper, element);
+      const collapseApp = createApp(CollapseButton, { documentId });
+      collapseApp.use(pinia);
+      collapseApp.mount(collapseWrapper);
+      AttributeViewService.actionButtonApps.push(collapseApp);
 
       // Mount ShowEmptyAttributesToggle AFTER addColumnButton
-      mount(ShowEmptyAttributesToggle, {
-        target: parent as HTMLElement,
-        anchor: nextSibling,
-        props: {
-          documentId,
-        },
-      });
+      const toggleWrapper = document.createElement("div");
+      toggleWrapper.style.display = "contents";
+      if (nextSibling) {
+        parent.insertBefore(toggleWrapper, nextSibling);
+      } else {
+        parent.appendChild(toggleWrapper);
+      }
+      const toggleApp = createApp(ShowEmptyAttributesToggle, { documentId });
+      toggleApp.use(pinia);
+      toggleApp.mount(toggleWrapper);
+      AttributeViewService.actionButtonApps.push(toggleApp);
 
       // Mount RefreshButton AFTER ShowEmptyAttributesToggle
-      mount(RefreshButton, {
-        target: parent as HTMLElement,
-        anchor: nextSibling,
-        props: {
-          onRefresh,
-        },
-      });
+      const refreshWrapper = document.createElement("div");
+      refreshWrapper.style.display = "contents";
+      if (nextSibling) {
+        parent.insertBefore(refreshWrapper, nextSibling);
+      } else {
+        parent.appendChild(refreshWrapper);
+      }
+      const refreshApp = createApp(RefreshButton, { onRefresh });
+      refreshApp.use(pinia);
+      refreshApp.mount(refreshWrapper);
+      AttributeViewService.actionButtonApps.push(refreshApp);
     });
   }
 }
