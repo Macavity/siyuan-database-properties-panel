@@ -9,12 +9,12 @@ SiYuan Database Properties Panel is a plugin for SiYuan Note that displays datab
 ## Commands
 
 ```bash
-pnpm dev              # Watch mode development build with livereload
-pnpm build            # Production build
-pnpm test             # Run tests (Vitest)
-pnpm lint             # ESLint check
-pnpm make-link        # Create dev symlink to SiYuan plugins directory (macOS/Linux)
-pnpm make-link-win    # Create dev symlink (Windows)
+bun dev               # Watch mode development build with livereload
+bun run build         # Production build
+bun test              # Run tests (Vitest)
+bun run lint          # ESLint check
+bun run make-link     # Create dev symlink to SiYuan plugins directory (macOS/Linux)
+bun run make-link-win # Create dev symlink (Windows)
 ```
 
 ## Architecture

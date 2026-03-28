@@ -19,40 +19,13 @@ jobs:
         run: |
           echo "NODE_ENV=production" >> $GITHUB_ENV
 
-      # Install Node.js
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          registry-url: "https://registry.npmjs.org"
-
-        # Install pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-        with:
-          version: 8
-          run_install: false
-
-      # Get pnpm store directory
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      # Setup pnpm cache
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      # Install Bun
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       # Install dependencies
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Extract version from plugin.json
         id: extract_version
@@ -60,9 +33,9 @@ jobs:
           VERSION=$(jq -r '.version' plugin.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Build for production, 这一步会生成一个 package.zip
+      # Build for production
       - name: Build for production
-        run: pnpm build
+        run: bun run build
 
       - name: Extract release notes from CHANGELOG.md
         id: release_notes
