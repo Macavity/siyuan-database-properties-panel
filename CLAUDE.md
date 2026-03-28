@@ -4,17 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SiYuan Database Properties Panel is a plugin for SiYuan Note that displays database row attributes directly on pages created from database rows. It provides a familiar interface similar to Notion and Anytype.
+SiYuan Database Properties Panel is a plugin for SiYuan Note that displays database row attributes directly on pages created from database rows.
 
 ## Commands
 
 ```bash
-pnpm dev              # Watch mode development build with livereload
 pnpm build            # Production build
 pnpm test             # Run tests (Vitest)
 pnpm lint             # ESLint check
-pnpm make-link        # Create dev symlink to SiYuan plugins directory (macOS/Linux)
-pnpm make-link-win    # Create dev symlink (Windows)
+pnpm lint:fix         # Prettier code formatting
 ```
 
 ## Architecture
@@ -54,17 +52,9 @@ PluginPanel.svelte              # Root - context setup, layout, collapse state
 
 ## Svelte 5 Conventions (Critical)
 
-**Use Svelte 5 runes exclusively - no legacy syntax:**
-```typescript
-let count = $state(0);                    // State
-let double = $derived(count * 2);         // Derived
-let { prop1, prop2 }: Props = $props();   // Props
-$effect(() => { /* reactive code */ });   // Effects
-```
-
-**Events:** Use native HTML attributes (`onclick`, `onkeydown`), NOT `on:click`.
-
-**Component mounting:** Use `mount()` from 'svelte' for dynamic mounting.
+* Use Svelte 5 runes exclusively - no legacy syntax:
+* Events: Use native HTML attributes (`onclick`, `onkeydown`), NOT `on:click`.
+* Component mounting: Use `mount()` from 'svelte' for dynamic mounting.
 
 ## Coding Patterns
 
@@ -74,7 +64,7 @@ $effect(() => { /* reactive code */ });   // Effects
 - **SQL queries:** Use `sql()` from `src/api.ts` targeting the `blocks` table
 - **Block IDs:** SiYuan uses 22-char IDs - always preserve them
 - **Styling:** Use SiYuan's CSS utility classes
-- **TypeScript:** Prefer interfaces over types; avoid enums, use const objects
+- **TypeScript:** Prefer interfaces to types; avoid enums, use const objects
 
 ## File Naming
 
