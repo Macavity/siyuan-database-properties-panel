@@ -72,14 +72,15 @@ const groupIcons = computed(() => ({
   [i18nStore.strings.settingGroupDebug]: "iconBug" as SiYuanIcon,
 }));
 
-// Focus group
-const focusGroup = ref("");
-// Initialize focusGroup once i18n is available
-const initFocusGroup = computed(() => {
-  if (!focusGroup.value && groups.value[0]) {
-    focusGroup.value = groups.value[0];
-  }
-  return focusGroup.value;
+// Focus group - use computed to derive default from groups, but allow manual override
+const focusGroupOverride = ref<string | null>(null);
+const focusGroup = computed({
+  get() {
+    return focusGroupOverride.value ?? groups.value[0] ?? "";
+  },
+  set(val: string) {
+    focusGroupOverride.value = val;
+  },
 });
 
 const displayItems = computed(() => {
@@ -172,8 +173,6 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
   }
 };
 
-// Ensure focusGroup is initialized (trigger the computed)
-const _ = initFocusGroup;
 </script>
 
 <template>

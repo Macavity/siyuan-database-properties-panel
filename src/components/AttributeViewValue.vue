@@ -63,7 +63,7 @@ const toggleCheckbox = async () => {
   await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
     checkbox: { checked: newChecked },
   });
-  props.value.checkbox.checked = newChecked;
+  // Note: parent should refresh avData to reflect the new checked state
 };
 </script>
 
