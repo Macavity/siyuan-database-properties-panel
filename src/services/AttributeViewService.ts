@@ -247,6 +247,11 @@ export class AttributeViewService {
   // Track Vue app instances for cleanup
   private static actionButtonApps: App[] = [];
 
+  static cleanup() {
+    AttributeViewService.actionButtonApps.forEach((app) => app.unmount());
+    AttributeViewService.actionButtonApps = [];
+  }
+
   /**
    * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
    * RefreshButton receives its callback via prop if provided, otherwise falls back to context.

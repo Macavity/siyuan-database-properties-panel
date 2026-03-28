@@ -93,11 +93,12 @@ function showContent(tabFocus: string) {
 }
 
 function activateTab(tabFocus: string) {
+  if (!element.value) return;
   logger.addBreadcrumb(blockId, "activateTab: " + LoggerService.getReadableName(tabFocus));
-  const targetTab = element.value!.querySelectorAll(
+  const targetTab = element.value.querySelectorAll(
     `[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`
   );
-  const remainingTabs = element.value!.querySelectorAll(
+  const remainingTabs = element.value.querySelectorAll(
     `[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`
   );
   if (!targetTab.length) {
@@ -135,7 +136,9 @@ function renderProtyleAv() {
 
     if (!settingsStore.isAnyTabActive(blockId)) {
       const first = renderedElement.querySelector(`[data-type="NodeAttributeView"]`);
-      activateTab(first!.getAttribute("data-av-id")!);
+      if (first) {
+        activateTab(first.getAttribute("data-av-id") ?? "");
+      }
     } else {
       activateTab(settingsStore.getActiveTab(blockId)!);
     }
