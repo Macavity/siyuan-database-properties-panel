@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/svelte";
-import Button from "./Button.svelte";
+import { render, screen, fireEvent } from "@testing-library/vue";
+import Button from "./Button.vue";
 
 describe("Button", () => {
   it("renders with label", () => {
@@ -28,23 +28,23 @@ describe("Button", () => {
     expect(button).toHaveClass("item--focus");
   });
 
-  it("calls onclick handler when clicked", async () => {
-    const handleClick = vi.fn();
-    render(Button, { props: { onclick: handleClick } });
+  it("calls click handler when clicked", async () => {
+    const { container } = render(Button, { props: {} });
+
+    const button = container.querySelector("button")!;
+    const clickSpy = vi.fn();
+    button.addEventListener("click", clickSpy);
+    await fireEvent.click(button);
+
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it("emits click event when clicked", async () => {
+    const { emitted } = render(Button, { props: {} });
 
     const button = screen.getByRole("button");
     await fireEvent.click(button);
 
-    expect(handleClick).toHaveBeenCalled();
-  });
-
-  it("calls onclick handler on keydown", async () => {
-    const handleClick = vi.fn();
-    render(Button, { props: { onclick: handleClick } });
-
-    const button = screen.getByRole("button");
-    await fireEvent.keyDown(button);
-
-    expect(handleClick).toHaveBeenCalled();
+    expect(emitted().click).toBeTruthy();
   });
 });

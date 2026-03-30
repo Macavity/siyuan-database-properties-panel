@@ -13,7 +13,11 @@ import { Logger } from "@/services/LoggerService";
  */
 export const hasClosestBlock = (element: Node) => {
   const nodeElement = hasClosestByAttribute(element, "data-node-id", null);
-  if (nodeElement && nodeElement.tagName !== "BUTTON" && nodeElement.getAttribute("data-type")?.startsWith("Node")) {
+  if (
+    nodeElement &&
+    nodeElement.tagName !== "BUTTON" &&
+    nodeElement.getAttribute("data-type")?.startsWith("Node")
+  ) {
     return nodeElement;
   }
   return false;
@@ -22,7 +26,12 @@ export const hasClosestBlock = (element: Node) => {
 /**
  * @source siyuan-app/app/src/protyle/util/hasClosest
  */
-export const hasClosestByAttribute = (element: Node, attr: string, value: string | null, top = false) => {
+export const hasClosestByAttribute = (
+  element: Node,
+  attr: string,
+  value: string | null,
+  top = false,
+) => {
   if (!element || element.nodeType === 9) {
     return false;
   }
@@ -31,7 +40,11 @@ export const hasClosestByAttribute = (element: Node, attr: string, value: string
   }
   let e = element as HTMLElement;
   let isClosest = false;
-  while (e && !isClosest && (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))) {
+  while (
+    e &&
+    !isClosest &&
+    (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))
+  ) {
     if (typeof value === "string" && e.getAttribute(attr)?.split(" ").includes(value)) {
       isClosest = true;
     } else if (typeof value !== "string" && e.hasAttribute(attr)) {
@@ -55,7 +68,11 @@ export const hasClosestByClassName = (element: Node, className: string, top = fa
   }
   let e = element as HTMLElement;
   let isClosest = false;
-  while (e && !isClosest && (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))) {
+  while (
+    e &&
+    !isClosest &&
+    (top ? e.tagName !== "BODY" : !e.classList.contains("protyle-wysiwyg"))
+  ) {
     if (e.classList?.contains(className)) {
       isClosest = true;
     } else {
@@ -114,7 +131,7 @@ const triggerNativeEdit = (target: HTMLElement): boolean => {
 
   // Find the corresponding element in the native panel
   const nativeCell = nativePanel.querySelector(
-    `[data-av-id="${avId}"][data-col-id="${colId}"]`
+    `[data-av-id="${avId}"][data-col-id="${colId}"]`,
   ) as HTMLElement;
 
   if (nativeCell) {
@@ -130,7 +147,8 @@ const triggerNativeEdit = (target: HTMLElement): boolean => {
       if (attempt > 10) return; // Give up after 10 attempts (500ms)
 
       setTimeout(() => {
-        const menuElement = document.querySelector(".av__panel") || document.querySelector(".b3-menu:not(.fn__none)");
+        const menuElement =
+          document.querySelector(".av__panel") || document.querySelector(".b3-menu:not(.fn__none)");
         if (menuElement) {
           repositionMenu(targetRect);
         } else if (attempt < 10) {
@@ -187,7 +205,7 @@ const genAVValueHTML = (value: IAVCellValue) => {
       html = `<span class="av__celltext" data-value='${JSON.stringify(value[value.type])}'>`;
       if (value[value.type] && value[value.type].isNotEmpty) {
         html += dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
         );
       }
       if (
@@ -242,13 +260,9 @@ const genAVValueHTML = (value: IAVCellValue) => {
       break;
     case "rollup":
       value?.rollup?.contents?.forEach((item) => {
-        const rollupText = [
-          "select",
-          "mSelect",
-          "mAsset",
-          "checkbox",
-          "relation",
-        ].includes(item.type)
+        const rollupText = ["select", "mSelect", "mAsset", "checkbox", "relation"].includes(
+          item.type,
+        )
           ? genAVValueHTML(item)
           : genAVRollupHTML(item);
         if (rollupText) {
@@ -286,7 +300,7 @@ const genAVRollupHTML = (value: IAVCellValue) => {
     case "date":
       if (value[value.type] && value[value.type].isNotEmpty) {
         html = dayjs(value[value.type].content).format(
-          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"
+          value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
         );
       }
       if (
@@ -320,16 +334,12 @@ const genAVRollupHTML = (value: IAVCellValue) => {
   return html;
 };
 
-export const openEdit = (
-  _protyle: IProtyle,
-  element: HTMLElement,
-  event: MouseEvent
-) => {
+export const openEdit = (_protyle: IProtyle, element: HTMLElement, event: MouseEvent) => {
   Logger.debug("openEdit called");
   let target = event.target as HTMLElement;
   const blockElement = hasClosestBlock(target);
   if (!blockElement) {
-    Logger.debug('no block element => skip')
+    Logger.debug("no block element => skip");
     return;
   }
 
@@ -344,7 +354,18 @@ export const openEdit = (
     }
 
     // For editable types, trigger edit via the hidden native panel
-    if (["date", "select", "mSelect", "mAsset", "checkbox", "relation", "template", "rollup"].includes(type)) {
+    if (
+      [
+        "date",
+        "select",
+        "mSelect",
+        "mAsset",
+        "checkbox",
+        "relation",
+        "template",
+        "rollup",
+      ].includes(type)
+    ) {
       const triggered = triggerNativeEdit(target);
       if (triggered) {
         event.stopPropagation();
@@ -360,7 +381,7 @@ export const openEdit = (
 export const cellScrollIntoView = (
   blockElement: HTMLElement,
   cellElement: Element,
-  onlyHeight = true
+  onlyHeight = true,
 ) => {
   const cellRect = cellElement.getBoundingClientRect();
   if (!onlyHeight) {
@@ -392,11 +413,7 @@ export const cellScrollIntoView = (
     }
   }
   /// #if MOBILE
-  const contentElement = hasClosestByClassName(
-    blockElement,
-    "protyle-content",
-    true
-  );
+  const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
   if (contentElement && cellElement.getAttribute("data-dtype") !== "checkbox") {
     const keyboardToolbarElement = document.getElementById("keyboardToolbar");
     const keyboardH =
@@ -404,8 +421,7 @@ export const cellScrollIntoView = (
       window.outerHeight / 2 - 42;
     console.log(keyboardH, window.innerHeight, cellRect.bottom);
     if (cellRect.bottom > window.innerHeight - keyboardH - 42) {
-      contentElement.scrollTop +=
-        cellRect.bottom - window.innerHeight + 42 + keyboardH;
+      contentElement.scrollTop += cellRect.bottom - window.innerHeight + 42 + keyboardH;
     } else if (cellRect.top < 110) {
       contentElement.scrollTop -= 110 - cellRect.top;
     }
@@ -415,40 +431,24 @@ export const cellScrollIntoView = (
     // 属性面板
     return;
   }
-  const avHeaderRect = blockElement
-    .querySelector(".av__row--header")
-    .getBoundingClientRect();
+  const avHeaderRect = blockElement.querySelector(".av__row--header").getBoundingClientRect();
   if (avHeaderRect.bottom > cellRect.top) {
-    const contentElement = hasClosestByClassName(
-      blockElement,
-      "protyle-content",
-      true
-    );
+    const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
     if (contentElement) {
-      contentElement.scrollTop =
-        contentElement.scrollTop + cellRect.top - avHeaderRect.bottom;
+      contentElement.scrollTop = contentElement.scrollTop + cellRect.top - avHeaderRect.bottom;
     }
   } else {
     const footerElement = blockElement.querySelector(".av__row--footer");
     if (footerElement.querySelector(".av__calc--ashow")) {
       const avFooterRect = footerElement.getBoundingClientRect();
       if (avFooterRect.top < cellRect.bottom) {
-        const contentElement = hasClosestByClassName(
-          blockElement,
-          "protyle-content",
-          true
-        );
+        const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
         if (contentElement) {
-          contentElement.scrollTop =
-            contentElement.scrollTop + cellRect.bottom - avFooterRect.top;
+          contentElement.scrollTop = contentElement.scrollTop + cellRect.bottom - avFooterRect.top;
         }
       }
     } else {
-      const contentElement = hasClosestByClassName(
-        blockElement,
-        "protyle-content",
-        true
-      );
+      const contentElement = hasClosestByClassName(blockElement, "protyle-content", true);
       if (contentElement) {
         const contentRect = contentElement.getBoundingClientRect();
         if (cellRect.bottom > contentRect.bottom) {

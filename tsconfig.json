@@ -3,11 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "Node",
@@ -22,31 +18,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    /* Svelte */
-    /**
-     * Typecheck JS in `.svelte` and `.js` files by default.
-     * Disable checkJs if you'd like to use dynamic types in JS.
-     * Note that setting allowJs false does not prevent the use
-     * of JS in `.svelte` files.
-    */
     "allowJs": true,
     "checkJs": true,
     "types": [
       "node",
       "vite/client",
-      "svelte",
       "vitest/globals",
-      "@testing-library/jest-dom",
-      "./src/types/siyuan.types.ts"
+      "@testing-library/jest-dom"
     ],
     "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/libs/*": [
-        "./src/libs/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/libs/*": ["./src/libs/*"]
     }
   },
   "include": [
@@ -54,8 +37,7 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.svelte"
+    "src/**/*.vue"
   ],
   "references": [
     {

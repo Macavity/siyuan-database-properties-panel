@@ -1,44 +1,37 @@
-import { describe, test, expect, beforeEach, vi } from "vitest";
-import { settingsStore } from "@/stores/localSettingStore";
+import { describe, test, expect, beforeEach, vi, afterEach } from "vitest";
+import { setActivePinia, createPinia } from "pinia";
+import { useLocalSettingStore } from "@/stores/localSettingStore";
 import { storageService } from "@/services/StorageService";
 
 vi.mock("lodash/debounce", () => ({
   default: (fn: Function) => {
-    let lastArgs: any[] | null = null;
     const debouncedFn = (...args: any[]) => {
-      lastArgs = args;
-      // Execute the function with the last set of arguments
-      fn(...lastArgs);
+      fn(...args);
     };
-    // Add cancel method to match lodash's debounce interface
     debouncedFn.cancel = vi.fn();
     return debouncedFn;
   },
 }));
 
-describe("settingsStore", () => {
+describe("localSettingStore", () => {
   const documentId = "test-doc-123";
+  let settingsStore: ReturnType<typeof useLocalSettingStore>;
 
   beforeEach(() => {
     vi.mock("@/services/LoggerService");
-    beforeEach(() => {
-      vi.clearAllMocks();
-      // Reset the store to initial state
-      settingsStore.destroy();
-
-      // Mock the storage service
-      vi.mock("@/services/StorageService", () => ({
-        storageService: {
-          saveSettings: vi.fn(),
-        },
-      }));
-    });
+    vi.mock("@/services/StorageService", () => ({
+      storageService: {
+        saveSettings: vi.fn(),
+      },
+    }));
+    vi.clearAllMocks();
+    setActivePinia(createPinia());
+    settingsStore = useLocalSettingStore();
   });
 
   test("getDocumentSettings returns default values for new document", () => {
     const settings = settingsStore.getDocumentSettings(documentId);
     expect(settings).toEqual({
-      documentId,
       isCollapsed: false,
       lastSelectedAttributeView: null,
     });
@@ -80,24 +73,23 @@ describe("settingsStore", () => {
   });
 });
 
-describe("settingsStore storage integration", () => {
+describe("localSettingStore storage integration", () => {
   const documentId = "test-doc-123";
+  let settingsStore: ReturnType<typeof useLocalSettingStore>;
 
   beforeEach(() => {
-    // Clear all mocks before each test
     vi.clearAllMocks();
-    // Mock the storage service
     vi.mock("@/services/StorageService", () => ({
       storageService: {
         saveSettings: vi.fn(),
       },
     }));
-    // Enable fake timers
     vi.useFakeTimers();
+    setActivePinia(createPinia());
+    settingsStore = useLocalSettingStore();
   });
 
   afterEach(() => {
-    // Restore timers after each test
     vi.useRealTimers();
   });
 
@@ -106,7 +98,6 @@ describe("settingsStore storage integration", () => {
 
     settingsStore.activateTab(documentId, "tab-1");
 
-    // Run all pending timers
     await vi.runAllTimersAsync();
 
     expect(mockSave).toHaveBeenCalledWith(

@@ -4,22 +4,8 @@
   "url": "https://github.com/Macavity/siyuan-database-properties-panel",
   "version": "1.8.0",
   "minAppVersion": "3.0.17",
-  "backends": [
-    "windows",
-    "linux",
-    "darwin",
-    "docker",
-    "ios",
-    "harmony",
-    "android"
-  ],
-  "frontends": [
-    "desktop",
-    "mobile",
-    "browser-desktop",
-    "browser-mobile",
-    "desktop-window"
-  ],
+  "backends": ["windows", "linux", "darwin", "docker", "ios", "harmony", "android"],
+  "frontends": ["desktop", "mobile", "browser-desktop", "browser-mobile", "desktop-window"],
   "displayName": {
     "en_US": "Database Properties Panel",
     "zh_CN": "数据库属性面板"
@@ -37,10 +23,5 @@
     "patreon": "",
     "github": ""
   },
-  "keywords": [
-    "plugin",
-    "database",
-    "properties",
-    "attributes"
-  ]
+  "keywords": ["plugin", "database", "properties", "attributes"]
 }

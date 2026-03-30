@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
+import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
-import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
   resolve: {
@@ -10,7 +9,7 @@ export default defineConfig({
       siyuan: resolve(__dirname, "./test/mocks/siyuan.ts"),
     },
   },
-  plugins: [svelte({ hot: !process.env.VITEST }), svelteTesting()],
+  plugins: [vue()],
   test: {
     globals: true,
     environment: "jsdom",

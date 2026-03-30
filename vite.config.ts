@@ -3,7 +3,7 @@ import { defineConfig /*, loadEnv */ } from "vite";
 import minimist from "minimist";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import livereload from "rollup-plugin-livereload";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
+import vue from "@vitejs/plugin-vue";
 import zipPack from "vite-plugin-zip-pack";
 import fg from "fast-glob";
 import fs from "fs";
@@ -37,11 +37,7 @@ if (isWatch) {
       //监听静态资源文件
       name: "watch-external",
       async buildStart() {
-        const files = await fg([
-          "public/i18n/**",
-          "./README*.md",
-          "./plugin.json",
-        ]);
+        const files = await fg(["public/i18n/**", "./README*.md", "./plugin.json"]);
         for (const file of files) {
           this.addWatchFile(file);
         }
@@ -76,7 +72,7 @@ export default defineConfig({
   },
 
   plugins: [
-    svelte(),
+    vue(),
 
     vitePluginYamlI18n({
       inDir: "public/i18n",
