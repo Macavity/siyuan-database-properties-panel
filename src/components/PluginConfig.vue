@@ -8,7 +8,7 @@ import { STORAGE_NAME } from "@/constants";
 import { LoggerService } from "@/services/LoggerService";
 import { useI18nStore } from "@/stores/i18nStore";
 import DatabaseColumnSettings from "./DatabaseColumnSettings.vue";
-import Icon from "@/components/ui/Icon.vue";
+import Icon from "@/components/ui/SiYuanIcon.vue";
 import type { SiYuanIcon } from "@/types/SiyuanIcon";
 
 const props = defineProps<{

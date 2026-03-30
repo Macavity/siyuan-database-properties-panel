@@ -9,7 +9,7 @@ import LayoutTabBar from "@/components/ui/LayoutTabBar.vue";
 import { useLocalSettingStore } from "@/stores/localSettingStore";
 import { useConfigStore } from "@/stores/configStore";
 import { useDocumentSettingsStore } from "@/stores/documentSettingsStore";
-import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.vue";
+import ShowEmptyAttributesToggle from "@/components/ActionBarShowEmptyToggle.vue";
 import { openEdit } from "@/libs/siyuan/protyle/render/av/blockAttr";
 import { AttributeViewService } from "@/services/AttributeViewService";
 import { usePluginContext } from "@/composables/usePluginContext";

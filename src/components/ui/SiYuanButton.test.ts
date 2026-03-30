@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/vue";
-import Button from "./Button.vue";
+import Button from "./SiYuanButton.vue";
 
 describe("Button", () => {
   it("renders with label", () => {

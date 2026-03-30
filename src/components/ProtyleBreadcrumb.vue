@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useLocalSettingStore } from "@/stores/localSettingStore";
 import { usePluginContext } from "@/composables/usePluginContext";
-import CollapseButton from "@/components/CollapseButton.vue";
+import CollapseButton from "@/components/ActionBarCollapseButton.vue";
 
 defineProps<{
   singleTab: boolean;

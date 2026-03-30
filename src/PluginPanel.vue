@@ -3,7 +3,7 @@ import { ref, computed, provide, onMounted, onUnmounted } from "vue";
 import AttributeViewPanel from "./components/AttributeViewPanel.vue";
 import AttributeViewPanelNative from "./components/AttributeViewPanelNative.vue";
 import ProtyleBreadcrumb from "@/components/ProtyleBreadcrumb.vue";
-import Icon from "@/components/ui/Icon.vue";
+import Icon from "@/components/ui/SiYuanIcon.vue";
 import type { I18N } from "@/types/i18n";
 import type { Protyle } from "siyuan";
 import type { AttributeView } from "@/types/AttributeView";

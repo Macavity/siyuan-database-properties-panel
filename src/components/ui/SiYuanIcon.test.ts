@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/vue";
-import Icon from "./Icon.vue";
+import Icon from "./SiYuanIcon.vue";
 
 describe("Icon", () => {
   it("renders without crashing", () => {

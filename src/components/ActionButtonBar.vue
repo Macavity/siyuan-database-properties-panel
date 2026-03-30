@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import CollapseButton from "@/components/CollapseButton.vue";
-import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.vue";
-import RefreshButton from "@/components/RefreshButton.vue";
+import CollapseButton from "@/components/ActionBarCollapseButton.vue";
+import ShowEmptyAttributesToggle from "@/components/ActionBarShowEmptyToggle.vue";
+import RefreshButton from "@/components/ActionBarRefreshButton.vue";
 
 defineProps<{
   documentId: string;
@@ -12,6 +12,7 @@ defineProps<{
 
 <template>
   <CollapseButton :document-id="documentId" />
+  <!-- Native Siyuan Button Markup -->
   <button data-type="addColumn" class="b3-button b3-button--cancel">
     <svg><use xlink:href="#iconAdd"></use></svg>{{ addColumnLabel }}
   </button>

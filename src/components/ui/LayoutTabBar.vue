@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "@/components/ui/Icon.vue";
+import Icon from "@/components/ui/SiYuanIcon.vue";
 import type { SiYuanIcon } from "@/types/SiyuanIcon";
 
 interface Tab {
