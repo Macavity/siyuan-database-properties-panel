@@ -12,7 +12,7 @@ const props = withDefaults(
     label: null,
     icon: null,
     class: null,
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -21,10 +21,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button
-    :class="['b3-button b3-button--cancel', props.class]"
-    @click="emit('click', $event)"
-  >
+  <button :class="['b3-button b3-button--cancel', props.class]" @click="emit('click', $event)">
     <Icon v-if="props.icon" :icon="props.icon" />
     <template v-if="props.label">{{ props.label }}</template>
   </button>

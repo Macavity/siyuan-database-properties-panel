@@ -18,7 +18,7 @@ const props = withDefaults(
     button: () => ({ label: "", callback: () => {} }),
     fnSize: true,
     style: "",
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -34,22 +34,34 @@ function handleChange(newValue: unknown) {
 <template>
   <template v-if="type === 'checkbox' && typeof modelValue === 'boolean'">
     <input
-      class="b3-switch fn__flex-center"
       :id="settingKey"
+      class="b3-switch fn__flex-center"
       type="checkbox"
       :checked="modelValue as boolean"
       :style="style"
-      @change="($event) => { const checked = ($event.target as HTMLInputElement).checked; emit('update:modelValue', checked); handleChange(checked); }"
+      @change="
+        ($event) => {
+          const checked = ($event.target as HTMLInputElement).checked;
+          emit('update:modelValue', checked);
+          handleChange(checked);
+        }
+      "
     />
   </template>
   <template v-else-if="type === 'textinput'">
     <input
-      :class="['b3-text-field', 'fn__flex-center', { fn__size200: fnSize }]"
       :id="settingKey"
+      :class="['b3-text-field', 'fn__flex-center', { fn__size200: fnSize }]"
       :placeholder="placeholder"
       :value="modelValue"
       :style="style"
-      @change="($event) => { const val = ($event.target as HTMLInputElement).value; emit('update:modelValue', val); handleChange(val); }"
+      @change="
+        ($event) => {
+          const val = ($event.target as HTMLInputElement).value;
+          emit('update:modelValue', val);
+          handleChange(val);
+        }
+      "
     />
   </template>
   <template v-else-if="type === 'textarea'">
@@ -57,23 +69,35 @@ function handleChange(newValue: unknown) {
       class="b3-text-field fn__block"
       :style="`resize: vertical; height: 10em; white-space: nowrap; ${style}`"
       :value="String(modelValue)"
-      @change="($event) => { const val = ($event.target as HTMLTextAreaElement).value; emit('update:modelValue', val); handleChange(val); }"
+      @change="
+        ($event) => {
+          const val = ($event.target as HTMLTextAreaElement).value;
+          emit('update:modelValue', val);
+          handleChange(val);
+        }
+      "
     ></textarea>
   </template>
   <template v-else-if="type === 'number'">
     <input
-      :class="['b3-text-field', 'fn__flex-center', { fn__size200: fnSize }]"
       :id="settingKey"
+      :class="['b3-text-field', 'fn__flex-center', { fn__size200: fnSize }]"
       type="number"
       :value="modelValue"
       :style="style"
-      @change="($event) => { const val = Number(($event.target as HTMLInputElement).value); emit('update:modelValue', val); handleChange(val); }"
+      @change="
+        ($event) => {
+          const val = Number(($event.target as HTMLInputElement).value);
+          emit('update:modelValue', val);
+          handleChange(val);
+        }
+      "
     />
   </template>
   <template v-else-if="type === 'button'">
     <button
-      :class="['b3-button', 'b3-button--outline', 'fn__flex-center', { fn__size200: fnSize }]"
       :id="settingKey"
+      :class="['b3-button', 'b3-button--outline', 'fn__flex-center', { fn__size200: fnSize }]"
       :style="style"
       @click="button?.callback?.()"
     >
@@ -82,27 +106,41 @@ function handleChange(newValue: unknown) {
   </template>
   <template v-else-if="type === 'select'">
     <select
-      :class="['b3-select', 'fn__flex-center', { fn__size200: fnSize }]"
       :id="settingKey"
+      :class="['b3-select', 'fn__flex-center', { fn__size200: fnSize }]"
       :value="modelValue"
       :style="style"
-      @change="($event) => { const val = ($event.target as HTMLSelectElement).value; emit('update:modelValue', val); handleChange(val); }"
+      @change="
+        ($event) => {
+          const val = ($event.target as HTMLSelectElement).value;
+          emit('update:modelValue', val);
+          handleChange(val);
+        }
+      "
     >
-      <option v-for="(text, val) in options" :key="val" :value="val">{{ text }}</option>
+      <option v-for="(text, val) in options" :key="val" :value="val">
+        {{ text }}
+      </option>
     </select>
   </template>
   <template v-else-if="type === 'slider'">
     <div class="b3-tooltips b3-tooltips__n" :aria-label="String(modelValue)">
       <input
-        :class="['b3-slider', { fn__size200: fnSize }]"
         :id="settingKey"
+        :class="['b3-slider', { fn__size200: fnSize }]"
         :min="slider.min"
         :max="slider.max"
         :step="slider.step"
         type="range"
         :value="modelValue"
         :style="style"
-        @change="($event) => { const val = Number(($event.target as HTMLInputElement).value); emit('update:modelValue', val); handleChange(val); }"
+        @change="
+          ($event) => {
+            const val = Number(($event.target as HTMLInputElement).value);
+            emit('update:modelValue', val);
+            handleChange(val);
+          }
+        "
       />
     </div>
   </template>

@@ -5,7 +5,7 @@ withDefaults(
     description: string;
     direction?: "row" | "column";
   }>(),
-  { direction: "column" }
+  { direction: "column" },
 );
 </script>
 

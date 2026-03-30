@@ -22,7 +22,7 @@ const props = withDefaults(
     settingItems: SettingItem[];
     display?: boolean;
   }>(),
-  { display: true }
+  { display: true },
 );
 
 const emit = defineEmits<{

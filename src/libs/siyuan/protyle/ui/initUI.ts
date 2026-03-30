@@ -18,14 +18,11 @@ export const getPadding = (protyle: IProtyle) => {
     }
   }
   if (!isMobile()) {
-    let isFullWidth = protyle.wysiwyg.element.getAttribute(
-      Constants.CUSTOM_SY_FULLWIDTH
-    );
+    let isFullWidth = protyle.wysiwyg.element.getAttribute(Constants.CUSTOM_SY_FULLWIDTH);
     if (!isFullWidth) {
       isFullWidth = window.siyuan.config.editor.fullWidth ? "true" : "false";
     }
-    let padding =
-      (protyle.element.clientWidth - Constants.SIZE_EDITOR_WIDTH) / 2;
+    let padding = (protyle.element.clientWidth - Constants.SIZE_EDITOR_WIDTH) / 2;
     if (isFullWidth === "false" && padding > 96) {
       if (padding > Constants.SIZE_EDITOR_WIDTH) {
         // 超宽屏调整 https://ld246.com/article/1668266637363
@@ -89,8 +86,6 @@ export const setPadding = (protyle: IProtyle) => {
   protyle.wysiwyg.element.setAttribute("data-realwidth", newWidth.toString());
   return {
     width: Math.abs(parseInt(oldWidth) - newWidth),
-    padding: Math.abs(
-      oldLeft - parseInt(protyle.wysiwyg.element.style.paddingLeft)
-    ),
+    padding: Math.abs(oldLeft - parseInt(protyle.wysiwyg.element.style.paddingLeft)),
   };
 };

@@ -8,7 +8,7 @@ const props = withDefaults(
     needSpan?: boolean;
     lazy?: boolean;
   }>(),
-  { className: "", needSpan: false, lazy: false }
+  { className: "", needSpan: false, lazy: false },
 );
 
 const emoji = computed(() => {

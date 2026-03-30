@@ -36,8 +36,6 @@ export function filterAVKeyAndValues(
   return entries;
 }
 
-export function getEmptyAVKeyAndValues(
-  keyValues: AttributeView["keyValues"],
-): AVKeyAndValues[] {
+export function getEmptyAVKeyAndValues(keyValues: AttributeView["keyValues"]): AVKeyAndValues[] {
   return keyValues.filter((item) => isEmpty(item.values[0]));
 }

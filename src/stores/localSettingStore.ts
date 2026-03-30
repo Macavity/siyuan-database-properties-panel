@@ -29,7 +29,7 @@ function getDebouncedSave(documentId: string) {
         } catch (e) {
           logger.error("error on saving settings", e, settings);
         }
-      }, 500)
+      }, 500),
     );
   }
   return debouncedSaveFunctions.get(documentId)!;
@@ -45,10 +45,7 @@ export const useLocalSettingStore = defineStore("localSettings", () => {
     (currentState) => {
       currentState.forEach((settings, documentId) => {
         const previousSettings = previousState.get(documentId);
-        if (
-          !previousSettings ||
-          JSON.stringify(settings) !== JSON.stringify(previousSettings)
-        ) {
+        if (!previousSettings || JSON.stringify(settings) !== JSON.stringify(previousSettings)) {
           const debouncedSave = getDebouncedSave(documentId);
           debouncedSave(settings);
           logger.addBreadcrumb(documentId, "settings changed", {
@@ -59,7 +56,7 @@ export const useLocalSettingStore = defineStore("localSettings", () => {
       });
       previousState = new Map(currentState);
     },
-    { deep: true }
+    { deep: true },
   );
 
   function getDocumentSettings(documentId: string): SettingsState {

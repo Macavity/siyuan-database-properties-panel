@@ -16,7 +16,7 @@ const props = withDefaults(
     isFocused: false,
     tooltip: null,
     class: null,
-  }
+  },
 );
 
 const emit = defineEmits<{

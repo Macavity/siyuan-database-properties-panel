@@ -13,17 +13,13 @@ interface DocumentSettingsMap {
 export const useDocumentSettingsStore = defineStore("documentSettings", () => {
   const settings = reactive<DocumentSettingsMap>({});
 
-  function toggleShowEmptyAttributes(
-    documentId: string,
-    globalShowEmptyAttributes: boolean
-  ) {
+  function toggleShowEmptyAttributes(documentId: string, globalShowEmptyAttributes: boolean) {
     const currentSettings = settings[documentId] || {
       overrideShowEmptyAttributes: null,
     };
     const currentValue = currentSettings.overrideShowEmptyAttributes;
 
-    const newValue =
-      currentValue === null ? !globalShowEmptyAttributes : !currentValue;
+    const newValue = currentValue === null ? !globalShowEmptyAttributes : !currentValue;
 
     logger.debug("toggleShowEmptyAttributes", {
       documentId,
@@ -39,7 +35,7 @@ export const useDocumentSettingsStore = defineStore("documentSettings", () => {
 
   function getEffectiveShowEmptyAttributes(
     documentId: string,
-    globalShowEmptyAttributes: boolean
+    globalShowEmptyAttributes: boolean,
   ): boolean {
     const override = settings[documentId]?.overrideShowEmptyAttributes;
     return override === null || override === undefined ? globalShowEmptyAttributes : override;

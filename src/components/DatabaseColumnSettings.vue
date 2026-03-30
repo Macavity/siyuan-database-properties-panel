@@ -35,10 +35,10 @@ const showOrphanedDatabases = ref(false);
 
 // Derived state
 const filteredDatabases = computed(() =>
-  showOrphanedDatabases.value ? databases.value : databases.value.filter((db) => !db.isOrphaned)
+  showOrphanedDatabases.value ? databases.value : databases.value.filter((db) => !db.isOrphaned),
 );
 const selectedDatabase = computed(() =>
-  databases.value.find((db) => db.id === selectedDatabaseId.value)
+  databases.value.find((db) => db.id === selectedDatabaseId.value),
 );
 const isPrimaryKeyHiddenGlobally = computed(() => !configStore.showPrimaryKey);
 
@@ -83,9 +83,7 @@ async function loadColumns(avId: string) {
 async function toggleColumn(columnId: string, visible: boolean) {
   configStore.setColumnVisibility(selectedDatabaseId.value, columnId, visible);
 
-  columns.value = columns.value.map((col) =>
-    col.id === columnId ? { ...col, visible } : col
-  );
+  columns.value = columns.value.map((col) => (col.id === columnId ? { ...col, visible } : col));
 
   try {
     await props.plugin.saveData(STORAGE_NAME, configStore.getSettingsObject());
@@ -117,22 +115,28 @@ watch(showOrphanedDatabases, (newVal) => {
     <div class="database-selector b3-label">
       <div class="show-orphaned-toggle-row">
         <label>
-          <input type="checkbox" class="b3-switch" v-model="showOrphanedDatabases" />
+          <input v-model="showOrphanedDatabases" type="checkbox" class="b3-switch" />
           Show orphaned databases
         </label>
       </div>
       <div class="database-selector-row">
         <select
-          class="b3-select fn__flex-1"
           v-model="selectedDatabaseId"
+          class="b3-select fn__flex-1"
           :disabled="loadingDatabases"
         >
-          <option v-if="loadingDatabases" value="">{{ i18nStore.strings.columnVisibilityLoading }}</option>
+          <option v-if="loadingDatabases" value="">
+            {{ i18nStore.strings.columnVisibilityLoading }}
+          </option>
           <template v-else-if="filteredDatabases.length === 0">
-            <option value="">{{ i18nStore.strings.columnVisibilityNoDatabases }}</option>
+            <option value="">
+              {{ i18nStore.strings.columnVisibilityNoDatabases }}
+            </option>
           </template>
           <template v-else>
-            <option value="">{{ i18nStore.strings.columnVisibilitySelectDatabase }}</option>
+            <option value="">
+              {{ i18nStore.strings.columnVisibilitySelectDatabase }}
+            </option>
             <option v-for="db in filteredDatabases" :key="db.id" :value="db.id">
               {{ db.isOrphaned ? "⚠️ " : "" }}{{ db.name }}
             </option>
@@ -140,11 +144,13 @@ watch(showOrphanedDatabases, (newVal) => {
         </select>
         <button
           class="b3-button b3-button--outline"
-          @click="loadDatabases()"
           :disabled="loadingDatabases"
           :title="i18nStore.strings.columnVisibilityRefresh"
+          @click="loadDatabases()"
         >
-          <svg class="b3-button__icon"><use xlink:href="#iconRefresh"></use></svg>
+          <svg class="b3-button__icon">
+            <use xlink:href="#iconRefresh"></use>
+          </svg>
         </button>
       </div>
     </div>
@@ -157,7 +163,9 @@ watch(showOrphanedDatabases, (newVal) => {
     </div>
 
     <div v-if="selectedDatabase?.isOrphaned" class="orphaned-warning b3-label">
-      <svg class="orphaned-warning__icon"><use xlink:href="#iconWarning"></use></svg>
+      <svg class="orphaned-warning__icon">
+        <use xlink:href="#iconWarning"></use>
+      </svg>
       <span>{{ i18nStore.strings.columnVisibilityOrphanedWarning }}</span>
     </div>
 
@@ -181,10 +189,16 @@ watch(showOrphanedDatabases, (newVal) => {
             </span>
             <button
               class="column-visibility-toggle"
+              :title="
+                column.visible
+                  ? i18nStore.strings.hideEmptyAttributesToggle
+                  : i18nStore.strings.showEmptyAttributesToggle
+              "
               @click="toggleColumn(column.id, !column.visible)"
-              :title="column.visible ? i18nStore.strings.hideEmptyAttributesToggle : i18nStore.strings.showEmptyAttributesToggle"
             >
-              <svg><use :xlink:href="column.visible ? '#iconEye' : '#iconEyeoff'"></use></svg>
+              <svg>
+                <use :xlink:href="column.visible ? '#iconEye' : '#iconEyeoff'"></use>
+              </svg>
             </button>
           </div>
         </div>

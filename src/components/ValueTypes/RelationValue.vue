@@ -8,7 +8,7 @@ const props = defineProps<{ value: IAVCellValue }>();
 const lastId = computed(() =>
   props.value.relation?.contents?.length
     ? props.value.relation.contents[props.value.relation.contents.length - 1]?.id
-    : null
+    : null,
 );
 </script>
 

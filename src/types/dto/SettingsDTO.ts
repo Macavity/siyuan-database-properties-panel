@@ -12,13 +12,6 @@ export const createDefaultSettingsDTO = (documentId: string) => {
   return new SettingsDTO(documentId, false, null);
 };
 
-export const createFromSettingsStore = (
-  documentId: string,
-  settings: SettingsState,
-) => {
-  return new SettingsDTO(
-    documentId,
-    settings.isCollapsed,
-    settings.lastSelectedAttributeView,
-  );
+export const createFromSettingsStore = (documentId: string, settings: SettingsState) => {
+  return new SettingsDTO(documentId, settings.isCollapsed, settings.lastSelectedAttributeView);
 };

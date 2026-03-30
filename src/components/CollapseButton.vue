@@ -12,9 +12,7 @@ const props = defineProps<{
 const settingsStore = useLocalSettingStore();
 const i18nStore = useI18nStore();
 
-const isCollapsed = computed(
-  () => settingsStore.getDocumentSettings(props.documentId).isCollapsed,
-);
+const isCollapsed = computed(() => settingsStore.getDocumentSettings(props.documentId).isCollapsed);
 const icon = computed<SiYuanIcon>(() => (isCollapsed.value ? "iconExpand" : "iconContract"));
 const label = computed(() => (isCollapsed.value ? "" : i18nStore.strings.collapse));
 

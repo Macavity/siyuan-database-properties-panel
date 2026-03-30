@@ -3,11 +3,13 @@ import tseslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
 import vueParser from "vue-eslint-parser";
 import js from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs["flat/recommended"],
+  eslintConfigPrettier,
   {
     files: ["src/**/*.vue"],
     languageOptions: {
@@ -20,6 +22,12 @@ export default [
     },
     rules: {
       "vue/multi-word-component-names": "off",
+    },
+  },
+  {
+    files: ["src/**/*.{js,ts}"],
+    rules: {
+      "vue/one-component-per-file": "off",
     },
   },
   {

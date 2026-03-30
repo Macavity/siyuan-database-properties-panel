@@ -18,14 +18,14 @@ const globalShowEmptyAttributes = computed(() => configStore.showEmptyAttributes
 const effectiveShowEmptyAttributes = computed(() =>
   documentSettingsStore.getEffectiveShowEmptyAttributes(
     props.documentId,
-    globalShowEmptyAttributes.value
-  )
+    globalShowEmptyAttributes.value,
+  ),
 );
 
 function toggleShowEmptyAttributes(event: MouseEvent) {
   documentSettingsStore.toggleShowEmptyAttributes(
     props.documentId,
-    globalShowEmptyAttributes.value
+    globalShowEmptyAttributes.value,
   );
   (event.currentTarget as HTMLButtonElement).blur();
 }
@@ -34,9 +34,11 @@ function toggleShowEmptyAttributes(event: MouseEvent) {
 <template>
   <ActionButton
     :icon="effectiveShowEmptyAttributes ? 'iconEyeoff' : 'iconEye'"
-    :label="effectiveShowEmptyAttributes
-      ? i18nStore.strings.hideEmptyAttributesToggle
-      : i18nStore.strings.showEmptyAttributesToggle"
+    :label="
+      effectiveShowEmptyAttributes
+        ? i18nStore.strings.hideEmptyAttributesToggle
+        : i18nStore.strings.showEmptyAttributesToggle
+    "
     class="dpp-empty-attributes-toggle"
     @click="toggleShowEmptyAttributes"
   />

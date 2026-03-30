@@ -9,10 +9,7 @@ export function getStoragePath(path: string) {
 }
 
 function isApiError(data: SettingsDTO | ApiError): data is ApiError {
-  return (
-    (data as ApiError).code !== undefined &&
-    (data as ApiError).msg !== undefined
-  );
+  return (data as ApiError).code !== undefined && (data as ApiError).msg !== undefined;
 }
 
 export class StorageService {
@@ -28,17 +25,11 @@ export class StorageService {
         }
 
         if (data.documentId !== documentId) {
-          this.logger.error(
-            `Invalid documentId ${data.documentId}, expected ${documentId}.`
-          );
+          this.logger.error(`Invalid documentId ${data.documentId}, expected ${documentId}.`);
           return createDefaultSettingsDTO(documentId);
         }
 
-        return new SettingsDTO(
-          documentId,
-          data.isCollapsed,
-          data.lastSelectedAttributeView,
-        );
+        return new SettingsDTO(documentId, data.isCollapsed, data.lastSelectedAttributeView);
       })
       .catch((e) => {
         this.logger.error("Error retrieving settings", e);
@@ -56,7 +47,7 @@ export class StorageService {
           type: "application/json",
         }),
       ],
-      `${settings.documentId}.json`
+      `${settings.documentId}.json`,
     );
     return putFile(getStoragePath(settings.documentId), false, file);
   }

@@ -28,7 +28,7 @@ const globalShowEmptyAttributes = computed(() => configStore.showEmptyAttributes
 const globalShowPrimaryKey = computed(() => configStore.showPrimaryKey);
 const alignPropertiesLeft = computed(() => configStore.alignPropertiesLeft);
 const effectiveShowEmptyAttributes = computed(() =>
-  documentSettingsStore.getEffectiveShowEmptyAttributes(blockId, globalShowEmptyAttributes.value)
+  documentSettingsStore.getEffectiveShowEmptyAttributes(blockId, globalShowEmptyAttributes.value),
 );
 
 const currentSettings = computed(() => settingsStore.getDocumentSettings(blockId));
@@ -53,11 +53,11 @@ watch(
         effectiveShowEmptyAttributes.value,
         alignPropertiesLeft.value,
         props.onrefresh,
-        isColumnVisible
+        isColumnVisible,
       );
     }
   },
-  { flush: "post" }
+  { flush: "post" },
 );
 
 // Watch for avData changes to re-render (deep: true to catch in-place mutations)
@@ -69,7 +69,7 @@ watch(
       renderProtyleAv();
     }
   },
-  { deep: true }
+  { deep: true },
 );
 
 onMounted(() => {
@@ -96,10 +96,10 @@ function activateTab(tabFocus: string) {
   if (!element.value) return;
   logger.addBreadcrumb(blockId, "activateTab: " + LoggerService.getReadableName(tabFocus));
   const targetTab = element.value.querySelectorAll(
-    `[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`
+    `[data-type="NodeAttributeView"][data-av-id="${tabFocus}"]`,
   );
   const remainingTabs = element.value.querySelectorAll(
-    `[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`
+    `[data-type="NodeAttributeView"]:not([data-av-id="${tabFocus}"])`,
   );
   if (!targetTab.length) {
     logger.info("showContent: No target tab found");
@@ -131,7 +131,7 @@ function renderProtyleAv() {
       effectiveShowEmptyAttributes.value,
       alignPropertiesLeft.value,
       props.onrefresh,
-      isColumnVisible
+      isColumnVisible,
     );
 
     if (!settingsStore.isAnyTabActive(blockId)) {
@@ -144,7 +144,8 @@ function renderProtyleAv() {
     }
 
     AttributeViewService.removeDataRenderingFromNodeAttributeViews(renderedElement);
-    cleanupDataRenderingObserver = AttributeViewService.watchAndRemoveDataRendering(renderedElement);
+    cleanupDataRenderingObserver =
+      AttributeViewService.watchAndRemoveDataRendering(renderedElement);
   });
 }
 </script>
@@ -157,6 +158,10 @@ function renderProtyleAv() {
       :focus="currentSettings.lastSelectedAttributeView"
       @click="showContent"
     />
-    <div ref="element" class="dpp-av-panel custom-attr dpp-av-panel--native" data-type="NodeBlockQueryEmbed"></div>
+    <div
+      ref="element"
+      class="dpp-av-panel custom-attr dpp-av-panel--native"
+      data-type="NodeBlockQueryEmbed"
+    ></div>
   </div>
 </template>

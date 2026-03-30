@@ -21,7 +21,7 @@ const props = withDefaults(
     rowID?: string;
     allowEditing?: boolean;
   }>(),
-  { avID: "", keyID: "", rowID: "", allowEditing: false }
+  { avID: "", keyID: "", rowID: "", allowEditing: false },
 );
 
 const saveText = async (newContent: string) => {

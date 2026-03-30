@@ -28,14 +28,10 @@ export class AttributeViewService {
     }));
   }
 
-  static handlePrimaryKey(
-    element: HTMLElement,
-    blockId: string,
-    showPrimaryKey: boolean
-  ) {
+  static handlePrimaryKey(element: HTMLElement, blockId: string, showPrimaryKey: boolean) {
     // logger.debug("handlePrimaryKey");
     const primaryKeyValueField = element.querySelectorAll(
-      `[data-node-id='${blockId}'] [data-type='block']`
+      `[data-node-id='${blockId}'] [data-type='block']`,
     );
     primaryKeyValueField.forEach((field) => {
       const fieldElement = field as HTMLElement;
@@ -57,20 +53,20 @@ export class AttributeViewService {
     showEmptyAttributes: boolean,
     alignPropertiesLeft: boolean = false,
     onRefresh?: () => void,
-    isColumnVisible?: (avId: string, colId: string) => boolean
+    isColumnVisible?: (avId: string, colId: string) => boolean,
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
     AttributeViewService.handlePrimaryKey(element, blockId, showPrimaryKey);
 
-    AttributeViewService.handleEmptyAttributes(
+    AttributeViewService.handleEmptyAttributes(element, blockId, avData, showEmptyAttributes);
+
+    AttributeViewService.handleHiddenColumns(
       element,
       blockId,
       avData,
-      showEmptyAttributes
+      isColumnVisible ?? (() => true),
     );
-
-    AttributeViewService.handleHiddenColumns(element, blockId, avData, isColumnVisible ?? (() => true));
     AttributeViewService.addActionButtons(element, blockId, onRefresh);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
@@ -82,15 +78,13 @@ export class AttributeViewService {
     element: HTMLElement,
     blockId: string,
     avData: AttributeView[],
-    isColumnVisible: (avId: string, colId: string) => boolean
+    isColumnVisible: (avId: string, colId: string) => boolean,
   ) {
     avData.forEach((table) => {
       table.keyValues.forEach((item) => {
         if (!isColumnVisible(table.avID, item.key.id)) {
           element
-            .querySelectorAll(
-              `[data-id='${blockId}'][data-col-id='${item.key.id}']`
-            )
+            .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.key.id}']`)
             .forEach((field) => {
               field.classList.add("dpp-av-panel--hidden");
             });
@@ -103,15 +97,13 @@ export class AttributeViewService {
     element: HTMLElement,
     blockId: string,
     avData: AttributeView[],
-    showEmptyAttributes: boolean
+    showEmptyAttributes: boolean,
   ) {
     avData.forEach((table) => {
       const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
       emptyKeyAndValues.forEach((item) => {
         element
-          .querySelectorAll(
-            `[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`
-          )
+          .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`)
           .forEach((field) => {
             if (showEmptyAttributes) {
               field.classList.remove("dpp-av-col--empty");
@@ -144,11 +136,9 @@ export class AttributeViewService {
    * within .dpp-av-panel containers.
    */
   static removeDataRenderingFromNodeAttributeViews(element: Element) {
-    element
-      .querySelectorAll("[data-type='NodeAttributeView']")
-      .forEach((node) => {
-        (node as HTMLElement).removeAttribute("data-rendering");
-      });
+    element.querySelectorAll("[data-type='NodeAttributeView']").forEach((node) => {
+      (node as HTMLElement).removeAttribute("data-rendering");
+    });
   }
 
   /**
@@ -158,10 +148,7 @@ export class AttributeViewService {
   static watchAndRemoveDataRendering(element: Element): () => void {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-rendering"
-        ) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-rendering") {
           const target = mutation.target as HTMLElement;
           // Only process NodeAttributeView elements
           if (
@@ -207,7 +194,7 @@ export class AttributeViewService {
   static removeDuplicateHrElements(element: HTMLElement) {
     const nodeAttrViews = element.querySelectorAll('[data-type="NodeAttributeView"]');
     nodeAttrViews.forEach((nodeAttrView) => {
-      const hrElements = nodeAttrView.querySelectorAll('.fn__hr--b');
+      const hrElements = nodeAttrView.querySelectorAll(".fn__hr--b");
       if (hrElements.length >= 2) {
         hrElements[hrElements.length - 1].remove();
       }
@@ -219,26 +206,26 @@ export class AttributeViewService {
    */
   static handleAlignPropertiesLeft(element: HTMLElement, alignPropertiesLeft: boolean) {
     // Handle av__row elements
-    const rows = element.querySelectorAll('.av__row');
+    const rows = element.querySelectorAll(".av__row");
     rows.forEach((row) => {
       if (alignPropertiesLeft) {
-        row.classList.add('av-panel-row--align-left');
+        row.classList.add("av-panel-row--align-left");
       } else {
-        row.classList.remove('av-panel-row--align-left');
+        row.classList.remove("av-panel-row--align-left");
       }
     });
 
     // Handle layout-tab-bar-wrapper padding - look in parent plugin-panel
-    const pluginPanel = element.closest('.plugin-panel');
+    const pluginPanel = element.closest(".plugin-panel");
     if (pluginPanel) {
-      const tabBarWrapper = pluginPanel.querySelector('.layout-tab-bar-wrapper') as HTMLElement;
+      const tabBarWrapper = pluginPanel.querySelector(".layout-tab-bar-wrapper") as HTMLElement;
       if (tabBarWrapper) {
         if (alignPropertiesLeft) {
-          tabBarWrapper.style.paddingLeft = '0';
-          tabBarWrapper.style.paddingRight = '0';
+          tabBarWrapper.style.paddingLeft = "0";
+          tabBarWrapper.style.paddingRight = "0";
         } else {
-          tabBarWrapper.style.paddingLeft = '';
-          tabBarWrapper.style.paddingRight = '';
+          tabBarWrapper.style.paddingLeft = "";
+          tabBarWrapper.style.paddingRight = "";
         }
       }
     }
@@ -256,11 +243,7 @@ export class AttributeViewService {
    * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
    * RefreshButton receives its callback via prop if provided, otherwise falls back to context.
    */
-  static addActionButtons(
-    container: HTMLElement,
-    documentId: string,
-    onRefresh?: () => void
-  ) {
+  static addActionButtons(container: HTMLElement, documentId: string, onRefresh?: () => void) {
     // Clean up existing Vue app instances
     AttributeViewService.actionButtonApps.forEach((app) => app.unmount());
     AttributeViewService.actionButtonApps = [];

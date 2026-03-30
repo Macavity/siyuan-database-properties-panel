@@ -100,7 +100,10 @@ describe("PluginPanel", () => {
 
     // Set collapsed state after render
     const store = useLocalSettingStore();
-    store.state.set("test-block-id", { isCollapsed: true, lastSelectedAttributeView: null });
+    store.state.set("test-block-id", {
+      isCollapsed: true,
+      lastSelectedAttributeView: null,
+    });
 
     // The attribute-view-panel div is not present when collapsed (template v-if="!isCollapsed")
     // Since we're checking for class .attribute-view-panel which isn't part of the mock,

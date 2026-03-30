@@ -21,9 +21,11 @@ bun run make-link-win # Create dev symlink (Windows)
 ## Architecture
 
 ### Entry Point & Plugin Lifecycle
+
 - `src/index.ts` - Main plugin class extending SiYuan's `Plugin`. Handles lifecycle, settings, and protyle event listeners (LOADED_PROTYLE, switch). Dynamically mounts the Svelte panel.
 
 ### Component Hierarchy
+
 ```
 PluginPanel.svelte              # Root - context setup, layout, collapse state
 ├── AttributeViewPanel.svelte   # Read-only properties display
@@ -32,17 +34,20 @@ PluginPanel.svelte              # Root - context setup, layout, collapse state
 ```
 
 ### State Management
+
 - `src/stores/configStore.ts` - Plugin configuration (showPrimaryKey, showEmptyAttributes, etc.)
 - `src/stores/localSettingStore.ts` - Per-document tab/collapse state
 - `src/stores/i18nStore.ts` - Internationalization strings
 - Uses Svelte context API for passing data to child components
 
 ### Services
+
 - `src/services/LoggerService.ts` - Structured logging with levels, Sentry integration
 - `src/services/AttributeViewService.ts` - AV data fetching/processing, DOM manipulation for both panel variants
 - `src/services/StorageService.ts` - Plugin storage management
 
 ### Important Patterns
+
 - **Shared panel logic:** Any logic duplicated between `AttributeViewPanel.svelte` and `AttributeViewPanelNative.svelte` should be extracted to `AttributeViewService.ts`
 - **Global styles:** Plugin-wide CSS classes go in `src/index.scss` (e.g., `.av-panel-row--align-left`, `.dpp-av-panel--hidden`)
 - **Adding settings:** New plugin settings require updates to:
@@ -51,13 +56,14 @@ PluginPanel.svelte              # Root - context setup, layout, collapse state
   3. `src/components/PluginConfig.svelte` - Add to appropriate settings group
 
 ### API
+
 - `src/api.ts` - SiYuan API wrapper around `fetchSyncPost`/`fetchPost`
 
 ## Svelte 5 Conventions (Critical)
 
-* Use Svelte 5 runes exclusively - no legacy syntax:
-* Events: Use native HTML attributes (`onclick`, `onkeydown`), NOT `on:click`.
-* Component mounting: Use `mount()` from 'svelte' for dynamic mounting.
+- Use Svelte 5 runes exclusively - no legacy syntax:
+- Events: Use native HTML attributes (`onclick`, `onkeydown`), NOT `on:click`.
+- Component mounting: Use `mount()` from 'svelte' for dynamic mounting.
 
 ## Coding Patterns
 
@@ -91,6 +97,7 @@ Use **Conventional Commits** with **gitmoji** prefixes:
 ```
 
 Common gitmoji:
+
 - ✨ `feat` — new feature
 - 🐛 `fix` — bug fix
 - ♻️ `refactor` — code restructuring

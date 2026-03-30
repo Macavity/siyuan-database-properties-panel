@@ -21,7 +21,7 @@ const props = withDefaults(
     protyle: Protyle;
     blockId: string;
   }>(),
-  { allowEditing: false, avData: () => [] }
+  { allowEditing: false, avData: () => [] },
 );
 
 const settingsStore = useLocalSettingStore();
@@ -57,7 +57,11 @@ const openAvPanel = (avId: string) => {
 
 // Handle custom event from plugin when AV data changes via transaction
 const handleAvDataChanged = (event: Event) => {
-  const customEvent = event as CustomEvent<{ rowID: string; avID: string; keyID: string }>;
+  const customEvent = event as CustomEvent<{
+    rowID: string;
+    avID: string;
+    keyID: string;
+  }>;
   // Only refresh if this event is for our block
   if (customEvent.detail.rowID === props.blockId) {
     Logger.debug("Received dpp-av-data-changed for our blockId, refreshing");

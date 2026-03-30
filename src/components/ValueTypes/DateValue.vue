@@ -7,9 +7,7 @@ const props = defineProps<{ value: IAVCellValue }>();
 
 const content = computed(() => {
   const v = props.value[props.value.type];
-  return v?.content
-    ? dayjs(v.content).format(v.isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm")
-    : "";
+  return v?.content ? dayjs(v.content).format(v.isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm") : "";
 });
 </script>
 
@@ -20,7 +18,11 @@ const content = computed(() => {
         {{ content }}
         <template v-if="value[value.type].hasEndDate && value[value.type].isNotEmpty2">
           <svg class="av__cellicon"><use xlink:href="#iconForward"></use></svg>
-          {{ dayjs(value[value.type].content2).format(value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm") }}
+          {{
+            dayjs(value[value.type].content2).format(
+              value[value.type].isNotTime ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm",
+            )
+          }}
         </template>
       </template>
     </template>

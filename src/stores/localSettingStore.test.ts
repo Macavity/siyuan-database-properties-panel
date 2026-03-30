@@ -105,7 +105,7 @@ describe("localSettingStore storage integration", () => {
         documentId,
         lastSelectedAttributeView: "tab-1",
         isCollapsed: false,
-      })
+      }),
     );
   });
 });

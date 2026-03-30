@@ -37,11 +37,7 @@ if (isWatch) {
       //监听静态资源文件
       name: "watch-external",
       async buildStart() {
-        const files = await fg([
-          "public/i18n/**",
-          "./README*.md",
-          "./plugin.json",
-        ]);
+        const files = await fg(["public/i18n/**", "./README*.md", "./plugin.json"]);
         for (const file of files) {
           this.addWatchFile(file);
         }

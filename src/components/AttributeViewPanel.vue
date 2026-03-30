@@ -20,7 +20,7 @@ const props = withDefaults(
     enableDragAndDrop?: boolean;
     allowEditing?: boolean;
   }>(),
-  { enableDragAndDrop: false, allowEditing: false }
+  { enableDragAndDrop: false, allowEditing: false },
 );
 
 const panelElement = ref<HTMLDivElement | null>(null);
@@ -36,15 +36,24 @@ const globalShowEmptyAttributes = computed(() => configStore.showEmptyAttributes
 const globalShowPrimaryKey = computed(() => configStore.showPrimaryKey);
 const alignPropertiesLeft = computed(() => configStore.alignPropertiesLeft);
 const effectiveShowEmptyAttributes = computed(() =>
-  documentSettingsStore.getEffectiveShowEmptyAttributes(blockId, globalShowEmptyAttributes.value)
+  documentSettingsStore.getEffectiveShowEmptyAttributes(blockId, globalShowEmptyAttributes.value),
 );
 
 const currentSettings = computed(() => settingsStore.getDocumentSettings(blockId));
-const activeAvId = computed(() => currentSettings.value.lastSelectedAttributeView || props.avData[0]?.avID);
-const activeTable = computed(() => props.avData.find((t) => t.avID === activeAvId.value) || props.avData[0]);
+const activeAvId = computed(
+  () => currentSettings.value.lastSelectedAttributeView || props.avData[0]?.avID,
+);
+const activeTable = computed(
+  () => props.avData.find((t) => t.avID === activeAvId.value) || props.avData[0],
+);
 
 function getFilteredKeyValues(keyValues: AttributeView["keyValues"], avId: string) {
-  return filterAVKeyAndValues(keyValues, globalShowPrimaryKey.value, effectiveShowEmptyAttributes.value, avId);
+  return filterAVKeyAndValues(
+    keyValues,
+    globalShowPrimaryKey.value,
+    effectiveShowEmptyAttributes.value,
+    avId,
+  );
 }
 
 function showContent(tabFocus: string) {
@@ -97,7 +106,14 @@ function handleValueClick(event: MouseEvent) {
             :class="[
               'fn__flex-1 fn__flex',
               {
-                'custom-attr__avvalue': !['url', 'text', 'number', 'email', 'phone', 'block'].includes(item.values[0].type),
+                'custom-attr__avvalue': ![
+                  'url',
+                  'text',
+                  'number',
+                  'email',
+                  'phone',
+                  'block',
+                ].includes(item.values[0].type),
               },
             ]"
             role="button"

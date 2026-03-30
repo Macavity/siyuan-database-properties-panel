@@ -18,7 +18,7 @@ const props = defineProps<{
 const logger = new LoggerService("PluginConfig");
 const configStore = useConfigStore();
 const i18nStore = useI18nStore();
-const pluginVersion = (process as NodeJS.Process & { env: Record<string, string | undefined> }).env?.PLUGIN_VERSION ?? "unknown";
+const pluginVersion = process.env.PLUGIN_VERSION ?? "unknown";
 
 // Debug panel state
 const logsText = ref("");
@@ -155,7 +155,7 @@ const debugItems = computed(() => {
 
 // Dynamic logs description based on current buffer size
 const logsDesc = computed(() =>
-  i18nStore.strings.debugLogsDesc?.replace("{count}", String(LoggerService.getMaxLogs()))
+  i18nStore.strings.debugLogsDesc?.replace("{count}", String(LoggerService.getMaxLogs())),
 );
 
 const onSettingChange = async (_group: string, key: string, value: unknown) => {
@@ -170,7 +170,6 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
     showMessage("Failed to save settings");
   }
 };
-
 </script>
 
 <template>
@@ -182,7 +181,11 @@ const onSettingChange = async (_group: string, key: string, value: unknown) => {
         data-name="editor"
         :class="['b3-list-item', { 'b3-list-item--focus': group === focusGroup }]"
         @click="focusGroup = group"
-        @keydown="(e) => { if (e.key === 'Enter') focusGroup = group; }"
+        @keydown="
+          (e) => {
+            if (e.key === 'Enter') focusGroup = group;
+          }
+        "
       >
         <span class="b3-list-item__text">{{ group }}</span>
         <span class="b3-list-item__action"><Icon :icon="groupIcons[group]" /></span>
