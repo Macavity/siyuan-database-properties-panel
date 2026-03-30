@@ -25,12 +25,6 @@ export default [
     },
   },
   {
-    files: ["src/**/*.{js,ts}"],
-    rules: {
-      "vue/one-component-per-file": "off",
-    },
-  },
-  {
     files: ["src/**/*.{js,ts,vue}"],
     languageOptions: {
       globals: {

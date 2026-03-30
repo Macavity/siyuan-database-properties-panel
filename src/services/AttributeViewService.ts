@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 import { createApp, type App } from "vue";
 import { AttributeView } from "@/types/AttributeView";
 import { LoggerService } from "./LoggerService";
