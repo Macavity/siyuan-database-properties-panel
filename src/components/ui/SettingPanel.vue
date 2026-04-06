@@ -53,7 +53,6 @@ function handleValueChange(key: string, value: unknown) {
         :options="item.options"
         :slider="item.slider"
         :button="item.button"
-        @update:model-value="(val) => (item.value = val)"
         @value-change="handleValueChange"
       />
     </FormWrap>

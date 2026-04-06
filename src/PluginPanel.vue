@@ -86,13 +86,14 @@ const showBottomSeparator = computed(() => configStore.showBottomSeparator);
   <div class="plugin-panel">
     <ProtyleBreadcrumb :single-tab="avData.length === 1">
       <span
-        v-for="(av, i) in avData"
+        v-for="av in avData"
         :key="av.avID"
         class="protyle-breadcrumb__item"
         role="button"
-        :tabindex="i"
+        tabindex="0"
         @click="openAvPanel(av.avID)"
-        @keydown="openAvPanel(av.avID)"
+        @keydown.enter.prevent="openAvPanel(av.avID)"
+        @keydown.space.prevent="openAvPanel(av.avID)"
       >
         <Icon icon="iconDatabase" />
         <span class="protyle-breadcrumb__text">{{ av.avName }}</span>

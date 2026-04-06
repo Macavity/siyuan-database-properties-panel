@@ -41,7 +41,6 @@ function handleClick(event: Event) {
     ]"
     :aria-label="props.tooltip"
     @click="handleClick"
-    @keydown="handleClick"
   >
     <Icon v-if="props.icon" :icon="props.icon" />
     <span v-if="props.label" class="item__text">{{ props.label }}</span>
