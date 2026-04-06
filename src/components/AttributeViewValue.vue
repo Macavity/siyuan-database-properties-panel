@@ -16,55 +16,55 @@ const labelOpenBy = computed(() => window.siyuan?.languages?.openBy ?? "");
 const props = withDefaults(
   defineProps<{
     value: IAVCellValue;
-    avID?: string;
-    keyID?: string;
-    rowID?: string;
+    avId?: string;
+    keyId?: string;
+    rowId?: string;
     allowEditing?: boolean;
   }>(),
-  { avID: "", keyID: "", rowID: "", allowEditing: false },
+  { avId: "", keyId: "", rowId: "", allowEditing: false },
 );
 
 const saveText = async (newContent: string) => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  if (!props.avId || !props.keyId || !props.rowId) return;
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     text: { content: newContent },
   });
 };
 
 const saveNumber = async (newContent: number | string) => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
+  if (!props.avId || !props.keyId || !props.rowId) return;
   const numValue = typeof newContent === "string" ? parseFloat(newContent) : newContent;
   const isNotEmpty = !isNaN(numValue) && newContent !== "";
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     number: { content: isNotEmpty ? numValue : 0, isNotEmpty },
   });
 };
 
 const saveUrl = async (newContent: string) => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  if (!props.avId || !props.keyId || !props.rowId) return;
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     url: { content: newContent },
   });
 };
 
 const savePhone = async (newContent: string) => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  if (!props.avId || !props.keyId || !props.rowId) return;
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     phone: { content: newContent },
   });
 };
 
 const saveEmail = async (newContent: string) => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  if (!props.avId || !props.keyId || !props.rowId) return;
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     email: { content: newContent },
   });
 };
 
 const toggleCheckbox = async () => {
-  if (!props.avID || !props.keyID || !props.rowID) return;
+  if (!props.avId || !props.keyId || !props.rowId) return;
   const newChecked = !props.value.checkbox.checked;
-  await setAttributeViewBlockAttr(props.avID, props.keyID, props.rowID, {
+  await setAttributeViewBlockAttr(props.avId, props.keyId, props.rowId, {
     checkbox: { checked: newChecked },
   });
   // Note: parent should refresh avData to reflect the new checked state

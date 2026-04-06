@@ -123,9 +123,9 @@ function handleValueClick(event: MouseEvent) {
           >
             <AttributeViewValue
               :value="item.values[0]"
-              :av-i-d="activeTable.avID"
-              :key-i-d="item.key.id"
-              :row-i-d="item.values[0].blockID"
+              :av-id="activeTable.avID"
+              :key-id="item.key.id"
+              :row-id="item.values[0].blockID"
               :allow-editing="allowEditing"
             />
           </div>
