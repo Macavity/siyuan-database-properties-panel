@@ -353,6 +353,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     tabDiv.className = PANEL_PARENT_CLASS;
     tabDiv.setAttribute("data-block-id", blockId);
     tabDiv.setAttribute("data-protyle-id", protyleId);
+    tabDiv.setAttribute("data-testid", "database-properties-panel");
     const padding = getPadding(openProtyle);
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 

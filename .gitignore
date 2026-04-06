@@ -9,3 +9,5 @@ dist
 build
 tmp
 .env
+test-results/.last-run.json
+test-results
