@@ -198,8 +198,8 @@ export default class DatabasePropertiesPanel extends Plugin {
     this.renderPanel(event.detail.protyle);
   }
 
-  private getProtyleTopNode(nodeId) {
-    const titleNode = document.querySelector(`div[data-node-id="${nodeId}"].protyle-title`);
+  private getProtyleTopNode(nodeId: string, protyleElement: HTMLElement) {
+    const titleNode = protyleElement.querySelector(`div[data-node-id="${nodeId}"].protyle-title`);
 
     if (!titleNode) {
       this.logger.debug("No title node found, hide panel", { nodeId });
@@ -235,10 +235,14 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     const blockId = openProtyle.block.rootID;
+    const protyleId = openProtyle.id;
+    const protyleElement = openProtyle.element;
     const configStore = useConfigStore(pinia);
 
-    // Find the title node first (even if no DB properties)
-    const titleNode = document.querySelector(`div[data-node-id="${blockId}"].protyle-title`);
+    // Find the title node within THIS protyle's element (not globally)
+    const titleNode = protyleElement.querySelector(
+      `div[data-node-id="${blockId}"].protyle-title`,
+    );
 
     // Clean up any existing panels in this protyle's container FIRST
     // This ensures panels from previous documents are removed even if we return early
@@ -254,10 +258,10 @@ export default class DatabasePropertiesPanel extends Plugin {
             panelBlockId: panel.getAttribute("data-block-id"),
             currentBlockId: blockId,
           });
-          const panelBlockId = panel.getAttribute("data-block-id");
-          if (panelBlockId && this.panelApps.has(panelBlockId)) {
-            this.panelApps.get(panelBlockId)!.unmount();
-            this.panelApps.delete(panelBlockId);
+          const panelProtyleId = panel.getAttribute("data-protyle-id");
+          if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
+            this.panelApps.get(panelProtyleId)!.unmount();
+            this.panelApps.delete(panelProtyleId);
           }
           panel.remove();
         });
@@ -265,14 +269,14 @@ export default class DatabasePropertiesPanel extends Plugin {
     }
 
     // Now check if we should render a panel (needs DB properties)
-    const topNode = this.getProtyleTopNode(blockId);
+    const topNode = this.getProtyleTopNode(blockId, protyleElement);
     if (!topNode) {
       this.enableErrorReporting = false;
       this.logger.debug("=> no top node, hide panel");
       return;
     }
 
-    const editor = getAllEditor().find((editor) => editor.protyle.id === openProtyle.id);
+    const editor = getAllEditor().find((editor) => editor.protyle.id === protyleId);
     if (!editor) {
       this.enableErrorReporting = false;
       this.logger.error("=> editor not found");
@@ -330,20 +334,19 @@ export default class DatabasePropertiesPanel extends Plugin {
       LoggerService.registerDocumentId(av.avID, av.avName);
     });
 
-    // Only remove panels that match the current blockId
-    const existingPanels = document.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
+    // Only remove panels within this specific protyle
+    const existingPanels = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
     existingPanels.forEach((panel) => {
-      if (panel.getAttribute("data-block-id") === blockId) {
-        this.logger.debug("renderPanel remove previous panel for blockId", {
-          blockId,
-        });
-        const existingApp = this.panelApps.get(blockId);
-        if (existingApp) {
-          existingApp.unmount();
-          this.panelApps.delete(blockId);
-        }
-        panel.remove();
+      this.logger.debug("renderPanel remove previous panel in protyle", {
+        blockId,
+        protyleId,
+      });
+      const panelProtyleId = panel.getAttribute("data-protyle-id");
+      if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
+        this.panelApps.get(panelProtyleId)!.unmount();
+        this.panelApps.delete(panelProtyleId);
       }
+      panel.remove();
     });
 
     this.initErrorReporting(avData, supportsEditing);
@@ -351,6 +354,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     const tabDiv = document.createElement(`div`);
     tabDiv.className = PANEL_PARENT_CLASS;
     tabDiv.setAttribute("data-block-id", blockId);
+    tabDiv.setAttribute("data-protyle-id", protyleId);
     const padding = getPadding(openProtyle);
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 
@@ -365,7 +369,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     });
     app.use(pinia);
     app.mount(tabDiv);
-    this.panelApps.set(blockId, app);
+    this.panelApps.set(protyleId, app);
 
     topNode.after(tabDiv);
   }
