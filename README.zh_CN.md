@@ -10,10 +10,9 @@
 
 ## 最近更改
 
-### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
+### [1.8.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.1)
 
-- 🇨🇳 添加"在间隔重复中隐藏"设置，防止属性面板在复习闪卡时剧透答案（默认启用）([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))
-- 🇨🇳 修复列可见性设置不显示看板和卡片视图数据库的列的问题 ([#89](https://github.com/Macavity/siyuan-database-properties-panel/issues/89))
+- 🇨🇳 修复当同一文档已在标签页中打开时，浮动窗口中不显示属性面板的问题
 
 ## 功能
 

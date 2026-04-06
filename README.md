@@ -11,10 +11,9 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
+### [1.8.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.1)
 
-- 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default) ([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))
-- 🇺🇸 Fix column visibility settings not showing columns for kanban and card view databases ([#89](https://github.com/Macavity/siyuan-database-properties-panel/issues/89))
+- 🇺🇸 Fix properties panel not appearing in floating windows when the same document is already open in a tab
 
 ## Features
 
