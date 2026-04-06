@@ -2,6 +2,15 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.9.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.1)
+
+- 🇺🇸 Fix stale properties panel showing in search preview when switching between results
+- 🇺🇸 Improve keyboard accessibility for tab bar and action buttons
+- 🇺🇸 Add Playwright e2e tests for search preview and floating window panel rendering
+- 🇨🇳 修复在搜索预览中切换结果时显示过时属性面板的问题
+- 🇨🇳 改进标签栏和操作按钮的键盘无障碍性
+- 🇨🇳 添加 Playwright 端到端测试，覆盖搜索预览和浮动窗口面板渲染
+
 ### [1.9.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.0)
 
 - 🇺🇸 Fix properties panel not appearing in floating windows when the same document is already open in a tab

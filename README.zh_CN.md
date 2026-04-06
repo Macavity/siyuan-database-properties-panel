@@ -10,9 +10,10 @@
 
 ## 最近更改
 
-### [1.9.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.0)
+### [1.9.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.1)
 
-- 🇨🇳 修复当同一文档已在标签页中打开时，浮动窗口中不显示属性面板的问题
+- 🇨🇳 修复在搜索预览中切换结果时显示过时属性面板的问题
+- 🇨🇳 改进标签栏和操作按钮的键盘无障碍性
 
 ## 功能
 
