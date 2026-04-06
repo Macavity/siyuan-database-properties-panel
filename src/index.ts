@@ -81,6 +81,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_DYNAMIC, this.boundProtyleLoadedListener);
     this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
 
     // Listen for transactions to detect AV updates and trigger panel refresh
@@ -156,6 +157,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
   async onunload() {
     this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_DYNAMIC, this.boundProtyleLoadedListener);
     this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
 
     this.panelApps.forEach((app) => app.unmount());
@@ -239,40 +241,65 @@ export default class DatabasePropertiesPanel extends Plugin {
     const protyleElement = openProtyle.element;
     const configStore = useConfigStore(pinia);
 
-    // Find the title node within THIS protyle's element (not globally)
-    const titleNode = protyleElement.querySelector(
-      `div[data-node-id="${blockId}"].protyle-title`,
-    );
-
-    // Clean up any existing panels in this protyle's container FIRST
-    // This ensures panels from previous documents are removed even if we return early
-    // Important for mobile where switching to docs without properties leaves stale panels
-    if (titleNode) {
-      const protyleTop = titleNode.closest(".protyle-top");
-      if (protyleTop?.parentElement) {
-        const existingPanelsInContainer = protyleTop.parentElement.querySelectorAll(
-          PANEL_PARENT_CLASS_SELECTOR,
-        );
-        existingPanelsInContainer.forEach((panel) => {
-          this.logger.debug("🧼 Cleanup at start: removing panel from protyle container", {
-            panelBlockId: panel.getAttribute("data-block-id"),
-            currentBlockId: blockId,
-          });
-          const panelProtyleId = panel.getAttribute("data-protyle-id");
-          if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
-            this.panelApps.get(panelProtyleId)!.unmount();
-            this.panelApps.delete(panelProtyleId);
-          }
-          panel.remove();
+    // Hide or show existing panels in this protyle based on whether they match the current block.
+    // We hide instead of removing so panels survive search preview switches where SiYuan
+    // doesn't fire protyle events when navigating back to a previously loaded result.
+    const existingPanelsInProtyle = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
+    let hasMatchingPanel = false;
+    existingPanelsInProtyle.forEach((panel) => {
+      const panelBlockId = panel.getAttribute("data-block-id");
+      if (panelBlockId === blockId) {
+        (panel as HTMLElement).style.display = "";
+        hasMatchingPanel = true;
+      } else {
+        (panel as HTMLElement).style.display = "none";
+        this.logger.debug("🙈 Hiding stale panel in protyle", {
+          panelBlockId,
+          currentBlockId: blockId,
         });
       }
-    }
+    });
 
     // Now check if we should render a panel (needs DB properties)
     const topNode = this.getProtyleTopNode(blockId, protyleElement);
     if (!topNode) {
       this.enableErrorReporting = false;
       this.logger.debug("=> no top node, hide panel");
+      return;
+    }
+
+    // If a matching panel already exists, check visibility rules before reusing.
+    // Settings like hideInSpacedRepetition or showDatabaseAttributes may have changed
+    // since the panel was first created.
+    if (hasMatchingPanel) {
+      const matchingPanel = Array.from(existingPanelsInProtyle).find(
+        (p) => p.getAttribute("data-block-id") === blockId,
+      ) as HTMLElement;
+
+      if (configStore.hideInSpacedRepetition) {
+        const dialog = topNode.closest(".b3-dialog__container");
+        if (dialog) {
+          const isRiffCard = Array.from(
+            dialog.querySelectorAll(".block__logo use, .block__logoicon use"),
+          ).some(
+            (use) =>
+              (use.getAttribute("xlink:href") || use.getAttribute("href")) === "#iconRiffCard",
+          );
+          if (isRiffCard) {
+            matchingPanel.style.display = "none";
+            this.logger.addBreadcrumb(blockId, "Hidden: inside spaced repetition dialog (reuse)");
+            return;
+          }
+        }
+      }
+
+      if (!configStore.showDatabaseAttributes) {
+        matchingPanel.style.display = "none";
+        this.logger.debug("=> showDatabaseAttributes is false, hiding existing panel");
+        return;
+      }
+
+      this.logger.debug("=> existing panel found for blockId, reusing", { blockId });
       return;
     }
 
@@ -294,8 +321,8 @@ export default class DatabasePropertiesPanel extends Plugin {
       supportsEditing = true;
     }
 
-    if (configStore.hideInSpacedRepetition && titleNode) {
-      const dialog = titleNode.closest(".b3-dialog__container");
+    if (configStore.hideInSpacedRepetition) {
+      const dialog = topNode.closest(".b3-dialog__container");
       if (dialog) {
         const isRiffCard = Array.from(
           dialog.querySelectorAll(".block__logo use, .block__logoicon use"),
@@ -334,12 +361,12 @@ export default class DatabasePropertiesPanel extends Plugin {
       LoggerService.registerDocumentId(av.avID, av.avName);
     });
 
-    // Only remove panels within this specific protyle
+    // Remove all panels in this protyle (including hidden stale ones) before creating a new one
     const existingPanels = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
     existingPanels.forEach((panel) => {
-      this.logger.debug("renderPanel remove previous panel in protyle", {
+      this.logger.debug("🧼 Removing panel before re-render", {
+        panelBlockId: panel.getAttribute("data-block-id"),
         blockId,
-        protyleId,
       });
       const panelProtyleId = panel.getAttribute("data-protyle-id");
       if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
@@ -355,6 +382,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     tabDiv.className = PANEL_PARENT_CLASS;
     tabDiv.setAttribute("data-block-id", blockId);
     tabDiv.setAttribute("data-protyle-id", protyleId);
+    tabDiv.setAttribute("data-testid", "database-properties__panel");
     const padding = getPadding(openProtyle);
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 

@@ -11,9 +11,10 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.9.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.0)
+### [1.9.1](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.1)
 
-- 🇺🇸 Fix properties panel not appearing in floating windows when the same document is already open in a tab
+- 🇺🇸 Fix stale properties panel showing in search preview when switching between results
+- 🇺🇸 Improve keyboard accessibility for tab bar and action buttons
 
 ## Features
 
