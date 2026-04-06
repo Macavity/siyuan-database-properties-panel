@@ -1,5 +1,7 @@
 import { type Page, type Locator, expect } from "@playwright/test";
 
+const OPEN_SEARCH_KEY = process.platform === "darwin" ? "Meta+p" : "Control+p";
+
 /**
  * Page Object for SiYuan's global search dialog.
  *
@@ -10,17 +12,19 @@ import { type Page, type Locator, expect } from "@playwright/test";
  */
 export class SearchPage {
   readonly page: Page;
+  readonly searchInput: Locator;
   readonly searchList: Locator;
   readonly searchPreview: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.searchInput = page.locator("#searchInput");
     this.searchList = page.locator("#searchList");
     this.searchPreview = page.locator("#searchPreview");
   }
 
   async open() {
-    await this.page.keyboard.press("Meta+p");
+    await this.page.keyboard.press(OPEN_SEARCH_KEY);
     await expect(this.searchList).toBeVisible();
   }
 
@@ -31,8 +35,17 @@ export class SearchPage {
 
   async search(query: string) {
     await this.open();
-    await this.page.locator("#searchInput").fill(query);
+    await this.searchInput.fill(query);
     await expect(this.getResultItem(0)).toBeVisible();
+  }
+
+  /**
+   * Searches for a document and opens the first result in a tab via Enter.
+   */
+  async openDocument(docName: string) {
+    await this.search(docName);
+    await this.searchInput.press("Enter");
+    await this.close();
   }
 
   /**
@@ -54,6 +67,6 @@ export class SearchPage {
    * Returns the plugin panel locator within the search preview.
    */
   getPreviewPanel(): Locator {
-    return this.searchPreview.getByTestId("database-properties-panel");
+    return this.searchPreview.getByTestId("database-properties__panel");
   }
 }

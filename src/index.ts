@@ -260,17 +260,46 @@ export default class DatabasePropertiesPanel extends Plugin {
       }
     });
 
-    // If a matching panel already exists, no need to re-create it
-    if (hasMatchingPanel) {
-      this.logger.debug("=> existing panel found for blockId, reusing", { blockId });
-      return;
-    }
-
     // Now check if we should render a panel (needs DB properties)
     const topNode = this.getProtyleTopNode(blockId, protyleElement);
     if (!topNode) {
       this.enableErrorReporting = false;
       this.logger.debug("=> no top node, hide panel");
+      return;
+    }
+
+    // If a matching panel already exists, check visibility rules before reusing.
+    // Settings like hideInSpacedRepetition or showDatabaseAttributes may have changed
+    // since the panel was first created.
+    if (hasMatchingPanel) {
+      const matchingPanel = Array.from(existingPanelsInProtyle).find(
+        (p) => p.getAttribute("data-block-id") === blockId,
+      ) as HTMLElement;
+
+      if (configStore.hideInSpacedRepetition) {
+        const dialog = topNode.closest(".b3-dialog__container");
+        if (dialog) {
+          const isRiffCard = Array.from(
+            dialog.querySelectorAll(".block__logo use, .block__logoicon use"),
+          ).some(
+            (use) =>
+              (use.getAttribute("xlink:href") || use.getAttribute("href")) === "#iconRiffCard",
+          );
+          if (isRiffCard) {
+            matchingPanel.style.display = "none";
+            this.logger.addBreadcrumb(blockId, "Hidden: inside spaced repetition dialog (reuse)");
+            return;
+          }
+        }
+      }
+
+      if (!configStore.showDatabaseAttributes) {
+        matchingPanel.style.display = "none";
+        this.logger.debug("=> showDatabaseAttributes is false, hiding existing panel");
+        return;
+      }
+
+      this.logger.debug("=> existing panel found for blockId, reusing", { blockId });
       return;
     }
 
@@ -353,7 +382,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     tabDiv.className = PANEL_PARENT_CLASS;
     tabDiv.setAttribute("data-block-id", blockId);
     tabDiv.setAttribute("data-protyle-id", protyleId);
-    tabDiv.setAttribute("data-testid", "database-properties-panel");
+    tabDiv.setAttribute("data-testid", "database-properties__panel");
     const padding = getPadding(openProtyle);
     tabDiv.style.padding = `0 ${padding.right}px 0 ${padding.left}px`;
 

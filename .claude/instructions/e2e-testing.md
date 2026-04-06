@@ -10,7 +10,7 @@ These guidelines apply to all Playwright E2E tests in this project. Follow them 
 Elements whose visible text may be translated must be targeted via `data-testid` attributes. Use BEM notation for test ID values: `block__element--modifier` (e.g. `checkout__submit-btn`).
 
 ```ts
-await page.getByTestId('checkout-submit-btn').click();
+await page.getByTestId('checkout__submit-btn').click();
 ```
 
 **Use `getByRole` for language-independent elements.**
@@ -81,7 +81,7 @@ E2E tests are not exclusively UI tests. A sequence of API calls covering a full 
 
 ### Anti-patterns to avoid
 
-- CSS class selectors (`.checkout-flyer-button`, `div > span > .btn-primary`) — break when styling changes
+- CSS class selectors (`.checkout-flyer-button`, `div > span > .btn-primary`) — break when styling changes. **Exception:** SiYuan's own structural classes (e.g. `.layout__center`, `.block__popover--open`, `.av__celltext`) are acceptable when no stable `data-*` attribute exists, since we don't control the host app's DOM.
 - Text-based selectors for translated content (`hasText: 'Kaufen'`) — break across locales
 - Regex multi-locale text selectors (`/Kaufen|Buy Now|Acquista/`) — not a reliable fallback
 - `page.waitForTimeout()` — makes tests slow and remains flaky under load

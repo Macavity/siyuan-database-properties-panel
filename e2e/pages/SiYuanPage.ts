@@ -1,13 +1,16 @@
 import { type Page, type Locator, expect } from "@playwright/test";
+import { SearchPage } from "./SearchPage";
 
 /**
  * Page Object for common SiYuan workspace interactions.
  */
 export class SiYuanPage {
   readonly page: Page;
+  readonly search: SearchPage;
 
   constructor(page: Page) {
     this.page = page;
+    this.search = new SearchPage(page);
   }
 
   async goto() {
@@ -17,29 +20,10 @@ export class SiYuanPage {
 
   /**
    * Opens a document by name via global search.
-   * Searches for the document, then presses Enter to open it in a tab.
+   * Delegates to SearchPage to avoid duplicating search locator logic.
    */
   async openDocumentViaSearch(docName: string) {
-    // Open global search
-    await this.page.keyboard.press("Meta+p");
-    const searchInput = this.page.locator("#searchInput");
-    await expect(searchInput).toBeVisible();
-
-    // Type the document name and wait for results
-    await searchInput.fill(docName);
-    const firstResult = this.page
-      .locator('#searchList [data-type="search-item"]')
-      .first();
-    await expect(firstResult).toBeVisible();
-
-    // Press Enter to open the document in a tab
-    await searchInput.press("Enter");
-
-    // Close the search dialog
-    await this.page.keyboard.press("Escape");
-    await expect(this.page.locator("#searchList")).not.toBeVisible({
-      timeout: 3000,
-    });
+    await this.search.openDocument(docName);
   }
 
   /**
@@ -77,6 +61,6 @@ export class SiYuanPage {
    * Returns the plugin panel locator within a floating window.
    */
   getFloatingWindowPanel(): Locator {
-    return this.getFloatingWindow().getByTestId("database-properties-panel");
+    return this.getFloatingWindow().getByTestId("database-properties__panel");
   }
 }
