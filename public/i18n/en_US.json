@@ -5,7 +5,7 @@
   "settingGroupPrivacy": "Privacy",
   "settingGroupStyling": "Styling",
   "configAllowErrorReportingTitle": "Allow error reporting",
-  "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on Github. It will make finding a solution easier.",
+  "configAllowErrorReportingDesc": "If you notice broken behaviour in the plugin, please activate this before creating an issue on GitHub. It will make finding a solution easier.",
   "configAllowEditingTitle": "Allow editing",
   "configAllowEditingDesc": "(Experimental) Allow editing of the page properties in the attribute panel. This requires SiYuan version 3.0.17",
   "configShowBuiltInPropertiesTitle": "Show built-in properties",
