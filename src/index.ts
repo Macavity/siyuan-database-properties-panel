@@ -81,6 +81,7 @@ export default class DatabasePropertiesPanel extends Plugin {
     );
 
     this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.on(SiyuanEvents.LOADED_PROTYLE_DYNAMIC, this.boundProtyleLoadedListener);
     this.eventBus.on(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
 
     // Listen for transactions to detect AV updates and trigger panel refresh
@@ -156,6 +157,7 @@ export default class DatabasePropertiesPanel extends Plugin {
 
   async onunload() {
     this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_STATIC, this.boundProtyleLoadedListener);
+    this.eventBus.off(SiyuanEvents.LOADED_PROTYLE_DYNAMIC, this.boundProtyleLoadedListener);
     this.eventBus.off(SiyuanEvents.SWITCH_PROTYLE, this.boundProtyleSwitchListener);
 
     this.panelApps.forEach((app) => app.unmount());
@@ -239,34 +241,22 @@ export default class DatabasePropertiesPanel extends Plugin {
     const protyleElement = openProtyle.element;
     const configStore = useConfigStore(pinia);
 
-    // Find the title node within THIS protyle's element (not globally)
-    const titleNode = protyleElement.querySelector(
-      `div[data-node-id="${blockId}"].protyle-title`,
-    );
-
-    // Clean up any existing panels in this protyle's container FIRST
+    // Clean up any existing panels in this protyle FIRST
     // This ensures panels from previous documents are removed even if we return early
-    // Important for mobile where switching to docs without properties leaves stale panels
-    if (titleNode) {
-      const protyleTop = titleNode.closest(".protyle-top");
-      if (protyleTop?.parentElement) {
-        const existingPanelsInContainer = protyleTop.parentElement.querySelectorAll(
-          PANEL_PARENT_CLASS_SELECTOR,
-        );
-        existingPanelsInContainer.forEach((panel) => {
-          this.logger.debug("🧼 Cleanup at start: removing panel from protyle container", {
-            panelBlockId: panel.getAttribute("data-block-id"),
-            currentBlockId: blockId,
-          });
-          const panelProtyleId = panel.getAttribute("data-protyle-id");
-          if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
-            this.panelApps.get(panelProtyleId)!.unmount();
-            this.panelApps.delete(panelProtyleId);
-          }
-          panel.remove();
-        });
+    // Important for mobile and search preview where switching docs leaves stale panels
+    const existingPanelsInProtyle = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
+    existingPanelsInProtyle.forEach((panel) => {
+      this.logger.debug("🧼 Cleanup at start: removing panel from protyle", {
+        panelBlockId: panel.getAttribute("data-block-id"),
+        currentBlockId: blockId,
+      });
+      const panelProtyleId = panel.getAttribute("data-protyle-id");
+      if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
+        this.panelApps.get(panelProtyleId)!.unmount();
+        this.panelApps.delete(panelProtyleId);
       }
-    }
+      panel.remove();
+    });
 
     // Now check if we should render a panel (needs DB properties)
     const topNode = this.getProtyleTopNode(blockId, protyleElement);
@@ -294,8 +284,8 @@ export default class DatabasePropertiesPanel extends Plugin {
       supportsEditing = true;
     }
 
-    if (configStore.hideInSpacedRepetition && titleNode) {
-      const dialog = titleNode.closest(".b3-dialog__container");
+    if (configStore.hideInSpacedRepetition) {
+      const dialog = topNode.closest(".b3-dialog__container");
       if (dialog) {
         const isRiffCard = Array.from(
           dialog.querySelectorAll(".block__logo use, .block__logoicon use"),
