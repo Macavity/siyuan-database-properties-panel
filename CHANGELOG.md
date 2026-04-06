@@ -2,6 +2,11 @@
 
 [Changelog](./CHANGELOG.md)
 
+### [1.9.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.0)
+
+- 🇺🇸 Fix properties panel not appearing in floating windows when the same document is already open in a tab
+- 🇨🇳 修复当同一文档已在标签页中打开时，浮动窗口中不显示属性面板的问题
+
 ### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
 
 - 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default) ([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))

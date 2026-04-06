@@ -1,12 +1,12 @@
-import { render } from "@testing-library/svelte";
-import ColumnIcon from "./ColumnIcon.svelte";
+import { render } from "@testing-library/vue";
+import ColumnIcon from "./ColumnIcon.vue";
 import { describe, it, expect } from "vitest";
 import "@testing-library/jest-dom";
 import { TAVCol } from "siyuan";
 
 describe("ColumnIcon", () => {
-  it("renders CustomIcon when key.icon is provided", () => {
-    const key = {
+  it("renders CustomIcon when avKey.icon is provided", () => {
+    const avKey = {
       id: "test",
       name: "Test Column",
       icon: "1f600",
@@ -14,7 +14,7 @@ describe("ColumnIcon", () => {
     };
 
     const { container } = render(ColumnIcon, {
-      props: { key },
+      props: { avKey },
     });
 
     const customIcon = container.querySelector(".block__logoicon");
@@ -22,8 +22,8 @@ describe("ColumnIcon", () => {
     expect(customIcon.tagName).toBe("SPAN"); // CustomIcon renders a span when needSpan is true
   });
 
-  it("renders default icon when key.icon is not provided", () => {
-    const key = {
+  it("renders default icon when avKey.icon is not provided", () => {
+    const avKey = {
       id: "test",
       name: "Test Column",
       icon: "",
@@ -31,7 +31,7 @@ describe("ColumnIcon", () => {
     };
 
     const { container } = render(ColumnIcon, {
-      props: { key },
+      props: { avKey },
     });
 
     const svgIcon = container.querySelector("svg.block__logoicon");
@@ -39,7 +39,7 @@ describe("ColumnIcon", () => {
   });
 
   it("renders the column name", () => {
-    const key = {
+    const avKey = {
       id: "test",
       name: "Test Column",
       icon: "",
@@ -47,7 +47,7 @@ describe("ColumnIcon", () => {
     };
 
     const { getByText } = render(ColumnIcon, {
-      props: { key },
+      props: { avKey },
     });
 
     const columnName = getByText("Test Column");
@@ -55,7 +55,7 @@ describe("ColumnIcon", () => {
   });
 
   it("sets the correct aria-label", () => {
-    const key = {
+    const avKey = {
       id: "test",
       name: "Test Column",
       icon: "",
@@ -63,7 +63,7 @@ describe("ColumnIcon", () => {
     };
 
     const { container } = render(ColumnIcon, {
-      props: { key },
+      props: { avKey },
     });
 
     const div = container.querySelector(".block__logo");

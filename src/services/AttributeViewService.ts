@@ -1,12 +1,10 @@
+import { createApp, type App } from "vue";
 import { AttributeView } from "@/types/AttributeView";
 import { LoggerService } from "./LoggerService";
 import { getEmptyAVKeyAndValues } from "@/libs/getAVKeyAndValues";
 import semver from "semver";
-import ShowEmptyAttributesToggle from "@/components/ShowEmptyAttributesToggle.svelte";
-import CollapseButton from "@/components/CollapseButton.svelte";
-import RefreshButton from "@/components/RefreshButton.svelte";
-import { mount } from "svelte";
-import { configStore } from "@/stores/configStore";
+import ActionButtonBar from "@/components/ActionButtonBar.vue";
+import { pinia } from "@/stores";
 
 const logger = new LoggerService("AttributeViewService");
 
@@ -28,14 +26,10 @@ export class AttributeViewService {
     }));
   }
 
-  static handlePrimaryKey(
-    element: HTMLElement,
-    blockId: string,
-    showPrimaryKey: boolean
-  ) {
+  static handlePrimaryKey(element: HTMLElement, blockId: string, showPrimaryKey: boolean) {
     // logger.debug("handlePrimaryKey");
     const primaryKeyValueField = element.querySelectorAll(
-      `[data-node-id='${blockId}'] [data-type='block']`
+      `[data-node-id='${blockId}'] [data-type='block']`,
     );
     primaryKeyValueField.forEach((field) => {
       const fieldElement = field as HTMLElement;
@@ -56,20 +50,21 @@ export class AttributeViewService {
     showPrimaryKey: boolean,
     showEmptyAttributes: boolean,
     alignPropertiesLeft: boolean = false,
-    onRefresh?: () => void
+    onRefresh?: () => void,
+    isColumnVisible?: (avId: string, colId: string) => boolean,
   ) {
     logger.addBreadcrumb(blockId, "adjustDOM");
     // logger.debug("adjustDOM", { showPrimaryKey, showEmptyAttributes });
     AttributeViewService.handlePrimaryKey(element, blockId, showPrimaryKey);
 
-    AttributeViewService.handleEmptyAttributes(
+    AttributeViewService.handleEmptyAttributes(element, blockId, avData, showEmptyAttributes);
+
+    AttributeViewService.handleHiddenColumns(
       element,
       blockId,
       avData,
-      showEmptyAttributes
+      isColumnVisible ?? (() => true),
     );
-
-    AttributeViewService.handleHiddenColumns(element, blockId, avData);
     AttributeViewService.addActionButtons(element, blockId, onRefresh);
     AttributeViewService.hideAvHeader(element);
     AttributeViewService.disableTemplateClicks(element);
@@ -80,15 +75,14 @@ export class AttributeViewService {
   static handleHiddenColumns(
     element: HTMLElement,
     blockId: string,
-    avData: AttributeView[]
+    avData: AttributeView[],
+    isColumnVisible: (avId: string, colId: string) => boolean,
   ) {
     avData.forEach((table) => {
       table.keyValues.forEach((item) => {
-        if (!configStore.isColumnVisible(table.avID, item.key.id)) {
+        if (!isColumnVisible(table.avID, item.key.id)) {
           element
-            .querySelectorAll(
-              `[data-id='${blockId}'][data-col-id='${item.key.id}']`
-            )
+            .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.key.id}']`)
             .forEach((field) => {
               field.classList.add("dpp-av-panel--hidden");
             });
@@ -101,15 +95,13 @@ export class AttributeViewService {
     element: HTMLElement,
     blockId: string,
     avData: AttributeView[],
-    showEmptyAttributes: boolean
+    showEmptyAttributes: boolean,
   ) {
     avData.forEach((table) => {
       const emptyKeyAndValues = getEmptyAVKeyAndValues(table.keyValues);
       emptyKeyAndValues.forEach((item) => {
         element
-          .querySelectorAll(
-            `[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`
-          )
+          .querySelectorAll(`[data-id='${blockId}'][data-col-id='${item.values[0].keyID}']`)
           .forEach((field) => {
             if (showEmptyAttributes) {
               field.classList.remove("dpp-av-col--empty");
@@ -142,11 +134,9 @@ export class AttributeViewService {
    * within .dpp-av-panel containers.
    */
   static removeDataRenderingFromNodeAttributeViews(element: Element) {
-    element
-      .querySelectorAll("[data-type='NodeAttributeView']")
-      .forEach((node) => {
-        (node as HTMLElement).removeAttribute("data-rendering");
-      });
+    element.querySelectorAll("[data-type='NodeAttributeView']").forEach((node) => {
+      (node as HTMLElement).removeAttribute("data-rendering");
+    });
   }
 
   /**
@@ -156,10 +146,7 @@ export class AttributeViewService {
   static watchAndRemoveDataRendering(element: Element): () => void {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-rendering"
-        ) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-rendering") {
           const target = mutation.target as HTMLElement;
           // Only process NodeAttributeView elements
           if (
@@ -205,7 +192,7 @@ export class AttributeViewService {
   static removeDuplicateHrElements(element: HTMLElement) {
     const nodeAttrViews = element.querySelectorAll('[data-type="NodeAttributeView"]');
     nodeAttrViews.forEach((nodeAttrView) => {
-      const hrElements = nodeAttrView.querySelectorAll('.fn__hr--b');
+      const hrElements = nodeAttrView.querySelectorAll(".fn__hr--b");
       if (hrElements.length >= 2) {
         hrElements[hrElements.length - 1].remove();
       }
@@ -217,80 +204,68 @@ export class AttributeViewService {
    */
   static handleAlignPropertiesLeft(element: HTMLElement, alignPropertiesLeft: boolean) {
     // Handle av__row elements
-    const rows = element.querySelectorAll('.av__row');
+    const rows = element.querySelectorAll(".av__row");
     rows.forEach((row) => {
       if (alignPropertiesLeft) {
-        row.classList.add('av-panel-row--align-left');
+        row.classList.add("av-panel-row--align-left");
       } else {
-        row.classList.remove('av-panel-row--align-left');
+        row.classList.remove("av-panel-row--align-left");
       }
     });
 
     // Handle layout-tab-bar-wrapper padding - look in parent plugin-panel
-    const pluginPanel = element.closest('.plugin-panel');
+    const pluginPanel = element.closest(".plugin-panel");
     if (pluginPanel) {
-      const tabBarWrapper = pluginPanel.querySelector('.layout-tab-bar-wrapper') as HTMLElement;
+      const tabBarWrapper = pluginPanel.querySelector(".layout-tab-bar-wrapper") as HTMLElement;
       if (tabBarWrapper) {
         if (alignPropertiesLeft) {
-          tabBarWrapper.style.paddingLeft = '0';
-          tabBarWrapper.style.paddingRight = '0';
+          tabBarWrapper.style.paddingLeft = "0";
+          tabBarWrapper.style.paddingRight = "0";
         } else {
-          tabBarWrapper.style.paddingLeft = '';
-          tabBarWrapper.style.paddingRight = '';
+          tabBarWrapper.style.paddingLeft = "";
+          tabBarWrapper.style.paddingRight = "";
         }
       }
     }
   }
 
+  // Track Vue app instances for cleanup
+  private static actionButtonApps: App[] = [];
+
+  static cleanup() {
+    AttributeViewService.actionButtonApps.forEach((app) => app.unmount());
+    AttributeViewService.actionButtonApps = [];
+  }
+
   /**
-   * Add action buttons (collapse before addColumn, show empty attributes and refresh after).
-   * RefreshButton receives its callback via prop if provided, otherwise falls back to context.
+   * Replace native addColumn buttons with an ActionButtonBar that includes
+   * collapse, addColumn, show-empty-attributes toggle, and refresh buttons.
    */
-  static addActionButtons(
-    container: HTMLElement,
-    documentId: string,
-    onRefresh?: () => void
-  ) {
-    // First remove any existing action buttons
-    container
-      .querySelectorAll(".dpp-empty-attributes-toggle, .dpp-collapse-button, .dpp-refresh-button")
-      .forEach((button) => {
-        button.remove();
-      });
+  static addActionButtons(container: HTMLElement, documentId: string, onRefresh?: () => void) {
+    // Skip if the bar is already mounted — it manages its own reactive state
+    if (container.querySelector(".dpp-action-button-bar")) {
+      return;
+    }
 
-    const addColumnButton = container.querySelectorAll(
-      "[data-type='addColumn']"
-    );
-    addColumnButton.forEach((element) => {
-      const parent = element.parentNode;
-      const nextSibling = element.nextSibling;
+    // Clean up existing Vue app instances
+    AttributeViewService.actionButtonApps.forEach((app) => app.unmount());
+    AttributeViewService.actionButtonApps = [];
 
-      // Mount CollapseButton BEFORE addColumnButton
-      mount(CollapseButton, {
-        target: parent as HTMLElement,
-        anchor: element, // Insert before the addColumnButton element
-        props: {
-          documentId,
-        },
-      });
+    const addColumnButtons = container.querySelectorAll("[data-type='addColumn']");
+    addColumnButtons.forEach((element) => {
+      const parent = element.parentNode as HTMLElement;
 
-      // Mount ShowEmptyAttributesToggle AFTER addColumnButton
-      mount(ShowEmptyAttributesToggle, {
-        target: parent as HTMLElement,
-        anchor: nextSibling,
-        props: {
-          documentId,
-        },
-      });
+      // Create wrapper and insert it where the native addColumn button was
+      const wrapper = document.createElement("div");
+      wrapper.className = "dpp-action-button-bar";
+      wrapper.style.display = "contents";
+      const addColumnLabel = element.textContent?.trim() || "";
+      parent.replaceChild(wrapper, element);
 
-      // Mount RefreshButton AFTER ShowEmptyAttributesToggle
-      mount(RefreshButton, {
-        target: parent as HTMLElement,
-        anchor: nextSibling,
-        props: {
-          onRefresh,
-        },
-      });
+      const app = createApp(ActionButtonBar, { documentId, onRefresh, addColumnLabel });
+      app.use(pinia);
+      app.mount(wrapper);
+      AttributeViewService.actionButtonApps.push(app);
     });
   }
 }

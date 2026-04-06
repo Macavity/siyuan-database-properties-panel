@@ -1,5 +1,5 @@
-import { render } from "@testing-library/svelte";
-import CustomIcon from "./CustomIcon.svelte";
+import { render } from "@testing-library/vue";
+import CustomIcon from "./CustomIcon.vue";
 import { describe, it, expect } from "vitest";
 
 describe("CustomIcon", () => {
@@ -20,7 +20,7 @@ describe("CustomIcon", () => {
     expect(img?.getAttribute("alt")).toBe("Emoji");
   });
 
-  it("renders a span with emoji when needSpan is true", () => {
+  it("renders a span with emoji when needSpan is true", async () => {
     const { container } = render(CustomIcon, {
       props: {
         unicode: "1f600",
@@ -30,13 +30,11 @@ describe("CustomIcon", () => {
       },
     });
 
-    // Wait for next tick to allow derived state to update
-    return new Promise((resolve) => setTimeout(resolve, 0)).then(() => {
-      const span = container.querySelector("span");
-      expect(span).toBeTruthy();
-      expect(span?.className).toBe("test-class");
-      expect(span?.textContent).toBe("😀");
-    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const span = container.querySelector("span");
+    expect(span).toBeTruthy();
+    expect(span?.className).toBe("test-class");
+    expect(span?.textContent).toBe("😀");
   });
 
   it("renders emoji without span when needSpan is false", async () => {
@@ -49,7 +47,6 @@ describe("CustomIcon", () => {
       },
     });
 
-    // Wait for next tick to allow derived state to update
     await new Promise((resolve) => setTimeout(resolve, 0));
     const textContent = container.textContent?.trim();
     expect(textContent).toBe("😀");
@@ -81,7 +78,6 @@ describe("CustomIcon", () => {
       },
     });
 
-    // Wait for next tick to allow derived state to update
     await new Promise((resolve) => setTimeout(resolve, 0));
     const span = container.querySelector("span");
     expect(span?.textContent).toBe("👨🏻‍💻");
@@ -96,7 +92,6 @@ describe("CustomIcon", () => {
       },
     });
 
-    // Wait for next tick to allow derived state to update
     await new Promise((resolve) => setTimeout(resolve, 0));
     const span = container.querySelector("span");
     expect(span?.textContent).toBe("");
@@ -111,7 +106,6 @@ describe("CustomIcon", () => {
       },
     });
 
-    // Wait for next tick to allow derived state to update
     await new Promise((resolve) => setTimeout(resolve, 0));
     const span = container.querySelector("span");
     expect(span?.textContent).toBe("");

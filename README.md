@@ -11,10 +11,9 @@ This plugin allows users to view database row attributes directly on the dedicat
 
 ## Changes in last release
 
-### [1.8.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.8.0)
+### [1.9.0](https://github.com/Macavity/siyuan-database-properties-panel/releases/tag/v1.9.0)
 
-- 🇺🇸 Add "Hide in Spaced Repetition" setting to prevent the properties panel from spoiling flashcard answers (enabled by default) ([#88](https://github.com/Macavity/siyuan-database-properties-panel/issues/88))
-- 🇺🇸 Fix column visibility settings not showing columns for kanban and card view databases ([#89](https://github.com/Macavity/siyuan-database-properties-panel/issues/89))
+- 🇺🇸 Fix properties panel not appearing in floating windows when the same document is already open in a tab
 
 ## Features
 
@@ -48,14 +47,14 @@ About networking: This plug-in is completely local and does not include any extr
 
 ```bash
 # Development build with live reload
-pnpm dev
+bun dev
 
 # Production build
-pnpm build
+bun run build
 
 # Build and install to local SiYuan workspace
-pnpm build:install         # Production build + install
-pnpm build:install:dev     # Development build + install
+bun run build:install         # Production build + install
+bun run build:install:dev     # Development build + install
 ```
 
 ### Sentry Integration (Optional)
@@ -69,7 +68,7 @@ To enable error reporting in your builds (for developers only):
    ```
 3. Build the plugin:
    ```bash
-   pnpm build
+   bun run build
    ```
 
 If SENTRY_DSN is set at build time, error reporting will be enabled in that build. Marketplace builds without SENTRY_DSN will have no error reporting. This is intentional - only developers building their own versions should have Sentry enabled.

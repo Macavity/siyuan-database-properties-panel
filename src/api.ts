@@ -52,9 +52,7 @@ export async function removeNotebook(notebook: NotebookId) {
   return request(url, { notebook: notebook });
 }
 
-export async function getNotebookConf(
-  notebook: NotebookId,
-): Promise<IResGetNotebookConf> {
+export async function getNotebookConf(notebook: NotebookId): Promise<IResGetNotebookConf> {
   const data = { notebook: notebook };
   const url = "/api/notebook/getNotebookConf";
   return request(url, data);
@@ -107,11 +105,7 @@ export async function removeDoc(notebook: NotebookId, path: string) {
   return request(url, data);
 }
 
-export async function moveDocs(
-  fromPaths: string[],
-  toNotebook: NotebookId,
-  toPath: string,
-) {
+export async function moveDocs(fromPaths: string[], toNotebook: NotebookId, toPath: string) {
   const data = {
     fromPaths: fromPaths,
     toNotebook: toNotebook,
@@ -121,10 +115,7 @@ export async function moveDocs(
   return request(url, data);
 }
 
-export async function getHPathByPath(
-  notebook: NotebookId,
-  path: string,
-): Promise<string> {
+export async function getHPathByPath(notebook: NotebookId, path: string): Promise<string> {
   const data = {
     notebook: notebook,
     path: path,
@@ -141,10 +132,7 @@ export async function getHPathByID(id: BlockId): Promise<string> {
   return request(url, data);
 }
 
-export async function getIDsByHPath(
-  notebook: NotebookId,
-  path: string,
-): Promise<BlockId[]> {
+export async function getIDsByHPath(notebook: NotebookId, path: string): Promise<BlockId[]> {
   const data = {
     notebook: notebook,
     path: path,
@@ -155,10 +143,7 @@ export async function getIDsByHPath(
 
 // **************************************** Asset Files ****************************************
 
-export async function upload(
-  assetsDirPath: string,
-  files: any[],
-): Promise<IResUpload> {
+export async function upload(assetsDirPath: string, files: any[]): Promise<IResUpload> {
   const form = new FormData();
   form.append("assetsDirPath", assetsDirPath);
   for (const file of files) {
@@ -268,9 +253,7 @@ export async function unfoldBlock(id: BlockId) {
   return request(url, data);
 }
 
-export async function getBlockKramdown(
-  id: BlockId,
-): Promise<IResGetBlockKramdown> {
+export async function getBlockKramdown(id: BlockId): Promise<IResGetBlockKramdown> {
   const data = {
     id: id,
   };
@@ -278,9 +261,7 @@ export async function getBlockKramdown(
   return request(url, data);
 }
 
-export async function getChildBlocks(
-  id: BlockId,
-): Promise<IResGetChildBlock[]> {
+export async function getChildBlocks(id: BlockId): Promise<IResGetChildBlock[]> {
   const data = {
     id: id,
   };
@@ -288,11 +269,7 @@ export async function getChildBlocks(
   return request(url, data);
 }
 
-export async function transferBlockRef(
-  fromID: BlockId,
-  toID: BlockId,
-  refIDs: BlockId[],
-) {
+export async function transferBlockRef(fromID: BlockId, toID: BlockId, refIDs: BlockId[]) {
   const data = {
     fromID: fromID,
     toID: toID,
@@ -303,10 +280,7 @@ export async function transferBlockRef(
 }
 
 // **************************************** Attributes ****************************************
-export async function setBlockAttrs(
-  id: BlockId,
-  attrs: { [key: string]: string },
-) {
+export async function setBlockAttrs(id: BlockId, attrs: { [key: string]: string }) {
   const data = {
     id: id,
     attrs: attrs,
@@ -315,9 +289,7 @@ export async function setBlockAttrs(
   return request(url, data);
 }
 
-export async function getAttributeViewKeys(
-  id: BlockId,
-): Promise<AttributeView[]> {
+export async function getAttributeViewKeys(id: BlockId): Promise<AttributeView[]> {
   const data = {
     id: id,
   };
@@ -357,9 +329,7 @@ export async function setAttributeViewBlockAttr(
   return request(url, data);
 }
 
-export async function getBlockAttrs(
-  id: BlockId,
-): Promise<{ [key: string]: string }> {
+export async function getBlockAttrs(id: BlockId): Promise<{ [key: string]: string }> {
   const data = {
     id: id,
   };
@@ -385,10 +355,7 @@ export async function getBlockByID(blockId: string): Promise<Block> {
 
 // **************************************** Template ****************************************
 
-export async function render(
-  id: DocumentId,
-  path: string,
-): Promise<IResGetTemplates> {
+export async function render(id: DocumentId, path: string): Promise<IResGetTemplates> {
   const data = {
     id: id,
     path: path,
@@ -466,9 +433,7 @@ export async function readDir(path: string): Promise<IResReadDir> {
 
 // **************************************** Export ****************************************
 
-export async function exportMdContent(
-  id: DocumentId,
-): Promise<IResExportMdContent> {
+export async function exportMdContent(id: DocumentId): Promise<IResExportMdContent> {
   const data = {
     id: id,
   };
@@ -476,10 +441,7 @@ export async function exportMdContent(
   return request(url, data);
 }
 
-export async function exportResources(
-  paths: string[],
-  name: string,
-): Promise<IResExportResources> {
+export async function exportResources(paths: string[], name: string): Promise<IResExportResources> {
   const data = {
     paths: paths,
     name: name,

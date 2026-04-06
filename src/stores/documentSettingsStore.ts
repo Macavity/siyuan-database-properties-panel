@@ -1,65 +1,49 @@
-import { writable, derived } from "svelte/store";
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 import { LoggerService } from "@/services/LoggerService";
 
 const logger = new LoggerService("DocumentSettingsStore");
 
-interface DocumentSettings {
+interface DocumentSettingsMap {
   [documentId: string]: {
     overrideShowEmptyAttributes: boolean | null;
   };
 }
 
-function createDocumentSettingsStore() {
-  const { subscribe, set, update } = writable<DocumentSettings>({});
-  const store = {
-    subscribe,
-    set,
-    update,
-    toggleShowEmptyAttributes: (
-      documentId: string,
-      globalShowEmptyAttributes: boolean
-    ) => {
-      update((settings) => {
-        const currentSettings = settings[documentId] || {
-          overrideShowEmptyAttributes: null,
-        };
-        const currentValue = currentSettings.overrideShowEmptyAttributes;
+export const useDocumentSettingsStore = defineStore("documentSettings", () => {
+  const settings = reactive<DocumentSettingsMap>({});
 
-        // If null, start with opposite of global setting
-        const newValue =
-          currentValue === null ? !globalShowEmptyAttributes : !currentValue;
+  function toggleShowEmptyAttributes(documentId: string, globalShowEmptyAttributes: boolean) {
+    const currentSettings = settings[documentId] || {
+      overrideShowEmptyAttributes: null,
+    };
+    const currentValue = currentSettings.overrideShowEmptyAttributes;
 
-        logger.debug("toggleShowEmptyAttributes", {
-          documentId,
-          currentValue,
-          newValue,
-        });
+    const newValue = currentValue === null ? !globalShowEmptyAttributes : !currentValue;
 
-        return {
-          ...settings,
-          [documentId]: {
-            ...currentSettings,
-            overrideShowEmptyAttributes: newValue,
-          },
-        };
-      });
-    },
-    getEffectiveShowEmptyAttributes: (
-      documentId: string,
-      globalShowEmptyAttributes: boolean
-    ) =>
-      derived(store, ($settings) => {
-        const override = $settings[documentId]?.overrideShowEmptyAttributes;
-        // logger.debug("getEffectiveShowEmptyAttributes", {
-        //   documentId,
-        //   current: override,
-        //   globalShowEmptyAttributes,
-        // });
-        return !override ? globalShowEmptyAttributes : override;
-      }),
+    logger.debug("toggleShowEmptyAttributes", {
+      documentId,
+      currentValue,
+      newValue,
+    });
+
+    settings[documentId] = {
+      ...currentSettings,
+      overrideShowEmptyAttributes: newValue,
+    };
+  }
+
+  function getEffectiveShowEmptyAttributes(
+    documentId: string,
+    globalShowEmptyAttributes: boolean,
+  ): boolean {
+    const override = settings[documentId]?.overrideShowEmptyAttributes;
+    return override === null || override === undefined ? globalShowEmptyAttributes : override;
+  }
+
+  return {
+    settings,
+    toggleShowEmptyAttributes,
+    getEffectiveShowEmptyAttributes,
   };
-
-  return store;
-}
-
-export const documentSettingsStore = createDocumentSettingsStore();
+});
