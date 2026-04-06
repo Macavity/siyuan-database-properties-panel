@@ -16,14 +16,39 @@ export class SiYuanPage {
   }
 
   /**
-   * Clicks on a tab in the main tab bar by its exact visible text.
-   * Uses the top-level layout tab bar only (not plugin tab bars).
+   * Opens a document by name via global search.
+   * Searches for the document, then presses Enter to open it in a tab.
+   */
+  async openDocumentViaSearch(docName: string) {
+    // Open global search
+    await this.page.keyboard.press("Meta+p");
+    const searchInput = this.page.locator("#searchInput");
+    await expect(searchInput).toBeVisible();
+
+    // Type the document name and wait for results
+    await searchInput.fill(docName);
+    const firstResult = this.page
+      .locator('#searchList [data-type="search-item"]')
+      .first();
+    await expect(firstResult).toBeVisible();
+
+    // Press Enter to open the document in a tab
+    await searchInput.press("Enter");
+
+    // Close the search dialog
+    await this.page.keyboard.press("Escape");
+    await expect(this.page.locator("#searchList")).not.toBeVisible({
+      timeout: 3000,
+    });
+  }
+
+  /**
+   * Clicks on a tab in the main tab bar by its visible text.
+   * Uses SiYuan's data-type attribute for the tab header.
    */
   async activateTab(tabName: string) {
-    // Target only SiYuan's main tab bar, not the plugin's LayoutTabBar component.
-    // The main tabs live inside a .layout-tab-bar whose parent is NOT .layout-tab-bar-wrapper.
     const tab = this.page
-      .locator(".fn__flex:not(.layout-tab-bar-wrapper) > .layout-tab-bar .item__text")
+      .locator('[data-type="tab-header"]')
       .filter({ hasText: tabName })
       .first();
     await tab.click();
