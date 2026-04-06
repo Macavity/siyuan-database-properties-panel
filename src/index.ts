@@ -241,22 +241,30 @@ export default class DatabasePropertiesPanel extends Plugin {
     const protyleElement = openProtyle.element;
     const configStore = useConfigStore(pinia);
 
-    // Clean up any existing panels in this protyle FIRST
-    // This ensures panels from previous documents are removed even if we return early
-    // Important for mobile and search preview where switching docs leaves stale panels
+    // Hide or show existing panels in this protyle based on whether they match the current block.
+    // We hide instead of removing so panels survive search preview switches where SiYuan
+    // doesn't fire protyle events when navigating back to a previously loaded result.
     const existingPanelsInProtyle = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
+    let hasMatchingPanel = false;
     existingPanelsInProtyle.forEach((panel) => {
-      this.logger.debug("🧼 Cleanup at start: removing panel from protyle", {
-        panelBlockId: panel.getAttribute("data-block-id"),
-        currentBlockId: blockId,
-      });
-      const panelProtyleId = panel.getAttribute("data-protyle-id");
-      if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
-        this.panelApps.get(panelProtyleId)!.unmount();
-        this.panelApps.delete(panelProtyleId);
+      const panelBlockId = panel.getAttribute("data-block-id");
+      if (panelBlockId === blockId) {
+        (panel as HTMLElement).style.display = "";
+        hasMatchingPanel = true;
+      } else {
+        (panel as HTMLElement).style.display = "none";
+        this.logger.debug("🙈 Hiding stale panel in protyle", {
+          panelBlockId,
+          currentBlockId: blockId,
+        });
       }
-      panel.remove();
     });
+
+    // If a matching panel already exists, no need to re-create it
+    if (hasMatchingPanel) {
+      this.logger.debug("=> existing panel found for blockId, reusing", { blockId });
+      return;
+    }
 
     // Now check if we should render a panel (needs DB properties)
     const topNode = this.getProtyleTopNode(blockId, protyleElement);
@@ -324,12 +332,12 @@ export default class DatabasePropertiesPanel extends Plugin {
       LoggerService.registerDocumentId(av.avID, av.avName);
     });
 
-    // Only remove panels within this specific protyle
+    // Remove all panels in this protyle (including hidden stale ones) before creating a new one
     const existingPanels = protyleElement.querySelectorAll(PANEL_PARENT_CLASS_SELECTOR);
     existingPanels.forEach((panel) => {
-      this.logger.debug("renderPanel remove previous panel in protyle", {
+      this.logger.debug("🧼 Removing panel before re-render", {
+        panelBlockId: panel.getAttribute("data-block-id"),
         blockId,
-        protyleId,
       });
       const panelProtyleId = panel.getAttribute("data-protyle-id");
       if (panelProtyleId && this.panelApps.has(panelProtyleId)) {
